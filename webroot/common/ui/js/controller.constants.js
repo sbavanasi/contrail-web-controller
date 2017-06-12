@@ -944,6 +944,7 @@ define([
         this.INSERT_BELOW = 'insert_below';
         this.INSERT_AT_TOP = 'insert_at_top';
         this.INSERT_AT_END = 'insert_at_end';
+        this.FIREWALL_POLICY_HEADING = 'Firewall Policy';
 
         /* RBAC constants */
         this.RBAC_GLOBAL_PAGE_ID = "config-rbac-global-list";

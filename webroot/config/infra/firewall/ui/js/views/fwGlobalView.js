@@ -25,7 +25,7 @@ define([
             elementId: "fwrule-global-policy-page-id",
             view: "SectionView",
             viewConfig: {
-                title: policyName,
+                title: ctwc.FIREWALL_POLICY_HEADING + " : " + policyName,
                 elementId: "fwrule-global-policy-page-tabs",
                 rows: [{
                     columns: [{

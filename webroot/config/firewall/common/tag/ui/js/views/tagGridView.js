@@ -10,13 +10,14 @@ define([
 ], function (_, ContrailView, TagModel, TagEditView) {
     var tagEditView = new TagEditView(),
         gridElId = "#" + ctwc.SECURITY_POLICY_TAG_GRID_ID;
-
+    var isGlobal = true;
     var tagGridView = ContrailView.extend({
         el: $(contentContainer),
         render: function () {
             var self = this,
                 viewConfig = this.attributes.viewConfig,
                 pagerOptions = viewConfig['pagerOptions'];
+            isGlobal = viewConfig["isGlobal"];
             self.renderView4Config(self.$el, self.model,
                                    getTagGridViewConfig(viewConfig));
         }
@@ -299,6 +300,7 @@ define([
     	for(var j = 0; j < vn.length; j++){
     		var to = vn[j].to;
     		var name = to[to.length-1];
+            name = isGlobal ? name + ' (' + to[1] + ')' : name;
     		var refText = '<span>'+ name +'</span>';
     		refList.push(refText);
     	}
