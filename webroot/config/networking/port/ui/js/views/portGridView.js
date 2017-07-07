@@ -209,7 +209,7 @@ define([
                sortBy: 'formattedValue'
             },
             minWidth : 180,
-            formatter: portFormatters.portTagFormatter,
+            formatter: portFormatters.portTagFormatter/*,
             cssClass :'cell-hyperlink-blue',
             events : {
                 onClick : function(e, dc) {
@@ -239,7 +239,7 @@ define([
                         });
                 	}
                 }
-            }
+            }*/
         },
         {
             id:"network",

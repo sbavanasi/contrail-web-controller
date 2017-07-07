@@ -116,7 +116,7 @@ define([
                             formatter: portsFormatter,
                             sortable: {
                                 sortBy: 'formattedValue'
-                            },
+                            }/*,
                             cssClass :'cell-hyperlink-blue',
                             events : {
                                 onClick : function(e, dc) {
@@ -147,7 +147,7 @@ define([
                                 	}
                                 	
                                 }
-                            }
+                            }*/
                         },
                         {
                             id: "ref_obj",
@@ -368,13 +368,19 @@ define([
     	var returnString = '',refList = [];
     	var vmi = getValueByJsonPath(dc, 'virtual_machine_interface_back_refs', []);
     	for(var j = 0; j < vmi.length; j++){
-    		var to = vmi[j].to;
-    		var name = to[to.length-1];
-    		var projectName = to[to.length-2];
-    		var refText = '<span>'+ name +' ('+ projectName + ')</span>';
+            var vn = getValueByJsonPath(vmi, j + ';virtual_network_refs;0;to;2', '');
+            var formatterIpStr = '',fixedIps = getValueByJsonPath(vmi, j + ';instance_ip_back_refs', []);
+            _.each(fixedIps, function(fixedIpDetails, index) {
+                if(index === 0) {
+                    formatterIpStr = fixedIpDetails.fixedip.ip;
+                } else {
+                    formatterIpStr += ', ' + fixedIpDetails.fixedip.ip;
+                }
+            });
+            var refText = '<span>'+ vn +' ('+ (formatterIpStr ? formatterIpStr : '-') + ')</span>';
     		refList.push(refText);
     	}
-        
+
         if(refList.length > 0){
         	if ((null != showAll) && (true == showAll)) {
                 for (var q = 0; q < refList.length; q++) {
