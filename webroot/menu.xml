@@ -987,7 +987,7 @@ and need to add the iconClass tag wherever we need to show some icons
                                     <js>controller.app.js</js>
                                 </resource>
                                 <resource>
-                                    <rootDir>/config/firewall/applicationpolicyset/project/applicationpolicy/ui</rootDir>
+                                    <rootDir>/config/firewall/fwpolicywizard/project/applicationpolicy/ui</rootDir>
                                     <js>applicationPolicy.main.js</js>
                                     <class>applicationPolicyLoader</class>
                                     <function>renderApplicationPolicy</function>
