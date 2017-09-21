@@ -94,6 +94,96 @@ define([
             }
          }
     });
+    function getNewFirewallPolicyViewConfig() {
+        var gridPrefix = "add-firewall-policy",
+            addNewFwPolicyViewConfig = {
+            elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy"]),
+            view: "WizardView",
+            viewConfig: {
+                steps: [
+                    {
+                        elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy"]),
+                        title: "Name Policy",
+                        view: "SectionView",
+                        viewConfig: {},
+                        stepType: "step",
+                        onInitRender: true,
+                        buttons: {
+                            previous: {
+                                visible: false
+                            }
+                        },
+                        onNext: function(params) {
+                            return params.model.configFWPolicy({
+                                init: function () {
+                                    self.model.showErrorAttr(cowu.formatElementId([prefixId])
+                                            + cowc.FORM_SUFFIX_ID, false);
+                                    cowu.enableModalLoading(modalId);
+                                },
+                                success: function () {
+                                    cowu.disableModalLoading(modalId, function () {
+                                        options.callback();
+                                    });
+                                },
+                                error: function (error) {
+                                    cowu.disableModalLoading(modalId, function () {
+                                        self.model.showErrorAttr(cowu.formatElementId([prefixId])
+                                                + cowc.FORM_SUFFIX_ID, error.responseText);
+                                    });
+                                }
+                            }, options);
+                        }
+                    }
+                ]
+            }
+        };
+        return addNewFwPolicyViewConfig;
+    }
+    function getAddRulesViewConfig() {
+        var gridPrefix = "add-rules",
+        addRulesViewConfig = {
+            elementId:  cowu.formatElementId([prefixId, ctwl.TITLE_CREATE_FW_RULES]),
+            view: "WizardView",
+            viewConfig: {
+                steps: [
+                    {
+                        elementId:  cowu.formatElementId([prefixId, ctwl.TITLE_CREATE_FW_RULES]),
+                        title: "Create Rules",
+                        view: "SectionView",
+                        viewConfig: {},
+                        stepType: "step",
+                        onInitRender: true,
+                        buttons: {
+                            previous: {
+                                visible: false
+                            }
+                        },
+                        onNext: function(params) {
+                            return params.model.configFWPolicy({
+                                init: function () {
+                                    self.model.showErrorAttr(cowu.formatElementId([prefixId])
+                                            + cowc.FORM_SUFFIX_ID, false);
+                                    cowu.enableModalLoading(modalId);
+                                },
+                                success: function () {
+                                    cowu.disableModalLoading(modalId, function () {
+                                        options.callback();
+                                    });
+                                },
+                                error: function (error) {
+                                    cowu.disableModalLoading(modalId, function () {
+                                        self.model.showErrorAttr(cowu.formatElementId([prefixId])
+                                                + cowc.FORM_SUFFIX_ID, error.responseText);
+                                    });
+                                }
+                            }, options);
+                        }
+                    }
+                ]
+            }
+        };
+        return addRulesViewConfig;
+    }
     function getAddPolicyViewConfig(viewConfig) {
         var addPolicyViewConfig = {
             elementId: cowu.formatElementId([prefixId, 'policy_wizard']),
@@ -104,6 +194,8 @@ define([
         }
     steps = [];
     createStepViewConfig = null;
+    addnewFwPolicyStepViewConfig = null;
+    addRulesStepViewConfig = null;
     createStepViewConfig = {
             elementId: cowu.formatElementId([ctwc.NEW_APPLICATION_POLICY_SET_SECTION_ID]),
             view: "SectionView",
@@ -157,6 +249,10 @@ define([
             }
         };
     steps = steps.concat(createStepViewConfig);
+    addnewFwPolicyStepViewConfig = $.extend(true, {}, getNewFirewallPolicyViewConfig().viewConfig).steps;
+    addRulesStepViewConfig = $.extend(true, {}, getAddRulesViewConfig().viewConfig).steps;
+    steps = steps.concat(addnewFwPolicyStepViewConfig);
+    steps = steps.concat(addRulesStepViewConfig);
     addPolicyViewConfig.viewConfig.steps = steps;
     return addPolicyViewConfig;
   }

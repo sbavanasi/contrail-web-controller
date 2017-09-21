@@ -73,7 +73,7 @@ define([
                         "applicationPolicyValidation",
                         null, null, function() {
                     self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
-                    Knockback.applyBindings(self.model,
+                    Knockback.applyBindings(this.model,
                              document.getElementById(modalId));
                     kbValidation.bind(self);
                 },null,false);
