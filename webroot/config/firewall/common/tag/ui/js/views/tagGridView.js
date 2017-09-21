@@ -6,9 +6,11 @@ define([
     'underscore',
     'contrail-view',
     'config/firewall/common/tag/ui/js/models/tagModel',
-    'config/firewall/common/tag/ui/js/views/tagEditView'
-], function (_, ContrailView, TagModel, TagEditView) {
+    'config/firewall/common/tag/ui/js/views/tagEditView',
+    'config/firewall/fwpolicywizard/common/ui/js/views/overlayTagEditView'
+], function (_, ContrailView, TagModel, TagEditView, OverlayTagEditView) {
     var tagEditView = new TagEditView(),
+        overlayTagEditView = new OverlayTagEditView(),
         gridElId = "#" + ctwc.SECURITY_POLICY_TAG_GRID_ID;
     var isGlobal = true;
     var tagGridView = ContrailView.extend({
@@ -63,7 +65,7 @@ define([
                             $('#btnDeleteTAG').removeClass('disabled-link');
                         }
                     },
-                    actionCell: rowActionConfig,
+                    actionCell: getRowActionConfig(viewConfig),
                     detail: {
                         template: cowu.generateDetailTemplateHTML(
                                        getTagDetailsTemplateConfig(),
@@ -164,20 +166,32 @@ define([
         };
         return gridElementConfig;
     };
-    var rowActionConfig = [
-        ctwgc.getDeleteConfig('Delete', function(rowIndex) {
-           var dataItem = $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data('contrailGrid')._dataView.getItem(rowIndex);
-           tagEditView.model = new TagModel(dataItem);
-           tagEditView.renderDeleteTag({
-                                  "title": 'Delete Tag',
-                                  selectedGridData: [dataItem],
-                                  callback: function () {
-                                      var dataView = $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data("contrailGrid")._dataView;
-                                      dataView.refreshData();
-            }});
-        })
-    ];
-    function getHeaderActionConfig(viewConfig) {
+    function getRowActionConfig (viewConfig) {
+        var rowActionConfig = [
+            ctwgc.getDeleteConfig('Delete', function(rowIndex) {
+               var dataItem = $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data('contrailGrid')._dataView.getItem(rowIndex);
+               if(viewConfig.isWizard){
+                   overlayTagEditView.model = new TagModel(dataItem);
+                   overlayTagEditView.renderTag({
+                               selectedGridData: [dataItem],
+                               'viewConfig': viewConfig,
+                               'mode':'delete'
+                   });
+               } else{
+                   tagEditView.model = new TagModel(dataItem);
+                   tagEditView.renderDeleteTag({
+                                          "title": 'Delete Tag',
+                                          selectedGridData: [dataItem],
+                                          callback: function () {
+                                              var dataView = $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data("contrailGrid")._dataView;
+                                              dataView.refreshData();
+                    }});
+               }
+            })
+        ];
+        return rowActionConfig;
+   }
+   function getHeaderActionConfig(viewConfig) {
         var headerActionConfig = [
             {
                 "type" : "link",
@@ -188,35 +202,52 @@ define([
                     var tagModel = new TagModel();
                     var checkedRows = $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data("contrailGrid").getCheckedRows();
                     if(checkedRows && checkedRows.length > 0) {
-                        tagEditView.model = tagModel;
-                        tagEditView.renderDeleteTag(
-                            {"title": ctwc.TITLE_TAG_MULTI_DELETE,
-                                selectedGridData: checkedRows,
-                                callback: function () {
-                                    var dataView =
-                                        $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).
-                                        data("contrailGrid")._dataView;
-                                    dataView.refreshData();
+                        if(viewConfig.isWizard){
+                            overlayTagEditView.model = tagModel;
+                            overlayTagEditView.renderTag({
+                                    selectedGridData: checkedRows,
+                                    'viewConfig': viewConfig,
+                                    'mode':'delete'
+                            });
+                        }else{
+                            tagEditView.model = tagModel;
+                            tagEditView.renderDeleteTag(
+                                {"title": ctwc.TITLE_TAG_MULTI_DELETE,
+                                    selectedGridData: checkedRows,
+                                    callback: function () {
+                                        var dataView =
+                                            $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).
+                                            data("contrailGrid")._dataView;
+                                        dataView.refreshData();
+                                    }
                                 }
-                            }
-                        );
+                            );
+                        }
                     }
                 }
-
             },
             {
                 "type": "link",
                 "title": ctwc.SEC_POL_TAG_TITLE_CREATE,
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
-                    tagEditView.model = new TagModel();
-                    tagEditView.renderAddEditTag({
-                                              "title": 'Create Tag',
-                                              'mode': 'add',
-                                              'isGlobal': viewConfig.isGlobal,
-                                              callback: function () {
-                       $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data("contrailGrid")._dataView.refreshData();
-                    }});
+                    if(viewConfig.isWizard){
+                        overlayTagEditView.model = new TagModel();
+                        overlayTagEditView.renderTag({
+                                'mode': 'add',
+                                'viewConfig': viewConfig,
+                                'isGlobal': viewConfig.isGlobal
+                        });
+                    }else{
+                        tagEditView.model = new TagModel();
+                        tagEditView.renderAddEditTag({
+                                                  "title": 'Create Tag',
+                                                  'mode': 'add',
+                                                  'isGlobal': viewConfig.isGlobal,
+                                                  callback: function () {
+                           $('#' + ctwc.SECURITY_POLICY_TAG_GRID_ID).data("contrailGrid")._dataView.refreshData();
+                        }});
+                    }
                 }
             }
 

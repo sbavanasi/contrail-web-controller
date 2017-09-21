@@ -980,20 +980,20 @@ and need to add the iconClass tag wherever we need to show some icons
                         </item> -->
                         <item>
                             <label>Project Scoped Policies</label>
-                            <hash>config_security_applicationpolicy</hash>
+                            <hash>config_security_projectscopedpolicies</hash>
                             <resources>
                                 <resource>
                                     <rootDir>/common/ui</rootDir>
                                     <js>controller.app.js</js>
                                 </resource>
                                 <resource>
-                                    <rootDir>/config/firewall/fwpolicywizard/project/applicationpolicy/ui</rootDir>
-                                    <js>applicationPolicy.main.js</js>
-                                    <class>applicationPolicyLoader</class>
+                                    <rootDir>/config/firewall/project/applicationpolicy/ui</rootDir>
+                                    <js>applicationPolicyProject.main.js</js>
+                                    <class>applicationPolicyProjectPageLoader</class>
                                     <function>renderApplicationPolicy</function>
                                 </resource>
                             </resources>
-                            <searchStrings>Configure Application Policy Set</searchStrings>
+                            <searchStrings>Configure Security, Project Scoped Policies</searchStrings>
                         </item>
                     </items>
                 </item>

@@ -32,7 +32,12 @@ define([
             };
             self.contrailListModel = new ContrailListModel(listModelConfig);
             this.renderView4Config(this.$el,
-                    self.contrailListModel, getTagGridViewConfig());
+                    self.contrailListModel, getTagGridViewConfig(viewConfig));
+            $("#aps-back-button").off('click').on('click', function(){
+                $('#modal-landing-container').show();
+                $("#aps-gird-container").empty();
+                $('#aps-landing-container').hide();
+            });
         },
         parseTagData : function(response){
             var dataItems = [],
@@ -49,7 +54,7 @@ define([
         return (a.name > b.name)? 1: -1;
     }
 
-    var getTagGridViewConfig = function () {
+    var getTagGridViewConfig = function (viewConfig) {
         return {
             elementId: cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_SECTION_ID]),
             view: "SectionView",
@@ -69,7 +74,9 @@ define([
                                             pageSizeSelect: [10, 50, 100]
                                         }
                                     },
-                                    isGlobal: false
+                                    isGlobal: false,
+                                    viewConfig: viewConfig,
+                                    isWizard: true
                                 }
                             }
                         ]

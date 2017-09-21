@@ -7,37 +7,33 @@ define([
     'moment',
     'backbone',
     'contrail-view',
-    'config/firewall/common/applicationpolicy/ui/js/models/applicationPolicyModel',
-    'config/firewall/common/applicationpolicy/ui/js/views/applicationPolicyEditView',
-    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView',
-    'config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel'
-], function (_, moment, Backbone, ContrailView, ApplicationPolicyModel, ApplicationPolicyEditView,
-        FwPolicyWizardEditView, FwPolicyWizardModel) {
+    'config/firewall/fwpolicywizard/common/ui/js/models/newApplicationPolicyModel',
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwApplicationPolicyEditView'
+], function (_, moment, Backbone, ContrailView, ApplicationPolicyModel, ApplicationPolicyEditView) {
     var applicationPolicyEditView = new ApplicationPolicyEditView(),
-        FwPolicyWizardEditView = new FwPolicyWizardEditView(),
-        gridElId = "#" + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID;
+        gridElId = "#" + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID;
 
-    var applicationPolicyGridView = ContrailView.extend({
+    var fwPolicyWizardGridView = ContrailView.extend({
         el: $(contentContainer),
         render: function () {
             var self = this,
                 viewConfig = this.attributes.viewConfig,
                 pagerOptions = viewConfig['pagerOptions'];
-            self.renderView4Config(self.$el, self.model,
-                                   getApplicationPolicyGridViewConfig(viewConfig));
+                self.renderView4Config(self.$el, self.model,
+                                  getAppPolicyGridViewConfig(viewConfig));
         }
     });
 
-    var getApplicationPolicyGridViewConfig = function (viewConfig) {
+    var getAppPolicyGridViewConfig = function (viewConfig) {
         return {
-            elementId: cowu.formatElementId([ctwc.FIREWALL_APPLICATION_POLICY_LIST_VIEW_ID]),
+            elementId: cowu.formatElementId([ctwc.NEW_APPLICATION_POLICY_SET_LIST_VIEW_ID]),
             view: "SectionView",
             viewConfig: {
                 rows: [
                     {
                         columns: [
                             {
-                                elementId: ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID,
+                                elementId: ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID,
                                 title: ctwl.TITLE_FIREWALL_APPLICATION_POLICY,
                                 view: "GridView",
                                 viewConfig: {
@@ -122,15 +118,6 @@ define([
                                 sortBy: 'formattedValue'
                             }
                         },
-                        /*{
-                            id: "shared",
-                            field: "shared",
-                            name: "Shared",
-                            formatter: isSharedFormatter,
-                            sortable: {
-                                sortBy: 'formattedValue'
-                            }
-                        },*/
                         {
                             id: "lastupdated",
                             field: "lastupdated",
@@ -151,15 +138,13 @@ define([
             appPolicySetName = getValueByJsonPath(dc, 'name', '', false),
             rowActionConfig = [
             ctwgc.getEditConfig('Edit', function(rowIndex) {
-                dataView = $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView;
+                var dataView = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).data("contrailGrid")._dataView;
                 applicationPolicyEditView.model = new ApplicationPolicyModel(dataView.getItem(rowIndex));
-                applicationPolicyEditView.renderAddEditApplicationPolicy({
-                                      "title": 'Edit Application Policy Set',
+                applicationPolicyEditView.renderApplicationPolicy({
                                       'mode':'edit',
-                                      'isGlobal': viewConfig.isGlobal,
-                                       callback: function () {
-                                          dataView.refreshData();
-                }});
+                                      'viewConfig': viewConfig,
+                                      'isGlobal': viewConfig.isGlobal
+                });
             })];
         if(appPolicySetName !== ctwc.GLOBAL_APPLICATION_POLICY_SET) {
             var deleteActionConfig = ctwgc.getDeleteConfig('Delete',
@@ -183,8 +168,8 @@ define([
         return rowActionConfig;
     }
     function getHeaderActionConfig(viewConfig) {
-    	var headerActionConfig = [
-    		{
+        var headerActionConfig = [
+            {
                 "type" : "link",
                 "title" : ctwl.TITLE_APP_POLICY_SET_MULTI_DELETE,
                 "iconClass": 'fa fa-trash',
@@ -193,10 +178,10 @@ define([
                     var applicationPolicyModel = new ApplicationPolicyModel();
                     var checkedRows = $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid").getCheckedRows();
                     if(checkedRows && checkedRows.length > 0) {
-                    	applicationPolicyEditView.model = applicationPolicyModel;
-                    	applicationPolicyEditView.renderDeleteApplicationPolicy(
+                        applicationPolicyEditView.model = applicationPolicyModel;
+                        applicationPolicyEditView.renderDeleteApplicationPolicy(
                             {"title": ctwl.TITLE_APP_POLICY_SET_MULTI_DELETE,
-                            	selectedGridData: checkedRows,
+                                selectedGridData: checkedRows,
                                 callback: function () {
                                     var dataView =
                                         $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).
@@ -214,27 +199,18 @@ define([
                 "title": ctwl.TITLE_CREATE_APP_POLICY_SET,
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
-                    if(viewConfig.isWizard){
-                        FwPolicyWizardEditView.model = new FwPolicyWizardModel();
-                        FwPolicyWizardEditView.renderFwWizard({
-                                        "title": 'Add new firewall policy',
-                                        'isGlobal': viewConfig.isGlobal,
-                                        'viewConfig': viewConfig['viewConfig'],
-                                         callback: function () {
-                            $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
-                        }});
-                    }else{
-                        applicationPolicyEditView.model = new ApplicationPolicyModel();
-                        applicationPolicyEditView.renderAddEditApplicationPolicy({
-                                                  "title": ctwl.TITLE_CREATE_APP_POLICY_SET,
-                                                  'mode': 'add',
-                                                  'isGlobal': viewConfig.isGlobal,
-                                                  callback: function () {
-                           $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
-                        }});
-                    }
+                    applicationPolicyEditView.model = new ApplicationPolicyModel();
+                    applicationPolicyEditView.renderApplicationPolicy({
+                                              "title": 'Add new firewall policy',
+                                              'mode': 'add',
+                                              'isGlobal': viewConfig.isGlobal,
+                                              'viewConfig': viewConfig['viewConfig'],
+                                              callback: function () {
+                       $('#' + ctwc.APPLICATION_POLICY_SET_GRID_ID).data("contrailGrid")._dataView.refreshData();
+                    }});
                 }
             }
+
         ];
         return headerActionConfig;
     }
@@ -280,25 +256,7 @@ define([
                                                     templateGeneratorConfig: {
                                                         formatter: 'setDescriptionFormatter'
                                                     }
-                                                },/*
-                                                {
-                                                    key: 'firewall_policy_refs',
-                                                    templateGenerator: 'TextGenerator',
-                                                    label: 'FW Policies',
-                                                    keyClass:'col-xs-3',
-                                                    templateGeneratorConfig: {
-                                                        formatter: 'setNoOfPoliciesFormatter'
-                                                    }
                                                 },
-                                                {
-                                                    key: 'id_perms',
-                                                    templateGenerator: 'TextGenerator',
-                                                    label: 'Shared',
-                                                    keyClass:'col-xs-3',
-                                                    templateGeneratorConfig: {
-                                                        formatter: 'setIsSharedFormatter'
-                                                    }
-                                                },*/
                                                 {
                                                     key: 'id_perms',
                                                     templateGenerator: 'TextGenerator',
@@ -345,71 +303,71 @@ define([
         return lastUpdateExpFormatter(null, null, null, value, dc, true);
     };
     this.setIsGlobalFormatter = function(value, dc){
-    	return isGlobalFormatter(null, null, null, value, dc, true);
+        return isGlobalFormatter(null, null, null, value, dc, true);
     };
     this.isGlobalFormatter = function(value, dc){
-    	var apsGlobal = getValueByJsonPath(dc, 'is_global'), isGlobal;
-    	if(apsGlobal !== undefined){
-    		if(apsGlobal){
-        		isGlobal = 'Enabled';
-        		return isGlobal;
-        	}else{
-        		isGlobal = 'Disabled';
-        		return isGlobal;
-        	}
-    	}else{
-    		return '-';
-    	}
+        var apsGlobal = getValueByJsonPath(dc, 'is_global'), isGlobal;
+        if(apsGlobal !== undefined){
+            if(apsGlobal){
+                isGlobal = 'Enabled';
+                return isGlobal;
+            }else{
+                isGlobal = 'Disabled';
+                return isGlobal;
+            }
+        }else{
+            return '-';
+        }
     };
     this.setIsSharedFormatter = function(value, dc){
-    	return isSharedFormatter(null, null, null, value, dc, true);
+        return isSharedFormatter(null, null, null, value, dc, true);
     };
     this.setDescriptionFormatter = function(value, dc){
-    	return descriptionFormatter(null, null, null, value, dc, true);
+        return descriptionFormatter(null, null, null, value, dc, true);
     };
     this.setFirewallPolicyFormatter = function(value, dc){
-    	var policy = getValueByJsonPath(dc, 'firewall_policy_refs',[]),policyList = [];
-    	 var policy = 
+        var policy = getValueByJsonPath(dc, 'firewall_policy_refs',[]),policyList = [];
+         var policy = 
              _.sortBy(policy, function (pol) {
                  var sequence =
                     Number(getValueByJsonPath(pol, 'attr;sequence', 0));
                  return ((1 + sequence) * 100000 ) - sequence;
             });
-    	var returnString = '';
-    	for(var i = 0; i < policy.length; i++){
-    		var to = policy[i].to;
-    		var name = to[to.length - 1];
-    		var text = '<span>'+ name +'</span>';
-    		policyList.push(text);
-    	}
-    	if(policyList.length > 0){
+        var returnString = '';
+        for(var i = 0; i < policy.length; i++){
+            var to = policy[i].to;
+            var name = to[to.length - 1];
+            var text = '<span>'+ name +'</span>';
+            policyList.push(text);
+        }
+        if(policyList.length > 0){
             for(var j = 0; j< policyList.length; j++){
                 if(policyList[j]) {
                     returnString += policyList[j] + "<br>";
                 }
             }
         }else{
-        	returnString = '-';
+            returnString = '-';
         }
-    	return returnString;
-    	
+        return returnString;
+        
     };
     function isSharedFormatter(r, c, v, cd, dc, showAll){
-    	var enable = getValueByJsonPath(dc, 'id_perms;enable'), shared;
-    	if(enable){
-    		shared = 'Enabled';
-    	}else{
-    		shared = 'Disabled';
-    	}
+        var enable = getValueByJsonPath(dc, 'id_perms;enable'), shared;
+        if(enable){
+            shared = 'Enabled';
+        }else{
+            shared = 'Disabled';
+        }
         return  shared;
     }
     function descriptionFormatter(r, c, v, cd, dc, showAll){
-    	var description = getValueByJsonPath(dc, 'id_perms;description','-');
+        var description = getValueByJsonPath(dc, 'id_perms;description','-');
         return  description;
     }
     function noOfPoliciesFormatter(r, c, v, cd, dc, showAll){
-    	var policyRefs = getValueByJsonPath(dc, 'firewall_policy_refs',[]);
-    	var noOfRefs = policyRefs.length
+        var policyRefs = getValueByJsonPath(dc, 'firewall_policy_refs',[]);
+        var noOfRefs = policyRefs.length
         return  noOfRefs;
     }
     function lastUpdateFormatter(r, c, v, cd, dc, showAll){
@@ -430,6 +388,6 @@ define([
         }
         return lastUpdated;
     }
-   return applicationPolicyGridView;
+   return fwPolicyWizardGridView;
 });
 
