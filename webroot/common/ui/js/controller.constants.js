@@ -949,6 +949,8 @@ define([
         this.FW_RULE_GRID_ID = "fw-rule-grid";
         this.FW_RULE_PREFIX_ID = 'firewallRule',
         this.CONFIG_FW_POLICY_LIST_VIEW_ID = "config-fw-policy-list-view";
+        this.CONFIG_FW_WZ_POLICY_LIST_VIEW_ID = "config-fw-wz-policy-list-view";
+        this.FW_WZ_POLICY_GRID_ID = "fw-wz-policy-grid";
         this.APPLICATION_POLICY_LIST_VIEW_ID = "application-policy-list-view";
         this.FIREWALL_APPLICATION_POLICY_SECTION_ID = 'firewall-application-policy-section';
         this.FIREWALL_APP_POLICY_ID = 'firewall-application-policy';

@@ -7,7 +7,7 @@ define([
     'moment',
     'backbone',
     'contrail-view',
-    'config/firewall/fwpolicywizard/common/ui/js/models/newApplicationPolicyModel',
+    'config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel',
     'config/firewall/fwpolicywizard/common/ui/js/views/fwApplicationPolicyEditView'
 ], function (_, moment, Backbone, ContrailView, ApplicationPolicyModel, ApplicationPolicyEditView) {
     var applicationPolicyEditView = new ApplicationPolicyEditView(),

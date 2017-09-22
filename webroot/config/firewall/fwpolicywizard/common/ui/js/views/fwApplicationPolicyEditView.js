@@ -63,6 +63,7 @@ define([
             }else{
                 $("#aps-back-button").text('Cancel');
                 $("#aps-back-button").off('click').on('click', function(){
+                    Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
                     $('#aps-save-button').text('Save');
                     $('#aps-overlay-container').hide();
@@ -73,41 +74,10 @@ define([
                         "applicationPolicyValidation",
                         null, null, function() {
                     self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
-                    Knockback.applyBindings(this.model,
-                             document.getElementById(modalId));
+                    Knockback.applyBindings(self.model,
+                            document.getElementById('aps-gird-container'));
                     kbValidation.bind(self);
                 },null,false);
-                /*self.renderView4Config($('#gird-details-container'),
-                        this.model,
-                        getAddressGroupViewConfig(disable),
-                        "addressGroupValidation",
-                        null, null, function() {
-                             $("#aps-back-button").off('click').on('click', function(){
-                                 $('#aps-save-button').hide();
-                                 Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                                 $("#aps-gird-container").empty();
-                                 self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
-                             });
-                             $("#aps-save-button").off('click').on('click', function(){
-                                 self.model.addEditAddressGroup({
-                                     success: function () {
-                                         $('#aps-save-button').hide();
-                                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                                         $("#aps-gird-container").empty();
-                                         self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
-                                     },
-                                     error: function (error) {
-                                         $("#grid-details-error-container").text('');
-                                         $("#grid-details-error-container").text(error.responseText);
-                                         $(".aps-details-error-container").show();
-                                     }
-                                 }, options);
-                             });
-                             Knockback.applyBindings(self.model,
-                                                     document.getElementById('aps-gird-container'));
-                             kbValidation.bind(self, {collection:
-                                               self.model.model().attributes.subnetCollection});
-                },null,true);*/
             }
         },
         setErrorContainer : function(headerText){
@@ -121,12 +91,23 @@ define([
             $('#aps-gird-container').append($('<div id = "gird-details-container"></div>'));
         }
     });
+    function firwallPolicyDropDownFormatter(response){
+        var firewallList = [];
+        var policyList = getValueByJsonPath(response, "0;firewall-policys", []);
+        $.each(policyList, function (i, obj) {
+            var fqNameJoin = obj['firewall-policy']['fq_name'].join(':');
+            var fqName = obj['firewall-policy']['fq_name'];
+            fqName = fqName[fqName.length-1];
+            firewallList.push({id: fqNameJoin, text: fqName});
+         });
+        return firewallList;
+    };
     var getApplicationPolicyViewConfig = function (isDisable) {
         var policyParam = {data: [{type: 'firewall-policys'}]};
         var tagsFiiteredArray = [];
         var tagsArray = [];
         return {
-            elementId: ctwc.SEC_POLICY_ADDRESS_GRP_PREFIX_ID,
+            elementId: "create_application_policy_prefixid",
             view: 'SectionView',
             title: "Application Policy",
            // active:false,
@@ -158,7 +139,7 @@ define([
                                        label: "Application Tags",
                                        path: 'Applicaton',
                                        dataBindValue: 'Application',
-                                       class: 'col-xs-10',
+                                       class: 'col-xs-6',
                                        elementConfig: {
                                            dataTextField: "text",
                                            dataValueField: "value",
@@ -211,30 +192,42 @@ define([
 
                        },
                        {
-                           columns: [{
-                               elementId: 'firewall_policy',
-                               view: "FormMultiselectView",
-                               viewConfig: {
-                                   label: 'Firewall Policy(s)',
-                                   class: "col-xs-10",
-                                   path: "firewall_policy",
-                                   dataBindValue: "firewall_policy",
-                                   elementConfig:{
-                                       dataTextField: "text",
-                                       placeholder:"Select Firewall Policies",
-                                       dataValueField: "id",
-                                       separator: cowc.DROPDOWN_VALUE_SEPARATOR,
-                                       dataSource: {
-                                           type: "remote",
-                                           requestType: "POST",
-                                           url: "/api/tenants/config/get-config-details",
-                                           postData: JSON.stringify(policyParam),
-                                          // parse : firwallPolicyDropDownFormatter
-                                       }
-                                    }
+                           columns: [
+                               {
+                                   elementId: "description",
+                                   view: "FormTextAreaView",
+                                   viewConfig: {
+                                       disabled: false,
+                                       path: "description",
+                                       dataBindValue: "description",
+                                       label: "Description",
+                                       rows:"5",
+                                       cols:"100%",
+                                       class: "col-xs-6"
+                                   }
                                }
-                          }]
-
+                           ]
+                       },
+                       {
+                           columns: [
+                               {
+                                   elementId: "fw-policy-global-grid-id",
+                                   view: "fwApplicationPolicyListView",
+                                   viewPathPrefix:
+                                       "config/firewall/fwpolicywizard/project/ui/js/views/",
+                                   app: cowc.APP_CONTRAIL_CONTROLLER,
+                                   viewConfig: {
+                                       pagerOptions: {
+                                           options: {
+                                               pageSize: 10,
+                                               pageSizeSelect: [10, 50, 100]
+                                           }
+                                       },
+                                       isProject: false,
+                                       isGlobal: true
+                                   }
+                               }
+                           ]
                        }
                 ]
             }

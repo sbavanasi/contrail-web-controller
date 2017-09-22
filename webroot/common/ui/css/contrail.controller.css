@@ -645,12 +645,13 @@ form h5.margin-0-0-10~.section-content {
 	outline:none;
 }
 #modal-landing-container{
-	height: 590px;
+	height: 100%;
 	background: #f7fdff; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(#f7fdff, white); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(#f7fdff, white); /* For Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(#f7fdff, white); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#f7fdff, white); /* Standard syntax (must be last) */
+    margin-bottom:30px;
 }
 #configure-applicationpolicyset  .modal-body {
 	max-height: 600px !important;
@@ -672,7 +673,6 @@ form h5.margin-0-0-10~.section-content {
     margin-top: 115px;
 }
 #aps-main-container{
-	height: 590px;
 	background: #f7fdff; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(#f7fdff, white); /* For Safari 5.1 to 6.0 */
     background: -o-linear-gradient(#f7fdff, white); /* For Opera 11.1 to 12.0 */
@@ -681,14 +681,16 @@ form h5.margin-0-0-10~.section-content {
     padding: 0px 10px 0px 10px;
 }
 #aps-overlay-container{
-	height: 590px;
     border-left: 1px solid #e5e5e5;
     position: absolute;
-    width: 75%;
+    width: 70%;
     z-index: 5;
     right: 0;
     top: 0;
-    background:white;
+    background:#fff;
+    -webkit-box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);-moz-box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);
+    box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);
+    background:linear-gradient(#f7fdff,#fff);
 }
 #aps-gird-container{
 	height: 555px;
