@@ -7,14 +7,13 @@ define([
     'contrail-view',
     'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter',
     'config/firewall/common/fwpolicy/ui/js/models/fwPolicyModel',
-    'config/firewall/common/fwpolicy/ui/js/views/fwPolicyEditView'
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView'
 ], function(_, ContrailView, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView) {
     var self, gridElId = '#' + ctwc.FW_POLICY_GRID_ID, gridObj,
       fwPolicyFormatter = new FWPolicyFormatter(),
       fwPolicyEditView =  new FWPolicyEditView();
     var fwPolicyGridView = ContrailView.extend({
         el: $(contentContainer),
-
         render: function () {
             self = this;
             var viewConfig = self.attributes.viewConfig,
@@ -133,7 +132,18 @@ define([
     };
 
     function getHeaderActionConfig(viewConfig) {
-        var headerActionConfig;
+        var dropdownActions;
+        dropdownActions = [
+            {
+                "divider" : true,
+                "title": "Create new firewall policy",
+                "onClick": function () {}
+            },
+            {
+                "title": "Add firewall Policy from inventory",
+                "onClick": function () {}
+            }
+        ];
             var headerActionConfig = [
                 {
                     "type" : "link",
@@ -162,28 +172,13 @@ define([
                     }
                 },
                 {
-                    "type" : "link",
-                    "title" : ctwl.TITLE_CREATE_FW_POLICY,
+                    "type" : "dropdown",
+                    "title" : "Create/Add Firewall policy",
                     "iconClass" : "fa fa-plus",
-                    "onClick" : function() {
-//                        var fwPolicyModel = new FWPolicyModel();
-//                        fwPolicyEditView.model = fwPolicyModel;
-//                        fwPolicyEditView.renderAddEditFWPolicy(
-//                            {"title": ctwl.CREATE,
-//                                callback: function () {
-//                                    var dataView =
-//                                        $(gridElId).
-//                                        data("contrailGrid")._dataView;
-//                                    dataView.refreshData();
-//                                },
-//                                mode : ctwl.CREATE_ACTION,
-//                                isGlobal: viewConfig.isGlobal
-//                            }
-//                        );
-                    }
+                    "linkElementId": 'btnAddPolicy',
+                    "actions": dropdownActions
                 }
             ];
-
         return headerActionConfig;
     };
 

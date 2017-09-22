@@ -740,3 +740,6 @@ form h5.margin-0-0-10~.section-content {
 	width: 100%;
     margin-left: 0px;
 }
+#aps-landing-container .wizard > .content > .body ul{
+    list-style:none !important;
+}
