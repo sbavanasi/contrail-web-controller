@@ -8,33 +8,34 @@ define([
     'contrail-list-model',
 ], function (_, ContrailView, ContrailListModel) {
     var self;
-    var fwPolicyGlobalListView = ContrailView.extend({
+    var fwPolicyListView = ContrailView.extend({
         el: $(contentContainer),
 
         render: function () {
             self = this;
             var listModelConfig, contrailListModel,
-                viewConfig = self.attributes.viewConfig;
+                viewConfig = self.attributes.viewConfig,
+                currentProject = viewConfig["projectSelectedValueData"];
 
             listModelConfig = {
                 remote: {
                     ajaxConfig: {
                         url: ctwc.URL_GET_CONFIG_DETAILS,
                         type: "POST",
-                        data: JSON.stringify({data: [{type: "firewall-policys",
-                            fields: ['application_policy_set_back_refs'],
-                            parent_fq_name_str: "default-policy-management",
-                            parent_type: "policy-management"}]})
+                        data: JSON.stringify(
+                                {data: [{type: 'firewall-policys',
+                                    fields: ['application_policy_set_back_refs'],
+                                    parent_id: currentProject.value}]})
                     },
-                    dataParser: self.parseFWPolicyGlobalData,
+                    dataParser: self.parseFWPolicyData,
                 }
             };
             contrailListModel = new ContrailListModel(listModelConfig);
             self.renderView4Config(self.$el,
-                    contrailListModel, self.getFWPolicyGlobalGridViewConfig());
+                    contrailListModel, self.getFWPolicyGlobalGridViewConfig(viewConfig));
         },
 
-        parseFWPolicyGlobalData: function(result) {
+        parseFWPolicyData: function(result) {
             var fwPolicies = getValueByJsonPath(result,
                 "0;firewall-policys", [], false),
                 fwPolicyList = [];
@@ -45,7 +46,7 @@ define([
             return fwPolicyList;
         },
 
-        getFWPolicyGlobalGridViewConfig: function() {
+        getFWPolicyGlobalGridViewConfig: function(viewConfig) {
             return {
                 elementId:
                 cowu.formatElementId(["fw-policy-list-view"]),
@@ -66,8 +67,9 @@ define([
                                             pageSizeSelect: [10, 50, 100]
                                         }
                                     },
-                                    isProject: false,
-                                    isGlobal: true
+                                    viewConfig: viewConfig,
+                                    //isProject: false,
+                                    isGlobal: false
                                 }
                             }
                         ]
@@ -77,6 +79,6 @@ define([
         }
     });
 
-    return fwPolicyGlobalListView;
+    return fwPolicyListView;
 });
 

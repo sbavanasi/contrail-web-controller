@@ -40,7 +40,7 @@ define([
                     $('#aps-save-button').hide();
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
-                    self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                   // self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                     $('#aps-save-button').text('Save');
                 });
                 // save method
@@ -51,7 +51,7 @@ define([
                             $('#aps-save-button').hide();
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
-                            self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                            //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -68,12 +68,29 @@ define([
                     $('#aps-save-button').text('Save');
                     $('#aps-overlay-container').hide();
                 });
+                $("#aps-save-button").off('click').on('click', function(){
+                    self.model.addEditApplicationSet({
+                        success: function () {
+                            $('#aps-save-button').hide();
+                            Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                            $("#aps-gird-container").empty();
+                            var modalId = 'configure-' + ctwc.APPLICATION_POLICY_SET_PREFIX_ID;
+                            $("#" + modalId).modal('hide');
+                            $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
+                        },
+                        error: function (error) {
+                            $("#grid-details-error-container").text('');
+                            $("#grid-details-error-container").text(error.responseText);
+                            $(".aps-details-error-container").show();
+                        }
+                    }, options);
+                });
                 self.renderView4Config($('#gird-details-container'),
                         this.model,
-                        getApplicationPolicyViewConfig(disable),
+                        getApplicationPolicyViewConfig(disable, viewConfig),
                         "applicationPolicyValidation",
                         null, null, function() {
-                    self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
+                    //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
                     Knockback.applyBindings(self.model,
                             document.getElementById('aps-gird-container'));
                     kbValidation.bind(self);
@@ -102,7 +119,7 @@ define([
          });
         return firewallList;
     };
-    var getApplicationPolicyViewConfig = function (isDisable) {
+    var getApplicationPolicyViewConfig = function (isDisable, viewConfig) {
         var policyParam = {data: [{type: 'firewall-policys'}]};
         var tagsFiiteredArray = [];
         var tagsArray = [];
@@ -137,7 +154,7 @@ define([
                                        visible:
                                            'name() !== "' + ctwc.GLOBAL_APPLICATION_POLICY_SET + '"',
                                        label: "Application Tags",
-                                       path: 'Applicaton',
+                                       path: 'Application',
                                        dataBindValue: 'Application',
                                        class: 'col-xs-6',
                                        elementConfig: {
@@ -216,16 +233,8 @@ define([
                                    viewPathPrefix:
                                        "config/firewall/fwpolicywizard/project/ui/js/views/",
                                    app: cowc.APP_CONTRAIL_CONTROLLER,
-                                   viewConfig: {
-                                       pagerOptions: {
-                                           options: {
-                                               pageSize: 10,
-                                               pageSizeSelect: [10, 50, 100]
-                                           }
-                                       },
-                                       isProject: false,
-                                       isGlobal: true
-                                   }
+                                   viewConfig: $.extend(true, {}, viewConfig,
+                                           {projectSelectedValueData: viewConfig.projectSelectedValueData, isGlobal: false})
                                }
                            ]
                        }

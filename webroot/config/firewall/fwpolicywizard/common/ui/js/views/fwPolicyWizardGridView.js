@@ -9,8 +9,8 @@ define([
     'contrail-view',
     'config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel',
     'config/firewall/fwpolicywizard/common/ui/js/views/fwApplicationPolicyEditView'
-], function (_, moment, Backbone, ContrailView, ApplicationPolicyModel, ApplicationPolicyEditView) {
-    var applicationPolicyEditView = new ApplicationPolicyEditView(),
+], function (_, moment, Backbone, ContrailView, FwPolicyWizardModel, FwApplicationPolicyEditView) {
+    var fwApplicationPolicyEditView = new FwApplicationPolicyEditView(),
         gridElId = "#" + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID;
 
     var fwPolicyWizardGridView = ContrailView.extend({
@@ -139,8 +139,8 @@ define([
             rowActionConfig = [
             ctwgc.getEditConfig('Edit', function(rowIndex) {
                 var dataView = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).data("contrailGrid")._dataView;
-                applicationPolicyEditView.model = new ApplicationPolicyModel(dataView.getItem(rowIndex));
-                applicationPolicyEditView.renderApplicationPolicy({
+                fwApplicationPolicyEditView.model = new ApplicationPolicyModel(dataView.getItem(rowIndex));
+                fwApplicationPolicyEditView.renderApplicationPolicy({
                                       'mode':'edit',
                                       'viewConfig': viewConfig,
                                       'isGlobal': viewConfig.isGlobal
@@ -152,8 +152,8 @@ define([
                     var dataItem =
                         $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).
                             data('contrailGrid')._dataView.getItem(rowIndex);
-                    applicationPolicyEditView.model = new ApplicationPolicyModel(dataItem);
-                    applicationPolicyEditView.renderDeleteApplicationPolicy ({
+                    fwApplicationPolicyEditView.model = new ApplicationPolicyModel(dataItem);
+                    fwApplicationPolicyEditView.renderDeleteApplicationPolicy ({
                          "title": ctwl.TITLE_APP_POLICY_SET_DELETE,
                          selectedGridData: [dataItem],
                          callback: function () {
@@ -178,8 +178,8 @@ define([
                     var applicationPolicyModel = new ApplicationPolicyModel();
                     var checkedRows = $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid").getCheckedRows();
                     if(checkedRows && checkedRows.length > 0) {
-                        applicationPolicyEditView.model = applicationPolicyModel;
-                        applicationPolicyEditView.renderDeleteApplicationPolicy(
+                        fwApplicationPolicyEditView.model = applicationPolicyModel;
+                        fwApplicationPolicyEditView.renderDeleteApplicationPolicy(
                             {"title": ctwl.TITLE_APP_POLICY_SET_MULTI_DELETE,
                                 selectedGridData: checkedRows,
                                 callback: function () {
@@ -199,9 +199,8 @@ define([
                 "title": ctwl.TITLE_CREATE_APP_POLICY_SET,
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
-                    applicationPolicyEditView.model = new ApplicationPolicyModel();
-                    applicationPolicyEditView.renderApplicationPolicy({
-                                              "title": 'Add new firewall policy',
+                    fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
+                    fwApplicationPolicyEditView.renderApplicationPolicy({
                                               'mode': 'add',
                                               'isGlobal': viewConfig.isGlobal,
                                               'viewConfig': viewConfig['viewConfig'],

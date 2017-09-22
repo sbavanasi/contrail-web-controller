@@ -61,7 +61,7 @@ define([
                                             pageSizeSelect: [10, 50, 100]
                                         }
                                     },
-                                    projectSelectedValueData: viewConfig["projectSelectedValueData"],
+                                    viewConfig: viewConfig,
                                     isGlobal: false                            
                                 }
                             }

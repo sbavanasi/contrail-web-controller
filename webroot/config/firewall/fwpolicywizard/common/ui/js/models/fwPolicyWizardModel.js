@@ -9,38 +9,11 @@ define([
     var fwPolicyWizardModel = ContrailConfigModel.extend({
         defaultConfig: {
             'name': '',
-            'firewall_policy': '',
+            'Application': '',
             'description': ''
         },
         formatModelConfig: function(modelConfig) {
             return modelConfig;
-        },
-        deleteApplicationPolicy: function (checkedRows, callbackObj) {
-            var ajaxConfig = {};
-            var uuidList = [];
-
-            $.each(checkedRows, function (checkedRowsKey, checkedRowsValue) {
-                uuidList.push(checkedRowsValue.uuid);
-            });
-
-            ajaxConfig.type = "POST";
-            ajaxConfig.data = JSON.stringify([{'type': 'application-policy-set',
-                                              'deleteIDs': uuidList}]);
-
-            ajaxConfig.url = '/api/tenants/config/delete';
-            contrail.ajaxHandler(ajaxConfig, function () {
-                if (contrail.checkIfFunction(callbackObj.init)) {
-                    callbackObj.init();
-                }
-            }, function (response) {
-                if (contrail.checkIfFunction(callbackObj.success)) {
-                    callbackObj.success();
-                }
-            }, function (error) {
-                if (contrail.checkIfFunction(callbackObj.error)) {
-                    callbackObj.error(error);
-                }
-            });
         },
         validations: {
             applicationPolicyValidation: {
@@ -50,7 +23,7 @@ define([
                 }
             }
         },
-        addEditApplicationPolicy: function (callbackObj, options) {
+        addEditApplicationSet: function (callbackObj, options) {
             var ajaxConfig = {}, returnFlag = true,updatedVal = {};
             var updatedModel = {},policyList = [];
             var self = this;
@@ -62,17 +35,17 @@ define([
                 }];
             if (self.isDeepValid(validations)) {
                 var model = $.extend(true,{},this.model().attributes);
-                    if(model.firewall_policy !== null && model.firewall_policy !== ''){
-                        var firewallPolicy = model.firewall_policy.split(';');
-                        for(var j = 0; j < firewallPolicy.length;j++){
+                var gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID;
+                var checkedRows = $(gridElId).data("contrailGrid").getCheckedRows();
+                if(checkedRows.length > 0){
+                    for(var j = 0; j < checkedRows.length;j++){
                             var obj = {};
-                            var to = firewallPolicy[j].split(':');
+                            var to = checkedRows[j].fq_name;
                             obj.to = to;
                             obj.attr = {};
                             obj.attr.sequence = j.toString();
                             policyList.push(obj);
                         }
-                    }
                     updatedModel.fq_name = [];
                     if(options.isGlobal) {
                         updatedModel.fq_name.push('default-policy-management');
@@ -89,6 +62,11 @@ define([
                     updatedModel.name = model.name;
                     this.updateRBACPermsAttrs(model);
                     updatedModel.tag_refs = model.tag_refs;
+                    if(model.description != ''){
+                        var obj = {};
+                        obj.description = model.description;
+                        updatedModel.id_perms = obj;
+                    }
                     updatedModel.firewall_policy_refs = policyList;
                     if (options.mode == 'add') {
                         var postData = {"data":[{"data":{"application-policy-set": updatedModel},
@@ -118,7 +96,14 @@ define([
                         }
                         returnFlag = false;
                     });
-                return returnFlag;
+                  return returnFlag;
+               } else{
+                    if (contrail.checkIfFunction(callbackObj.error)) {
+                        var error = {};
+                        error.responseText = 'Please select the Firewall Policies.'
+                        callbackObj.error(error);
+                    }
+                }
             }else{
                 if (contrail.checkIfFunction(callbackObj.error)) {
                     callbackObj.error(this.getFormErrorText(ctwc.FIREWALL_APPLICATION_POLICY_PREFIX_ID));
