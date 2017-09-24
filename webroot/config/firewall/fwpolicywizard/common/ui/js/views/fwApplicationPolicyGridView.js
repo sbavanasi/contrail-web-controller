@@ -5,11 +5,12 @@
 define([
     'underscore',
     'contrail-view',
+    'knockback',
     'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter',
     'config/firewall/common/fwpolicy/ui/js/models/fwPolicyModel',
     'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView',
     'config/firewall/fwpolicywizard/common/ui/js/views/inventoryPolicyView'
-], function(_, ContrailView, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView, InventoryPolicyView) {
+], function(_, ContrailView, Knockback, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView, InventoryPolicyView) {
     var self, gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID,
       fwPolicyFormatter = new FWPolicyFormatter(),
       fwPolicyEditView =  new FWPolicyEditView(),
@@ -144,7 +145,11 @@ define([
         dropdownActions = [
             {
                 "title": "Create new firewall policy",
-                "onClick": function () {}
+                "onClick": function () {
+                    $('#aps-overlay-container').hide();
+                    Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                    $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
+                }
             },
             {
                 "title": "Add firewall Policy from inventory",

@@ -62,6 +62,206 @@ define([
             }
          }
     });
+    var createPolicyViewConfig = [{
+        elementId: cowu.formatElementId([prefixId, ctwl.TITLE_DETAILS]),
+        title: ctwl.TITLE_POLICY_INFO,
+        view: "SectionView",
+        viewConfig: {
+            rows: [
+                {
+                    columns: [
+                        {
+                            elementId: "policy-name",
+                            view: "FormInputView",
+                            viewConfig: {
+                                path: "name",
+                                dataBindValue: "name",
+                                class: "col-xs-6"
+                            }
+                        }
+                    ]
+                }, {
+                    columns: [
+                              {
+                                  elementId: "policy-description",
+                                  view: "FormInputView",
+                                  viewConfig: {
+                                      path: "id_perms.description",
+                                      dataBindValue: "id_perms().description",
+                                      class: "col-xs-12"
+                                  }
+                              }
+                          ]
+                  }
+            ]
+        }
+    },
+    {
+        elementId: "security_permissions",
+        view: 'SectionView',
+        title:"Permissions",
+        viewConfig: {
+            rows: [
+                {
+                    columns: [
+                        {
+                            elementId: 'owner_access_security',
+                            view: 'FormMultiselectView',
+                            viewConfig: {
+                                label: "Owner Permissions",
+                                path: 'perms2.owner_access',
+                                dataBindValue: 'perms2().owner_access',
+                                class: 'col-xs-6',
+                                elementConfig: {
+                                    dataTextField: "text",
+                                    dataValueField: "value",
+                                    placeholder:
+                                        "Select Permissions",
+                                    data: cowc.RBAC_ACCESS_TYPE_LIST
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    columns: [
+                        {
+                            elementId: 'global_access_secuirty',
+                            view: 'FormMultiselectView',
+                            viewConfig: {
+                                label: "Global Share Permissions",
+                                path: 'perms2.global_access',
+                                dataBindValue: 'perms2().global_access',
+                                class: 'col-xs-6',
+                                elementConfig: {
+                                    dataTextField: "text",
+                                    dataValueField: "value",
+                                    placeholder:
+                                        "Select Permissions",
+                                    data: cowc.RBAC_ACCESS_TYPE_LIST
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    columns:[{
+                        elementId: "security_share_accordion_create",
+                        view: "AccordianView",
+                        viewConfig:[{
+                           elementId: "security_share_accordion_create",
+                           view:  "SectionView",
+                           title: "Share List",
+                           viewConfig:{
+                               rows: [{
+                                   columns:
+                                      shareViewConfig()
+                                }]
+                            }
+                        }]
+                    }]
+                 }
+
+            ]
+        }
+    }];
+    function shareViewConfig() {
+        return  [{
+            elementId: 'share_list',
+            view: "FormEditableGridView",
+            viewConfig: {
+                path : 'share_list',
+                class: 'col-xs-12',
+                validation:
+               'rbacPermsShareValidations',
+               templateId: cowc.TMP_EDITABLE_GRID_ACTION_VIEW,
+                collection:
+                    'share_list',
+                columns: [
+                    {
+                        elementId: "tenant",
+                        name: "Project",
+                        view: 'FormComboboxView',
+                        viewConfig: {
+                            path : "tenant",
+                            width: 250,
+                            dataBindValue : "tenant()",
+                            templateId:
+                                cowc.TMPL_EDITABLE_GRID_COMBOBOX_VIEW,
+                            elementConfig: {
+                                dataTextField: "text",
+                                dataValueField: "value",
+                                placeholder: "Enter or Select Project",
+                                dataSource: {
+                                    type: "remote",
+                                    url:
+                                     "/api/tenants/config/all-projects/",
+                                    requestType: "GET",
+                                    parse: function(result){
+                                        var dataSource = [],
+                                           projects =
+                                           getValueByJsonPath(result,
+                                               "projects", []);
+                                        _.each(projects, function(project){
+                                            var projName =
+                                                getValueByJsonPath(project,
+                                                "fq_name;1", "", false),
+                                                projId =
+                                                getValueByJsonPath(project,
+                                                "uuid", "", false  );
+                                            if(projId && projName &&
+                                                projName !==
+                                                    "default-project") {
+                                                dataSource.push({
+                                                    text: projName + " (" + projId + ")",
+                                                    value: projId
+                                                });
+                                            }
+                                        });
+                                        return dataSource
+                                    }
+                                }
+                            }
+                       }
+                    },
+                    {
+                        elementId: "tenant_access",
+                        name: 'Permissions',
+                        view: "FormMultiselectView",
+                        viewConfig: {
+                            templateId: cowc.
+                                TMPL_EDITABLE_GRID_MULTISELECT_VIEW,
+                            width: 250,
+                            path: "tenant_access",
+                            dataBindValue: "tenant_access()",
+                            elementConfig:{
+                                dataTextField: "text",
+                                dataValueField: "value",
+                                placeholder: "Select Permissions",
+                                data: cowc.RBAC_ACCESS_TYPE_LIST
+                            }
+                        }
+                    }
+                 ],
+                rowActions: [
+                    {onClick: "function() {" +
+                        "$root.addShareByIndex($data, this);" +
+                        "}",
+                     iconClass: 'fa fa-plus'},
+                    {onClick: "function() {" +
+                        "$root.deleteShare($data, this);" +
+                       "}",
+                     iconClass: 'fa fa-minus'}
+                ],
+                gridActions: [
+                    {onClick: "function() {" +
+                        "addShare();" +
+                        "}",
+                     buttonTitle: ""}
+                ]
+            }
+        }];
+    }
     function getNewFirewallPolicyViewConfig() {
         var gridPrefix = "add-firewall-policy",
             addNewFwPolicyViewConfig = {
@@ -72,34 +272,17 @@ define([
                     {
                         elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy"]),
                         title: "Name Policy",
-                        view: "SectionView",
-                        viewConfig: {},
+                        view: "AccordianView",
+                        viewConfig: createPolicyViewConfig,
                         stepType: "step",
                         onInitRender: true,
                         buttons: {
                             previous: {
-                                visible: false
+                                visible: true
                             }
                         },
                         onNext: function(params) {
-                            return params.model.configFWPolicy({
-                                init: function () {
-                                    self.model.showErrorAttr(cowu.formatElementId([prefixId])
-                                            + cowc.FORM_SUFFIX_ID, false);
-                                    cowu.enableModalLoading(modalId);
-                                },
-                                success: function () {
-                                    cowu.disableModalLoading(modalId, function () {
-                                        options.callback();
-                                    });
-                                },
-                                error: function (error) {
-                                    cowu.disableModalLoading(modalId, function () {
-                                        self.model.showErrorAttr(cowu.formatElementId([prefixId])
-                                                + cowc.FORM_SUFFIX_ID, error.responseText);
-                                    });
-                                }
-                            }, options);
+                            return true;
                         }
                     }
                 ]
@@ -123,28 +306,11 @@ define([
                         onInitRender: true,
                         buttons: {
                             previous: {
-                                visible: false
+                                visible: true
                             }
                         },
                         onNext: function(params) {
-                            return params.model.configFWPolicy({
-                                init: function () {
-                                    self.model.showErrorAttr(cowu.formatElementId([prefixId])
-                                            + cowc.FORM_SUFFIX_ID, false);
-                                    cowu.enableModalLoading(modalId);
-                                },
-                                success: function () {
-                                    cowu.disableModalLoading(modalId, function () {
-                                        options.callback();
-                                    });
-                                },
-                                error: function (error) {
-                                    cowu.disableModalLoading(modalId, function () {
-                                        self.model.showErrorAttr(cowu.formatElementId([prefixId])
-                                                + cowc.FORM_SUFFIX_ID, error.responseText);
-                                    });
-                                }
-                            }, options);
+                            return true;
                         }
                     }
                 ]
@@ -187,25 +353,8 @@ define([
             title: "Select set",
             stepType: "step",
             onInitRender: true,
-            onNext: function (params) {
-                return params.model.configFWPolicy({
-                    init: function () {
-                        self.model.showErrorAttr(cowu.formatElementId([prefixId])
-                                + cowc.FORM_SUFFIX_ID, false);
-                        cowu.enableModalLoading(modalId);
-                    },
-                    success: function () {
-                        cowu.disableModalLoading(modalId, function () {
-                            options.callback();
-                        });
-                    },
-                    error: function (error) {
-                        cowu.disableModalLoading(modalId, function () {
-                            self.model.showErrorAttr(cowu.formatElementId([prefixId])
-                                    + cowc.FORM_SUFFIX_ID, error.responseText);
-                        });
-                    }
-                }, options);
+            onNext: function (options) {
+                return true;
             },
             buttons: {
                 next: {

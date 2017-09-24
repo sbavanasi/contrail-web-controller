@@ -6,15 +6,35 @@ define([
     'underscore',
     'contrail-config-model'
 ], function (_, ContrailConfigModel) {
+    var self;
     var fwPolicyWizardModel = ContrailConfigModel.extend({
         defaultConfig: {
             'name': '',
             'Application': '',
-            'description': ''
+            'description': '',
+            "firewall_rules": [],
+            "perms2": {
+                "owner": "",
+                "owner_access": "",
+                "global_access": "",
+                "share": []
+            }
         },
         formatModelConfig: function(modelConfig) {
             var tagRef = getValueByJsonPath(modelConfig, 'tag_refs', []), tagList = [],
             description = getValueByJsonPath(modelConfig, 'id_perms;description', '');
+            if((modelConfig["perms2"]["owner_access"] != "") || (modelConfig["perms2"]["global_access"] != "")) {
+                modelConfig["perms2"]["owner_access"] =
+                    self.formatAccessList(modelData["perms2"]["owner_access"]);
+                modelConfig["perms2"]["global_access"] =
+                    self.formatAccessList(modelConfig["perms2"]["global_access"]);
+                modelConfig["owner_visible"] = true;
+            } else {//required for create case
+                modelConfig["perms2"] = {};
+                modelConfig["perms2"]["owner_access"] = "4,2,1";
+                modelConfig["perms2"]["global_access"] = "";
+                modelConfig["owner_visible"] = false;
+            }
             _.each(tagRef, function(tag) {
                 var to = tag.to.join(':');
                 tagList.push(to);;
@@ -26,6 +46,36 @@ define([
                 modelConfig['description'] = description;
             }
             return modelConfig;
+        },
+        formatAccessList: function(access) {
+            var retStr = "";
+            switch (access) {
+                case 1:
+                    retStr = "1";
+                    break;
+                case 2:
+                    retStr = "2";
+                    break;
+                case 3:
+                    retStr = "2,1";
+                    break;
+                case 4:
+                    retStr = "4";
+                    break;
+                case 5:
+                    retStr = "4,1";
+                    break;
+                case 6:
+                    retStr = "4,2";
+                    break;
+                case 7:
+                    retStr = "4,2,1";
+                    break;
+                default:
+                    retStr = "";
+                    break;
+            };
+            return retStr;
         },
         validations: {
             applicationPolicyValidation: {
