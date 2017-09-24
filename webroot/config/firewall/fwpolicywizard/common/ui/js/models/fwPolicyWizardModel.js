@@ -13,6 +13,18 @@ define([
             'description': ''
         },
         formatModelConfig: function(modelConfig) {
+            var tagRef = getValueByJsonPath(modelConfig, 'tag_refs', []), tagList = [],
+            description = getValueByJsonPath(modelConfig, 'id_perms;description', '');
+            _.each(tagRef, function(tag) {
+                var to = tag.to.join(':');
+                tagList.push(to);;
+            });
+            if(tagList.length > 0){
+                modelConfig['Application'] = tagList.join(',');
+            }
+            if(description !== ''){
+                modelConfig['description'] = description;
+            }
             return modelConfig;
         },
         validations: {
@@ -36,11 +48,11 @@ define([
             if (self.isDeepValid(validations)) {
                 var model = $.extend(true,{},this.model().attributes);
                 var gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID;
-                var checkedRows = $(gridElId).data("contrailGrid").getCheckedRows();
-                if(checkedRows.length > 0){
-                    for(var j = 0; j < checkedRows.length;j++){
+                var selectedRows = $(gridElId).data("contrailGrid")._dataView.getItems();
+                if(selectedRows.length > 0){
+                    for(var j = 0; j < selectedRows.length;j++){
                             var obj = {};
-                            var to = checkedRows[j].fq_name;
+                            var to = selectedRows[j].fq_name;
                             obj.to = to;
                             obj.attr = {};
                             obj.attr.sequence = j.toString();
@@ -74,6 +86,7 @@ define([
                         ajaxConfig.url = ctwc.URL_CREATE_CONFIG_OBJECT;
                     } else {
                         delete(updatedModel.name);
+                        delete(updatedModel.id_perms);
                         var postData = {"data":[{"data":{"application-policy-set": updatedModel},
                                     "reqUrl": "/application-policy-set/" +
                                     model.uuid}]};
@@ -100,7 +113,7 @@ define([
                } else{
                     if (contrail.checkIfFunction(callbackObj.error)) {
                         var error = {};
-                        error.responseText = 'Please select the Firewall Policies.'
+                        error.responseText = 'Please create new firewall policy or add firewall policy from inventory.'
                         callbackObj.error(error);
                     }
                 }

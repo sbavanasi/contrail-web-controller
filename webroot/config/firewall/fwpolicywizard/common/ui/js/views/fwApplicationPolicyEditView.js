@@ -14,17 +14,27 @@ define([
     var fwApplicationPolicyEditView = ContrailView.extend({
         renderApplicationPolicy: function(options) {
 
-            var self = this,disable = false;
+            var self = this,disable = false, slecectedPolicyList;
             var mode = options.mode, headerText;
+            var viewConfig = options.viewConfig;
             if(mode === 'edit'){
                 disable = true;
                 headerText = 'Edit Application Policy Sets';
+                viewConfig.isEdit = true;
+                slecectedPolicyList  = getPolicyList(options.policy);
             }else if(mode === 'add'){
                 headerText = 'Create Application Policy Sets';
             }else{
                 headerText = 'Delete Application Policy Sets';
             }
-            var viewConfig = options.viewConfig;
+            viewConfig.mode = mode;
+            deletedObj = [];
+            if(viewConfig.seletedRows !== undefined){
+                viewConfig.seletedRows =  options.seletedRows;
+            }
+            if(options.seletedRows !== undefined){
+                var seletedRows = options.seletedRows;
+            }
             $('#aps-overlay-container').show();
             $("#aps-gird-container").empty();
             $('#aps-save-button').show();
@@ -87,7 +97,7 @@ define([
                 });
                 self.renderView4Config($('#gird-details-container'),
                         this.model,
-                        getApplicationPolicyViewConfig(disable, viewConfig),
+                        getApplicationPolicyViewConfig(disable, viewConfig, seletedRows, slecectedPolicyList),
                         "applicationPolicyValidation",
                         null, null, function() {
                     //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
@@ -108,18 +118,14 @@ define([
             $('#aps-gird-container').append($('<div id = "gird-details-container"></div>'));
         }
     });
-    function firwallPolicyDropDownFormatter(response){
-        var firewallList = [];
-        var policyList = getValueByJsonPath(response, "0;firewall-policys", []);
-        $.each(policyList, function (i, obj) {
-            var fqNameJoin = obj['firewall-policy']['fq_name'].join(':');
-            var fqName = obj['firewall-policy']['fq_name'];
-            fqName = fqName[fqName.length-1];
-            firewallList.push({id: fqNameJoin, text: fqName});
-         });
-        return firewallList;
+    function getPolicyList(policy){
+        var uuidList = [];
+        _.each(policy, function(obj) {
+            uuidList.push(obj.uuid);
+        });
+        return uuidList;
     };
-    var getApplicationPolicyViewConfig = function (isDisable, viewConfig) {
+    var getApplicationPolicyViewConfig = function (isDisable, viewConfig, seletedRows, slecectedPolicyList) {
         var policyParam = {data: [{type: 'firewall-policys'}]};
         var tagsFiiteredArray = [];
         var tagsArray = [];
@@ -214,7 +220,7 @@ define([
                                    elementId: "description",
                                    view: "FormTextAreaView",
                                    viewConfig: {
-                                       disabled: false,
+                                       disabled : isDisable,
                                        path: "description",
                                        dataBindValue: "description",
                                        label: "Description",
@@ -233,8 +239,12 @@ define([
                                    viewPathPrefix:
                                        "config/firewall/fwpolicywizard/project/ui/js/views/",
                                    app: cowc.APP_CONTRAIL_CONTROLLER,
-                                   viewConfig: $.extend(true, {}, viewConfig,
-                                           {projectSelectedValueData: viewConfig.projectSelectedValueData, isGlobal: false})
+                                   viewConfig: $.extend(true, {}, viewConfig,{
+                                       projectSelectedValueData: viewConfig.projectSelectedValueData,
+                                       isGlobal: false,
+                                       seletedRows : seletedRows,
+                                       policyList : slecectedPolicyList
+                                   })
                                }
                            ]
                        }

@@ -7,11 +7,13 @@ define([
     'contrail-view',
     'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter',
     'config/firewall/common/fwpolicy/ui/js/models/fwPolicyModel',
-    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView'
-], function(_, ContrailView, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView) {
-    var self, gridElId = '#' + ctwc.FW_POLICY_GRID_ID, gridObj,
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView',
+    'config/firewall/fwpolicywizard/common/ui/js/views/inventoryPolicyView'
+], function(_, ContrailView, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView, InventoryPolicyView) {
+    var self, gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID,
       fwPolicyFormatter = new FWPolicyFormatter(),
-      fwPolicyEditView =  new FWPolicyEditView();
+      fwPolicyEditView =  new FWPolicyEditView(),
+      inventoryPolicyView = new InventoryPolicyView();
     var fwPolicyGridView = ContrailView.extend({
         el: $(contentContainer),
         render: function () {
@@ -89,6 +91,12 @@ define([
     };
 
     function getConfiguration (viewConfig) {
+        var loadingText = 'Loading Firewall Policies..';
+        var emptyText = 'No Firewall Policy Found.';
+        if(viewConfig.viewConfig.mode === 'add' || viewConfig.viewConfig.mode === 'edit'){
+            loadingText = 'You currently have no Firewall Policies.';
+            emptyText = 'You currently have no Firewall Policies.';
+        }
         var gridElementConfig = {
             header: {
                 title: {
@@ -107,7 +115,7 @@ define([
                                 removeClass('disabled-link');
                         }
                     },
-                    actionCell: getRowActionConfig(viewConfig),
+                    actionCell: [],  //getRowActionConfig(viewConfig),
                     detail: {
                         template:
                             cowu.generateDetailTemplateHTML(
@@ -119,10 +127,10 @@ define([
                 },
                 statusMessages: {
                     loading: {
-                        text: 'Loading Firewall Policies..'
+                        text: loadingText
                     },
                     empty: {
-                        text: 'No Firewall Policy Found.'
+                        text: emptyText
                     }
                 }
             },
@@ -135,13 +143,29 @@ define([
         var dropdownActions;
         dropdownActions = [
             {
-                "divider" : true,
                 "title": "Create new firewall policy",
                 "onClick": function () {}
             },
             {
                 "title": "Add firewall Policy from inventory",
-                "onClick": function () {}
+                "onClick": function () {
+                    var applicationObj ={
+                        name:  ko.contextFor($('#name').get(0)).$data.name(),
+                        Application: ko.contextFor($('#Application').get(0)).$data.Application(),
+                        description : ko.contextFor($('#description').get(0)).$data.description()
+                    };
+                    var mode = viewConfig.viewConfig.mode;
+                    if(mode === 'edit'){
+                        applicationObj.uuid =  ko.contextFor($('#name').get(0)).$data.uuid();
+                    }
+                    var selectedRows = $(gridElId).data("contrailGrid")._dataView.getItems();
+                    inventoryPolicyView.renderInventoryView({
+                                    applicationObj : applicationObj,
+                                    viewConfig: viewConfig,
+                                    previousRows : selectedRows,
+                                    mode : mode
+                    });
+                }
             }
         ];
             var headerActionConfig = [
@@ -151,24 +175,11 @@ define([
                     "iconClass": 'fa fa-trash',
                     "linkElementId": 'btnDeleteFWPolicy',
                     "onClick" : function() {
-                        var fwPolicyModel = new FWPolicyModel();
-                        var checkedRows =
-                            $(gridElId).data("contrailGrid").
-                            getCheckedRows();
-                        if(checkedRows && checkedRows.length > 0) {
-                            fwPolicyEditView.model = fwPolicyModel;
-                            fwPolicyEditView.renderDeleteFWPolicies(
-                                {"title": ctwl.TITLE_FW_POLICY_MULTI_DELETE,
-                                    checkedRows: checkedRows,
-                                    callback: function () {
-                                        var dataView =
-                                            $(gridElId).
-                                            data("contrailGrid")._dataView;
-                                        dataView.refreshData();
-                                    }
-                                }
-                            );
-                        }
+                        var checkedRows = $(gridElId).data("contrailGrid").getCheckedRows();
+                        _.each(checkedRows, function(row){
+                            deletedObj.push(row.uuid);
+                        });
+                        $(gridElId).data("contrailGrid")._dataView.refreshData();
                     }
                 },
                 {
@@ -179,7 +190,11 @@ define([
                     "actions": dropdownActions
                 }
             ];
-        return headerActionConfig;
+        if(viewConfig.viewConfig.isInventory){
+            return [];
+        }else{
+            return headerActionConfig;
+        }
     };
 
     function onPolicyClick (e, dc) {

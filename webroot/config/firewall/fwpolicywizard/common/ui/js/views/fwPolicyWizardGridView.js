@@ -138,12 +138,15 @@ define([
             appPolicySetName = getValueByJsonPath(dc, 'name', '', false),
             rowActionConfig = [
             ctwgc.getEditConfig('Edit', function(rowIndex) {
-                var dataView = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).data("contrailGrid")._dataView;
-                fwApplicationPolicyEditView.model = new ApplicationPolicyModel(dataView.getItem(rowIndex));
+                var dataItem = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).
+                        data('contrailGrid')._dataView.getItem(rowIndex);
+                fwApplicationPolicyEditView.model = new FwPolicyWizardModel(dataItem);
+                var policy = dataItem.firewall_policy_refs.reverse();
                 fwApplicationPolicyEditView.renderApplicationPolicy({
-                                      'mode':'edit',
-                                      'viewConfig': viewConfig,
-                                      'isGlobal': viewConfig.isGlobal
+                                          'mode': 'edit',
+                                          'isGlobal': viewConfig.isGlobal,
+                                          'viewConfig': viewConfig['viewConfig'],
+                                          'policy': policy
                 });
             })];
         if(appPolicySetName !== ctwc.GLOBAL_APPLICATION_POLICY_SET) {
@@ -163,13 +166,30 @@ define([
                              dataView.refreshData();
                  }});
              })
-            rowActionConfig.push(deleteActionConfig);
+            //rowActionConfig.push(deleteActionConfig);
         }
         return rowActionConfig;
     }
     function getHeaderActionConfig(viewConfig) {
-        var headerActionConfig = [
+        var dropdownActions = [
             {
+                "title": "Create application policy set",
+                "onClick": function () {
+                    fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
+                    fwApplicationPolicyEditView.renderApplicationPolicy({
+                                              'mode': 'add',
+                                              'isGlobal': viewConfig.isGlobal,
+                                              'viewConfig': viewConfig['viewConfig']
+                    });
+                }
+            },
+            {
+                "title": "Create standaloe firewall policy",
+                "onClick": function () {}
+            }
+        ];
+        var headerActionConfig = [
+            /*{
                 "type" : "link",
                 "title" : ctwl.TITLE_APP_POLICY_SET_MULTI_DELETE,
                 "iconClass": 'fa fa-trash',
@@ -203,11 +223,16 @@ define([
                     fwApplicationPolicyEditView.renderApplicationPolicy({
                                               'mode': 'add',
                                               'isGlobal': viewConfig.isGlobal,
-                                              'viewConfig': viewConfig['viewConfig'],
-                                              callback: function () {
-                       $('#' + ctwc.APPLICATION_POLICY_SET_GRID_ID).data("contrailGrid")._dataView.refreshData();
-                    }});
+                                              'viewConfig': viewConfig['viewConfig']
+                    });
                 }
+            },*/
+            {
+                "type" : "dropdown",
+                "title" : "Create application policy set/standaloe firewall policy",
+                "iconClass" : "fa fa-plus",
+                "linkElementId": 'btnAddPolicy',
+                "actions": dropdownActions
             }
 
         ];

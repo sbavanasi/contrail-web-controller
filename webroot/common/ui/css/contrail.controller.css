@@ -702,9 +702,9 @@ form h5.margin-0-0-10~.section-content {
 	border-top: 1px solid #e5e5e5;
 }
 #aps-save-button {
-	width:70px;
-	margin:8px 8px 0px 0px;
-	line-height: 14px !important;
+	margin: 8px 8px 0px 0px;
+    line-height: 14px !important;
+    padding: 0px 10px 0px 10px;
 }
 #aps-back-button{
 	width:70px;
