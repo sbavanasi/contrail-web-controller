@@ -146,6 +146,11 @@ define([
             {
                 "title": "Create new firewall policy",
                 "onClick": function () {
+                    newApplicationSet ={
+                            name:  ko.contextFor($('#name').get(0)).$data.name(),
+                            Application: ko.contextFor($('#Application').get(0)).$data.Application(),
+                            description : ko.contextFor($('#description').get(0)).$data.description()
+                        };
                     $('#aps-overlay-container').hide();
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");

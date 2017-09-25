@@ -6,13 +6,15 @@ define([
     'underscore',
     'contrail-view',
     'knockback',
-    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizard.utils'
-], function (_, ContrailView, Knockback,FWZUtils) {
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizard.utils',
+    'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter'
+], function (_, ContrailView, Knockback, FWZUtils, FwPolicyFormatter) {
     var gridElId = '#' + ctwc.APPLICATION_POLICY_SET_GRID_ID,
         prefixId = ctwc.APPLICATION_POLICY_SET_PREFIX_ID,
         modalId = 'configure-' + prefixId,
         formId = '#' + modalId + '-form';
     var fwzUtils = new FWZUtils();
+    var fwPolicyFormatter = new FwPolicyFormatter();
     var fwPolicyWizardEditView = ContrailView.extend({
         renderFwWizard: function(options) {
             var editTemplate = contrail.getTemplate4Id(ctwl.TMPL_APPLICATION_POLICY_SET),
@@ -36,7 +38,7 @@ define([
                         self.renderObject(options, 'tag');
                     });
                     $("#aps-plus-icon").on('click', function(){
-                        self.renderObject(options, 'addIcon');
+                        self.renderObject(options, 'addIcon', self);
                     })
                     $("#aps-back-button").on('click', function(){
                         $('#modal-landing-container').show();
@@ -60,7 +62,7 @@ define([
                     })
             },null,false);
         },
-        renderObject: function(options, objName){
+        renderObject: function(options, objName, self){
             $('#modal-landing-container').hide();
             $('#aps-save-button').hide();
             $('#aps-landing-container').show();
@@ -89,11 +91,172 @@ define([
                 $('#aps-create-fwpolicy-remove-icon').show();
                 $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
-                this.renderView4Config($('#aps-sub-container'), this.model, getAddPolicyViewConfig(viewConfig));
+                self.fetchAllData(self, options, function(allData){
+                    self.renderView4Config($('#aps-main-container'), self.model, getAddPolicyViewConfig(self.model, viewConfig, allData, options),'policyValidation', null, null,function(){
+                        Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_add-new-firewall-policy'));
+                        Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_rules'));
+                        kbValidation.bind(self);
+                    });
+                });
             }
+         },
+         fetchAllData : function(self, options, callback) {
+             var getAjaxs = [];
+             var selectedDomain = contrail.getCookie(cowc.COOKIE_DOMAIN_DISPLAY_NAME);
+             var selectedProject = contrail.getCookie(cowc.COOKIE_PROJECT_DISPLAY_NAME);
+             var serviceGrp = {data: [{type: 'service-groups'}]};
+             getAjaxs[0] = $.ajax({
+                 url:"/api/tenants/config/virtual-networks",
+                 type:"GET"
+             });
+             //get tags
+             getAjaxs[1] = $.ajax({
+                 url:"/api/tenants/config/get-config-details",
+                 type:"POST",
+                 dataType: "json",
+                 contentType: "application/json; charset=utf-8",
+                 data:JSON.stringify(
+                         {data: [{type: 'tags'}]}),
+             });
+
+             //get address groups
+             getAjaxs[2] = $.ajax({
+                 url:"/api/tenants/config/get-config-details",
+                 type:"POST",
+                 dataType: "json",
+                 contentType: "application/json; charset=utf-8",
+                 data: JSON.stringify(
+                         {data: [{type: 'address-groups'}]})
+             });
+           //get service groups
+             getAjaxs[3] = $.ajax({
+                 url:"/api/tenants/config/get-config-details",
+                 type:"POST",
+                 dataType: "json",
+                 contentType: "application/json; charset=utf-8",
+                 data: JSON.stringify(serviceGrp)
+             });
+             $.when.apply($, getAjaxs).then(
+                 function () {
+                     //all success
+                     var returnArr = []
+                     var results = arguments;
+                     var vns = results[0][0]["virtual-networks"];
+                     returnArr["virtual-networks"] = [];
+                     var allVns = [{text:'Enter or Select a Network',
+                                    value:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                    id:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                    disabled : true }];
+
+                     if (null !== vns && typeof vns === "object" &&
+                                      vns.length > 0) {
+                         for (var i = 0; i < vns.length; i++) {
+                             var vn = vns[i];
+                             var virtualNetwork = vn["fq_name"];
+                             var domain = virtualNetwork[0];
+                             var project = virtualNetwork[1];
+                             if(domain === selectedDomain &&
+                                project === selectedProject) {
+                                 if(vn["fq_name"][2].toLowerCase() === "any" ||
+                                    vn["fq_name"][2].toLowerCase() === "local"){
+                                     var fqNameTxt = vn["fq_name"][2];
+                                     var fqNameValue = vn["fq_name"].join(":");
+                                     allVns.push({text : fqNameTxt,
+                                          value : fqNameValue + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                          id : fqNameValue + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                          parent : "virtual_network" });
+                                 } else {
+                                     allVns.push({text : vn["fq_name"][2],
+                                                  value:(vn["fq_name"]).join(":")
+                                                        + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                                  id : (vn["fq_name"]).join(":")
+                                                        + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                                        parent : "virtual_network" });
+                                 }
+                             } else {
+                                 var fqNameTxt = vn["fq_name"][2] +' (' +
+                                                 domain + ':' +
+                                                 project +')';
+                                 var fqNameValue = vn["fq_name"].join(":");
+                                 allVns.push({text : fqNameTxt,
+                                      value : fqNameValue + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                      id : fqNameValue + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
+                                      parent : "virtual_network" });
+                             }
+                         }
+                     }
+                     //tags
+                     var tags = fwPolicyFormatter.filterTagsByProjects(getValueByJsonPath(results, '1;0;0;tags', [], false), options.isGlobal);
+                     var addrFields = [];
+                     //application
+                     var tagGroupData = fwPolicyFormatter.parseTags(tags);
+                     addrFields.push({text: 'Application', value: 'Application',
+                         children: tagGroupData.applicationMap['Application']
+                     });
+
+                     //Deployment
+                     addrFields.push({text: 'Deployment', value: 'Deployment',
+                         children: tagGroupData.deploymentMap['Deployment']
+                     });
+
+                     //Site
+                     addrFields.push({text: 'Site', value: 'Site',
+                         children: tagGroupData.siteMap['Site']
+                     });
+
+                     //Tier
+                     addrFields.push({text: 'Tier', value: 'Tier',
+                         children: tagGroupData.tierMap['Tier']
+                     });
+
+                     //Labels
+                     addrFields.push({text: 'Label', value: 'label',
+                         children: tagGroupData.labelMap['Label']
+                     });
+                     var addressGrpChild = [{text:'Select a Address Group',
+                         value:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
+                         id:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
+                         disabled : true }];
+                     var addressGroups = fwPolicyFormatter.filterAddressGroupByProjects(getValueByJsonPath(results, '2;0;0;address-groups', [], false), options.isGlobal);
+                     if(addressGroups.length > 0){
+                         for(var k = 0; k < addressGroups.length; k++){
+                             var address = addressGroups[k]['address-group'];
+                             var fqNameTxt = address["fq_name"][address["fq_name"].length - 1];
+                             var fqNameValue = address["fq_name"].join(":");
+                             addressGrpChild.push({text : address.name,
+                                 value : fqNameValue + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
+                                 id : fqNameValue + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
+                                 parent : "address_group" });
+                         }
+                         addrFields.push({text : 'Address Group', value : 'address_group', children : addressGrpChild});
+                     }
+
+                     addrFields.push({text : 'Network', value : 'virtual_network',
+                                    children : allVns});
+                     var anyList = [{text:'',
+                         value:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "any_workload",
+                         id:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "any_workload",
+                         disabled : true }];
+                         anyList.push({text : 'Select Any Workloads',
+                         value : 'any' + cowc.DROPDOWN_VALUE_SEPARATOR + "any_workload",
+                         id : 'any' + cowc.DROPDOWN_VALUE_SEPARATOR + "any_workload",
+                         parent : "any_workload" });
+                     addrFields.push({text : 'Any Workload', value : 'any_workload', children : anyList});
+                     returnArr["addrFields"] = addrFields;
+                     var secGrpList = getValueByJsonPath(results, "3;0;0;service-groups", []);
+                     var serviceGrpList = [];
+                     $.each(secGrpList, function (i, obj) {
+                         var obj = obj['service-group'];
+                         //serviceGrpList.push({value: obj.uuid, text: obj.name});
+                         serviceGrpList.push({fq_name : obj.fq_name, text: obj.name});
+                      });
+                     returnArr["serviceGrpList"] = serviceGrpList;
+                     callback(returnArr);
+                 }
+             )
          }
     });
-    function getNewFirewallPolicyViewConfig() {
+    function getNewFirewallPolicyViewConfig(model) {
         var gridPrefix = "add-firewall-policy",
             addNewFwPolicyViewConfig = {
             elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy"]),
@@ -104,7 +267,7 @@ define([
                         elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy"]),
                         title: "Name Policy",
                         view: "AccordianView",
-                        viewConfig: fwzUtils.getFirewallPolicyViewConfig(),
+                        viewConfig: fwzUtils.getFirewallPolicyViewConfig(prefixId),
                         stepType: "step",
                         buttons: {
                             next: {
@@ -117,6 +280,22 @@ define([
                             }
                         },
                         onNext: function(params) {
+                            if(params.model.onNext()){
+                               if(params.model.policy_name() !== ''){
+                                   $('#applicationpolicyset_policy_wizard .alert-error span').text('');
+                                   $('#applicationpolicyset_policy_wizard .alert-error').hide();
+                                   return true;
+                               }else{
+                                   $('#applicationpolicyset_policy_wizard .alert-error span').text('Please enter the Policy Name.');
+                                   $('#applicationpolicyset_policy_wizard .alert-error').show();
+                               }
+                            }else{
+                                params.model.onNext(true);
+                            }
+                        },
+                        onPrevious: function(params) {
+                            //var data = new FwPolicyWizardModel();
+                            //params.model = data;
                             return true;
                         },
                         onPrevious: function(params) {
@@ -129,7 +308,7 @@ define([
         };
         return addNewFwPolicyViewConfig;
     }
-    function getAddRulesViewConfig() {
+    function getAddRulesViewConfig(viewConfig, allData, options) {
         var gridPrefix = "add-rules",
         addRulesViewConfig = {
             elementId:  cowu.formatElementId([prefixId, ctwl.TITLE_CREATE_FW_RULES]),
@@ -140,7 +319,7 @@ define([
                         elementId:  cowu.formatElementId([prefixId, ctwl.TITLE_CREATE_FW_RULES]),
                         title: "Create Rules",
                         view: "SectionView",
-                        viewConfig: fwzUtils.getRulesViewConfig(prefixId),
+                        viewConfig: fwzUtils.getRulesViewConfig(allData),
                         stepType: "step",
                         onInitRender: true,
                         buttons: {
@@ -150,7 +329,19 @@ define([
                             }
                         },
                         onNext: function(params) {
-                            return true;
+                            return params.model.addEditApplicationSet({
+                                success: function () {
+                                    $("#" + modalId).find(".contrailWizard").data("contrailWizard").destroy();
+                                    $("#" + modalId).modal("hide");
+                                    $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
+                                },
+                                error: function (error) {
+                                    cowu.disableModalLoading(modalId, function () {
+                                        policyModel.showErrorAttr(cowu.formatElementId([prefixId])
+                                                + cowc.FORM_SUFFIX_ID, error.responseText);
+                                    });
+                                }
+                            }, options, false, allData.serviceGrpList);
                         }
                     }
                 ]
@@ -158,7 +349,7 @@ define([
         };
         return addRulesViewConfig;
     }
-    function getAddPolicyViewConfig(viewConfig) {
+    function getAddPolicyViewConfig(model, viewConfig, allData, options) {
         var addPolicyViewConfig = {
             elementId: cowu.formatElementId([prefixId, 'policy_wizard']),
             view: "WizardView",
@@ -205,8 +396,8 @@ define([
             }
         };
     steps = steps.concat(createStepViewConfig);
-    addnewFwPolicyStepViewConfig = $.extend(true, {}, getNewFirewallPolicyViewConfig().viewConfig).steps;
-    addRulesStepViewConfig = $.extend(true, {}, getAddRulesViewConfig().viewConfig).steps;
+    addnewFwPolicyStepViewConfig = $.extend(true, {}, getNewFirewallPolicyViewConfig(model).viewConfig).steps;
+    addRulesStepViewConfig = $.extend(true, {}, getAddRulesViewConfig(viewConfig, allData, options).viewConfig).steps;
     steps = steps.concat(addnewFwPolicyStepViewConfig);
     steps = steps.concat(addRulesStepViewConfig);
     addPolicyViewConfig.viewConfig.steps = steps;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Juniper Networks, Inc. All rights reserved.
+ * Copyright (c) 2017 Juniper Networks, Inc. All rights reserved.
  */
 
 define([
@@ -18,11 +18,11 @@ define([
                         {
                             columns: [
                                 {
-                                    elementId: "policy-name",
+                                    elementId: "policy_name",
                                     view: "FormInputView",
                                     viewConfig: {
-                                        path: "name",
-                                        dataBindValue: "name",
+                                        path: "policy_name",
+                                        dataBindValue: "policy_name",
                                         class: "col-xs-6"
                                     }
                                 }
@@ -30,11 +30,11 @@ define([
                         }, {
                             columns: [
                                       {
-                                          elementId: "policy-description",
+                                          elementId: "policy_description",
                                           view: "FormInputView",
                                           viewConfig: {
-                                              path: "id_perms.description",
-                                              dataBindValue: "id_perms().description",
+                                              path: "policy_description",
+                                              dataBindValue: "policy_description",
                                               class: "col-xs-12"
                                           }
                                       }
@@ -114,7 +114,7 @@ define([
             }];
             return createPolicyViewConfig;
         }
-        self.getRulesViewConfig = function() {
+        self.getRulesViewConfig = function(allData) {
             var serviceGrp = {data: [{type: 'service-groups'}]};
             return {
                 rows: [{
@@ -143,7 +143,7 @@ define([
                                      name: 'Action',
                                      view: "FormDropdownView",
                                      class: "",
-                                     width: 60,
+                                     width: 70,
                                      viewConfig: {
                                          templateId: cowc.TMPL_EDITABLE_GRID_DROPDOWN_VIEW,
                                          path: "simple_action",
@@ -157,7 +157,7 @@ define([
                                         elementId: 'user_created_service',
                                         name: 'Services',
                                         view: "FormComboboxView",
-                                        width: 210,
+                                        width: 300,
                                         viewConfig: {
                                             templateId: cowc.TMPL_EDITABLE_GRID_COMBOBOX_VIEW,
                                             width: 210,
@@ -194,7 +194,7 @@ define([
                                                 minimumResultsForSearch : 1,
                                                 dataTextField: "text",
                                                 dataValueField: "value",
-                                                //data: allData.addrFields,
+                                                data: allData.addrFields,
                                                 queryMap: [
                                                 {
                                                     name : 'Application',
@@ -252,7 +252,7 @@ define([
                                      name: 'Dir',
                                      view: "FormDropdownView",
                                      class: "",
-                                     width: 60,
+                                     width: 100,
                                      viewConfig: {
                                          templateId: cowc.TMPL_EDITABLE_GRID_DROPDOWN_VIEW,
                                          path: "direction",
@@ -279,7 +279,7 @@ define([
                                                 minimumResultsForSearch : 1,
                                                 dataTextField: "text",
                                                 dataValueField: "value",
-                                                //data: allData.addrFields,
+                                                data: allData.addrFields,
                                                 queryMap: [
                                                 {
                                                     name : 'Application',
@@ -334,11 +334,11 @@ define([
                                         elementId: 'match_tags',
                                         name: 'Match Tags',
                                         view: "FormMultiselectView",
-                                        width: 130,
+                                        width: 170,
                                         viewConfig:
                                           {
                                            class: "",
-                                           width: 130,
+                                           width: 170,
                                            path: "match_tags",
                                            templateId:
                                                cowc.TMPL_EDITABLE_GRID_MULTISELECT_VIEW,
@@ -399,12 +399,12 @@ define([
     };
     this.serviceGroupDataFormatter = function(response){
         var serviceGrpList = [];
-        serviceGroupList =[];
+        //self.serviceGroupList =[];
         var secGrpList = getValueByJsonPath(response, "0;service-groups", []);
         $.each(secGrpList, function (i, obj) {
             var obj = obj['service-group'];
             serviceGrpList.push({value: obj.uuid, text: obj.name});
-            serviceGroupList.push({fq_name : obj.fq_name, text: obj.name});
+            //serviceGroupList.push({fq_name : obj.fq_name, text: obj.name});
          });
         return serviceGrpList;
     };

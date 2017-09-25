@@ -93,7 +93,7 @@ define([
                             $("#grid-details-error-container").text(error.responseText);
                             $(".aps-details-error-container").show();
                         }
-                    }, options);
+                    }, options, true, undefined);
                 });
                 self.renderView4Config($('#gird-details-container'),
                         this.model,

@@ -9,9 +9,10 @@ define([
     'contrail-view',
     'config/firewall/common/applicationpolicy/ui/js/models/applicationPolicyModel',
     'config/firewall/common/applicationpolicy/ui/js/views/applicationPolicyEditView',
-    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView'
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView',
+    'config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel'
 ], function (_, moment, Backbone, ContrailView, ApplicationPolicyModel, ApplicationPolicyEditView,
-        FwPolicyWizardEditView) {
+        FwPolicyWizardEditView, FwPolicyWizardModel) {
     var applicationPolicyEditView = new ApplicationPolicyEditView(),
         FwPolicyWizardEditView = new FwPolicyWizardEditView(),
         gridElId = "#" + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID;
@@ -213,7 +214,7 @@ define([
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
                     if(viewConfig.isWizard){
-                        FwPolicyWizardEditView.model = new ApplicationPolicyModel();
+                        FwPolicyWizardEditView.model = new FwPolicyWizardModel();
                         FwPolicyWizardEditView.renderFwWizard({
                                         "title": 'Add new firewall policy',
                                         'isGlobal': viewConfig.isGlobal,
