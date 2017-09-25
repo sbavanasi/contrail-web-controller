@@ -824,6 +824,7 @@ define([
         this.CREATE = "Create";
 
         /* Firewall labels */
+        this.FW_POLICY_WIZARD = "Firewall Policy Wizard";
         this.TITLE_POLICY_INFO = "Policy Info";
         this.TITLE_EDIT_FW_POLICY = "Edit Firewall Policy";
         this.TITLE_FW_POLICY = 'Firewall Policies';

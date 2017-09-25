@@ -234,7 +234,6 @@ define([
                 "linkElementId": 'btnAddPolicy',
                 "actions": dropdownActions
             }
-
         ];
         return headerActionConfig;
     }

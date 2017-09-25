@@ -961,7 +961,7 @@ and need to add the iconClass tag wherever we need to show some icons
                             </resources>
                             <searchStrings>Configure Security, Global Policies</searchStrings>
                         </item>
-                        <!--<item>
+                        <item>
                             <label>Project Scoped Policies</label>
                             <hash>config_security_projectscopedpolicies</hash>
                             <resources>
@@ -977,8 +977,8 @@ and need to add the iconClass tag wherever we need to show some icons
                                 </resource>
                             </resources>
                             <searchStrings>Configure Security, Project Scoped Policies</searchStrings>
-                        </item> -->
-                        <item>
+                        </item>
+                        <!--<item>
                             <label>Project Scoped Policies</label>
                             <hash>config_security_projectscopedpolicies</hash>
                             <resources>
@@ -994,7 +994,7 @@ and need to add the iconClass tag wherever we need to show some icons
                                 </resource>
                             </resources>
                             <searchStrings>Configure Security, Project Scoped Policies</searchStrings>
-                        </item>
+                        </item>-->
                     </items>
                 </item>
                 <item>

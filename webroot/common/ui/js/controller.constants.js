@@ -914,6 +914,7 @@ define([
         this.DNS_RECORDS_PREFIX_ID = 'dns_record';
 
         /* Firewall constants */
+        this.FW_POLICY_WIZARD = 'fw_policy_wizard';
         this.FW_POLICY_GLOBAL_PAGE_ID = "config-fw-policy-global-list";
         this.CONFIG_FW_POLICY_GLOBAL_SECTION_ID = "config-fw-policy-global-section";
         this.CONFIG_FW_RULE_SECTION_ID = "config-fw-rule-section";

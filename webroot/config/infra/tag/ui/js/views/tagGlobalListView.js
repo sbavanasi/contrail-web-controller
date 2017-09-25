@@ -11,7 +11,8 @@ define([
     var tagGlobalListView = ContrailView.extend({
         el: $(contentContainer),
         renderTagView: function () {
-            var self = this;
+            var self = this,
+                viewConfig = this.attributes.viewConfig;
             var listModelConfig = {
                 remote: {
                     ajaxConfig: {
@@ -27,7 +28,7 @@ define([
                 }
             };
             this.contrailListModel = new ContrailListModel(listModelConfig);
-            this.renderView4Config(this.$el, this.contrailListModel, getTagGridViewConfig());
+            this.renderView4Config(this.$el, this.contrailListModel, getTagGridViewConfig(viewConfig));
         },
         parseTagData : function(response){
             var dataItems = [],
@@ -46,7 +47,7 @@ define([
         return (a.name > b.name)? 1: -1;
     }
 
-    var getTagGridViewConfig = function () {
+    var getTagGridViewConfig = function (viewConfig) {
         return {
             elementId: cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_SECTION_ID]),
             view: "SectionView",
@@ -66,7 +67,8 @@ define([
                                             pageSizeSelect: [10, 50, 100]
                                         }
                                     },
-                                    isGlobal: true
+                                    isGlobal: true,
+                                    isWizard: viewConfig.isWizard
                                 }
                             }
                         ]

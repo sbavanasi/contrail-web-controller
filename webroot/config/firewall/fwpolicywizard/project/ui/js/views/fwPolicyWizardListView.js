@@ -11,20 +11,37 @@ define([
         el: $(contentContainer),
         render: function () {
             var self = this,
-                viewConfig = this.attributes.viewConfig,
+                viewConfig = this.attributes.viewConfig, listModelConfig,
+                currentProject;
+            if(!viewConfig.isGlobal) {
                 currentProject = viewConfig["projectSelectedValueData"];
-            var listModelConfig = {
-                remote: {
-                    ajaxConfig: {
-                        url: "/api/tenants/config/get-config-details",
-                        type: "POST",
-                        data: JSON.stringify(
-                            {data: [{type: 'application-policy-sets',
-                                parent_id: currentProject.value}]})
-                    },
-                    dataParser: self.parseApplicationPolicyData,
-                }
-            };
+                listModelConfig = {
+                    remote: {
+                        ajaxConfig: {
+                            url: "/api/tenants/config/get-config-details",
+                            type: "POST",
+                            data: JSON.stringify(
+                                {data: [{type: 'application-policy-sets',
+                                    parent_id: currentProject.value}]})
+                        },
+                        dataParser: self.parseApplicationPolicyData,
+                    }
+                };
+            } else {
+                listModelConfig = {
+                        remote: {
+                            ajaxConfig: {
+                                url: "/api/tenants/config/get-config-details",
+                                type: "POST",
+                                data: JSON.stringify(
+                                        {data: [{type: 'application-policy-sets',
+                                            parent_type: "policy-management",
+                                            parent_fq_name_str:"default-policy-management"}]})
+                            },
+                            dataParser: self.parseApplicationPolicyData,
+                        }
+                    };
+            }
             var contrailListModel = new ContrailListModel(listModelConfig);
             this.renderView4Config(this.$el,
                    contrailListModel, getAppPolicyGridViewConfig(viewConfig));
@@ -61,8 +78,7 @@ define([
                                             pageSizeSelect: [10, 50, 100]
                                         }
                                     },
-                                    viewConfig: viewConfig,
-                                    isGlobal: false                            
+                                    viewConfig: viewConfig
                                 }
                             }
                         ]

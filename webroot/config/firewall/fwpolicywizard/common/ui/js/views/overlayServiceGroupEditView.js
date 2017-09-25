@@ -19,7 +19,7 @@ define([
             }else{
                 headerText = 'Delete Service Group';
             }
-            var viewConfig = options.viewConfig.viewConfig;
+            var viewConfig = options.viewConfig;
             $("#aps-gird-container").empty();
             $('#aps-save-button').show();
             self.setErrorContainer(headerText);
@@ -101,14 +101,25 @@ define([
         }
     });
     function getServiceGroup(viewConfig){
-        return {
-            elementId:
-                cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-            view: "serviceGroupProjectListView",
-            app: cowc.APP_CONTRAIL_CONTROLLER,
-            viewPathPrefix: "config/firewall/project/servicegroup/ui/js/views/",
-            viewConfig: $.extend(true, {}, viewConfig,
-                                 {projectSelectedValueData: viewConfig.projectSelectedValueData})
+        if(viewConfig.isGlobal) {
+            return {
+                elementId:
+                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
+                view: "serviceGroupGlobalListView",
+                app: cowc.APP_CONTRAIL_CONTROLLER,
+                viewPathPrefix: "config/infra/firewall//ui/js/views/",
+                viewConfig: $.extend(true, {}, viewConfig)
+            };
+        } else {
+            return {
+                elementId:
+                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
+                view: "serviceGroupProjectListView",
+                app: cowc.APP_CONTRAIL_CONTROLLER,
+                viewPathPrefix: "config/firewall/project/servicegroup/ui/js/views/",
+                viewConfig: $.extend(true, {}, viewConfig,
+                                     {projectSelectedValueData: viewConfig.projectSelectedValueData})
+            };
         }
     };
     var getServiceGroupViewConfig = function (isDisable) {

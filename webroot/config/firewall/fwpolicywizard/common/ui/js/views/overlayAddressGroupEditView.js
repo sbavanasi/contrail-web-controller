@@ -19,7 +19,7 @@ define([
             }else{
                 headerText = 'Delete Address Group';
             }
-            var viewConfig = options.viewConfig.viewConfig;
+           var viewConfig = options.viewConfig;
             $("#aps-gird-container").empty();
 	        $('#aps-save-button').show();
 	        self.setErrorContainer(headerText);
@@ -101,14 +101,25 @@ define([
         }
     });
     function getAddressGroup(viewConfig){
-        return {
-            elementId:
-                cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-            view: "addressGroupProjectListView",
-            app: cowc.APP_CONTRAIL_CONTROLLER,
-            viewPathPrefix: "config/firewall/project/addressgroup/ui/js/views/",
-            viewConfig: $.extend(true, {}, viewConfig,
-                                 {projectSelectedValueData: viewConfig.projectSelectedValueData})
+        if(viewConfig.isGlobal) {
+            return {
+                elementId:
+                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
+                view: "addressGroupGlobalListView",
+                app: cowc.APP_CONTRAIL_CONTROLLER,
+                viewPathPrefix: "config/infra/firewall/ui/js/views/",
+                viewConfig: $.extend(true, {}, viewConfig)
+            };
+        } else {
+            return {
+                elementId:
+                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
+                view: "addressGroupProjectListView",
+                app: cowc.APP_CONTRAIL_CONTROLLER,
+                viewPathPrefix: "config/firewall/project/addressgroup/ui/js/views/",
+                viewConfig: $.extend(true, {}, viewConfig,
+                                     {projectSelectedValueData: viewConfig.projectSelectedValueData})
+            }
         }
     };
     var getAddressGroupViewConfig = function (isDisable) {

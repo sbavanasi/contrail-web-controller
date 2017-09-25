@@ -16,7 +16,7 @@ define([
             }else{
                 headerText = 'Delete Tag';
             }
-            var viewConfig = options.viewConfig.viewConfig;
+            var viewConfig = options.viewConfig;
             $("#aps-gird-container").empty();
             $('#aps-save-button').show();
             self.setErrorContainer(headerText);
@@ -97,14 +97,25 @@ define([
         }
     });
     function getTag(viewConfig){
-        return {
-            elementId:
-                cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-            view: "tagProjectListView",
-            app: cowc.APP_CONTRAIL_CONTROLLER,
-            viewPathPrefix: "config/firewall/project/tag/ui/js/views/",
-            viewConfig: $.extend(true, {}, viewConfig,
-                                 {projectSelectedValueData: viewConfig.projectSelectedValueData})
+        if(viewConfig.isGlobal) {
+            return {
+                elementId:
+                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
+                view: "tagGlobalListView",
+                app: cowc.APP_CONTRAIL_CONTROLLER,
+                viewPathPrefix: "config/infra/tag/ui/js/views/",
+                viewConfig: $.extend(true, {}, viewConfig)
+            };
+        } else {
+             return {
+                 elementId:
+                     cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
+                 view: "tagProjectListView",
+                 app: cowc.APP_CONTRAIL_CONTROLLER,
+                 viewPathPrefix: "config/firewall/project/tag/ui/js/views/",
+                 viewConfig: $.extend(true, {}, viewConfig,
+                                      {projectSelectedValueData: viewConfig.projectSelectedValueData})
+             };
         }
     };
     var getTagViewConfig = function () {

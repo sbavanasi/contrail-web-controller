@@ -738,6 +738,10 @@ form h5.margin-0-0-10~.section-content {
 .error-font-weight {
     font-weight: bold;
 }
+#fw_policy_wizard{
+position:absolute;
+top:4px;
+right:12px;}
 #gird-details-container .contrail-tab-link-list{
 	width: 100%;
     margin-left: 0px;
