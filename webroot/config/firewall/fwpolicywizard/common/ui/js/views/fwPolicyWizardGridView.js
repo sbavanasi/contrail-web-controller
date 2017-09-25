@@ -143,9 +143,7 @@ define([
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel(dataItem);
                 var policy = dataItem.firewall_policy_refs.reverse();
                 fwApplicationPolicyEditView.renderApplicationPolicy({
-                                          'mode': 'edit',
-                                          'isGlobal': viewConfig.isGlobal,
-                                          'viewConfig': viewConfig['viewConfig'],
+                                          'viewConfig': $.extend({mode: 'edit'}, viewConfig),
                                           'policy': policy
                 });
             })];
@@ -177,14 +175,12 @@ define([
                 "onClick": function () {
                     fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
                     fwApplicationPolicyEditView.renderApplicationPolicy({
-                                              'mode': 'add',
-                                              'isGlobal': viewConfig.isGlobal,
-                                              'viewConfig': viewConfig['viewConfig']
+                                              'viewConfig': $.extend({mode:'add'}, viewConfig)
                     });
                 }
             },
             {
-                "title": "Create standaloe firewall policy",
+                "title": "Create standalone firewall policy",
                 "onClick": function () {}
             }
         ];

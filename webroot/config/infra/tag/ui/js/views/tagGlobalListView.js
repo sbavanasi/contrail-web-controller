@@ -10,7 +10,7 @@ define([
 ], function (_, ContrailView, ContrailListModel, tagUtils) {
     var tagGlobalListView = ContrailView.extend({
         el: $(contentContainer),
-        renderTagView: function () {
+        render: function () {
             var self = this,
                 viewConfig = this.attributes.viewConfig;
             var listModelConfig = {
