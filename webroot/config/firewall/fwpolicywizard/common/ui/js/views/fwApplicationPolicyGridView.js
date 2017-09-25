@@ -149,6 +149,7 @@ define([
                     $('#aps-overlay-container').hide();
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
+                    $('#aps-main-back-button').hide();
                 }
             },
             {

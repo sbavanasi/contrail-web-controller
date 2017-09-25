@@ -654,7 +654,7 @@ form h5.margin-0-0-10~.section-content {
     margin-bottom:30px;
 }
 #configure-applicationpolicyset  .modal-body {
-	max-height: 600px !important;
+	max-height: 100% !important;
 	padding:0px;
 }
 .aps-icon-container {
@@ -680,6 +680,9 @@ form h5.margin-0-0-10~.section-content {
     background: linear-gradient(#f7fdff, white); /* Standard syntax (must be last) */
     padding: 0px 10px 0px 10px;
 }
+#aps-landing-container{
+    background:linear-gradient(#f7fdff,#fff);
+}
 #aps-overlay-container{
     border-left: 1px solid #e5e5e5;
     position: absolute;
@@ -690,7 +693,6 @@ form h5.margin-0-0-10~.section-content {
     background:#fff;
     -webkit-box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);-moz-box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);
     box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);
-    background:linear-gradient(#f7fdff,#fff);
 }
 #aps-gird-container{
 	height: 555px;

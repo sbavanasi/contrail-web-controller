@@ -43,6 +43,21 @@ define([
                         $("#aps-gird-container").empty();
                         $('#aps-landing-container').hide();
                     });
+                    $("#aps-main-back-button").on('click', function(){
+                        $('#modal-landing-container').show();
+                        $("#aps-gird-container").empty();
+                        $('#aps-landing-container').hide();
+                    });
+                    $("#aps-create-fwpolicy-remove-icon").on('click', function(){
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                        $('#aps-overlay-container').hide();
+                    });
+                    $("#aps-remove-icon").on('click', function(){
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                        $('#modal-landing-container').show();
+                        $("#aps-gird-container").empty();
+                        $('#aps-landing-container').hide();
+                    })
             },null,false);
         },
         renderObject: function(options, objName){
@@ -52,15 +67,29 @@ define([
             var placeHolder = $('#aps-gird-container');
             var viewConfig = options['viewConfig'];
             if(objName === 'address_groups'){
+                $('#aps-main-container').hide();
+                $('#aps-create-fwpolicy-remove-icon').hide();
+                $('#aps-remove-icon').show();
+                $('#aps-overlay-container').show();
                 this.renderView4Config(placeHolder, null, getAddressGroup(viewConfig));
             }else if(objName === 'service_groups'){
+                $('#aps-main-container').hide();
+                $('#aps-create-fwpolicy-remove-icon').hide();
+                $('#aps-remove-icon').show();
+                $('#aps-overlay-container').show();
                 this.renderView4Config(placeHolder, null, getServiceGroup(viewConfig));
             }else if(objName === 'tag'){
+                $('#aps-main-container').hide();
+                $('#aps-create-fwpolicy-remove-icon').hide();
+                $('#aps-remove-icon').show();
+                $('#aps-overlay-container').show();
                 this.renderView4Config(placeHolder, null, getTag(viewConfig));
             }else if(objName === 'addIcon'){
+                $('#aps-main-container').show();
+                $('#aps-create-fwpolicy-remove-icon').show();
+                $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
-                $('#aps-main-container').css('background', "white !important");
-                this.renderView4Config($('#aps-main-container'), this.model, getAddPolicyViewConfig(viewConfig));
+                this.renderView4Config($('#aps-sub-container'), this.model, getAddPolicyViewConfig(viewConfig));
             }
          }
     });
@@ -77,13 +106,21 @@ define([
                         view: "AccordianView",
                         viewConfig: fwzUtils.getFirewallPolicyViewConfig(),
                         stepType: "step",
-                        onInitRender: true,
                         buttons: {
+                            next: {
+                                visible: true,
+                                label: "Next"
+                            },
                             previous: {
-                                visible: true
+                                visible: true,
+                                label: "Back"
                             }
                         },
                         onNext: function(params) {
+                            return true;
+                        },
+                        onPrevious: function(params) {
+                            $("#aps-main-back-button").show();
                             return true;
                         }
                     }
@@ -108,6 +145,7 @@ define([
                         onInitRender: true,
                         buttons: {
                             previous: {
+                                label: "Back",
                                 visible: true
                             }
                         },
@@ -154,16 +192,15 @@ define([
             },
             title: "Select set",
             stepType: "step",
-            onInitRender: true,
             onNext: function (options) {
                 return true;
             },
             buttons: {
                 next: {
-                    label: ctwl.TITLE_SAVE_NEXT
+                    visible: false
                 },
                 previous: {
-                    visible: false
+                    visible: false,
                 }
             }
         };
