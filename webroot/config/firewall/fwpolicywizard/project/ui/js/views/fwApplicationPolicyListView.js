@@ -21,7 +21,7 @@ define([
             deletedObj = [];
             self.selectedPolicy = viewConfig.policyList;
             self.selectedRows = viewConfig.seletedRows;
-            if(viewConfig.isInventory || viewConfig.isEdit){
+            if(viewConfig.isGlobal || viewConfig.isInventory || viewConfig.isEdit){
                 dataObj = JSON.stringify(
                         {data: [{type: 'firewall-policys', fields: ['application_policy_set_back_refs']}]});
             }else{

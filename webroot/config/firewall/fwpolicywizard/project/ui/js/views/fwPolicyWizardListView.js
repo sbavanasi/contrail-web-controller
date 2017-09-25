@@ -71,15 +71,14 @@ define([
                                 view: "fwPolicyWizardGridView",
                                 viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
                                 app: cowc.APP_CONTRAIL_CONTROLLER,
-                                viewConfig: {
+                                viewConfig: $.extend(viewConfig, {
                                     pagerOptions: {
                                         options: {
                                             pageSize: 10,
                                             pageSizeSelect: [10, 50, 100]
                                         }
-                                    },
-                                    viewConfig: viewConfig
-                                }
+                                    }
+                                })
                             }
                         ]
                     }

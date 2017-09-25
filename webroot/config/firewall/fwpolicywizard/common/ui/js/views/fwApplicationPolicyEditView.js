@@ -15,7 +15,7 @@ define([
         renderApplicationPolicy: function(options) {
 
             var self = this,disable = false, slecectedPolicyList;
-            var mode = options.mode, headerText;
+            var mode = options.viewConfig.mode, headerText;
             var viewConfig = options.viewConfig;
             if(mode === 'edit'){
                 disable = true;
@@ -241,7 +241,6 @@ define([
                                    app: cowc.APP_CONTRAIL_CONTROLLER,
                                    viewConfig: $.extend(true, {}, viewConfig,{
                                        projectSelectedValueData: viewConfig.projectSelectedValueData,
-                                       isGlobal: false,
                                        seletedRows : seletedRows,
                                        policyList : slecectedPolicyList
                                    })
