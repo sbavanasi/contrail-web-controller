@@ -179,9 +179,11 @@ define([
                     });
                 }
             },
-            {
-                "title": "Create standalone firewall policy",
-                "onClick": function () {}
+            {    "title": "Create Stand Alone firewall policy",
+                "onClick": function () {
+                    $('#aps-main-back-button').hide();
+                    $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
+                }
             }
         ];
         var headerActionConfig = [

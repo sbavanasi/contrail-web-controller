@@ -92,7 +92,7 @@ define([
                 $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
                 self.fetchAllData(self, options, function(allData){
-                    self.renderView4Config($('#aps-main-container'), self.model, getAddPolicyViewConfig(self.model, viewConfig, allData, options),'policyValidation', null, null,function(){
+                    self.renderView4Config($('#aps-sub-container'), self.model, getAddPolicyViewConfig(self.model, viewConfig, allData, options),'policyValidation', null, null,function(){
                         Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_add-new-firewall-policy'));
                         Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_rules'));
                         kbValidation.bind(self);
@@ -292,11 +292,6 @@ define([
                             }else{
                                 params.model.onNext(true);
                             }
-                        },
-                        onPrevious: function(params) {
-                            //var data = new FwPolicyWizardModel();
-                            //params.model = data;
-                            return true;
                         },
                         onPrevious: function(params) {
                             $("#aps-main-back-button").show();
