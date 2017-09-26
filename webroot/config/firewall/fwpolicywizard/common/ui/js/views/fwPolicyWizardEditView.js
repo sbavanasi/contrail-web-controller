@@ -91,11 +91,16 @@ define([
                 $('#aps-create-fwpolicy-remove-icon').show();
                 $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
+                isBinding = false;
                 self.fetchAllData(self, options, function(allData){
                     self.renderView4Config($('#aps-sub-container'), self.model, getAddPolicyViewConfig(self.model, viewConfig, allData, options),'policyValidation', null, null,function(){
-                        Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_add-new-firewall-policy'));
-                        Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_rules'));
-                        kbValidation.bind(self);
+                        if (isBinding) {
+                            Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_add-new-firewall-policy'));
+                        }
+                        if(isBinding){
+                            Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_rules'));
+                            kbValidation.bind(self);
+                        }
                     });
                 });
             }
@@ -259,7 +264,7 @@ define([
     function getNewFirewallPolicyViewConfig(model) {
         var gridPrefix = "add-firewall-policy",
             addNewFwPolicyViewConfig = {
-            elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy"]),
+            elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy1"]),
             view: "WizardView",
             viewConfig: {
                 steps: [
@@ -280,6 +285,7 @@ define([
                             }
                         },
                         onNext: function(params) {
+                            isBinding = true;
                             if(params.model.onNext()){
                                if(params.model.policy_name() !== ''){
                                    $('#applicationpolicyset_policy_wizard .alert-error span').text('');
@@ -295,6 +301,7 @@ define([
                         },
                         onPrevious: function(params) {
                             $("#aps-main-back-button").show();
+                            params.model.onNext(false);
                             return true;
                         }
                     }
@@ -328,13 +335,14 @@ define([
                                 success: function () {
                                     $("#" + modalId).find(".contrailWizard").data("contrailWizard").destroy();
                                     $("#" + modalId).modal("hide");
-                                    $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
+                                    if($('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid") !== undefined){
+                                        $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();  
+                                    }
+                                    isBinding = false;
                                 },
                                 error: function (error) {
-                                    cowu.disableModalLoading(modalId, function () {
-                                        policyModel.showErrorAttr(cowu.formatElementId([prefixId])
-                                                + cowc.FORM_SUFFIX_ID, error.responseText);
-                                    });
+                                    $('#applicationpolicyset_policy_wizard .alert-error span').text(error.responseText);
+                                    $('#applicationpolicyset_policy_wizard .alert-error').show();
                                 }
                             }, options, false, allData.serviceGrpList);
                         }

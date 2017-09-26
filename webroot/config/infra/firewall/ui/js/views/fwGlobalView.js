@@ -22,7 +22,7 @@ define([
             self.renderView4Config(self.$el, null, getInfraPolicyDetails(viewConfig,policyName));            
         },
         openFWPolicyWizard: function () {
-            require(['config/firewall/common/applicationpolicy/ui/js/models/applicationPolicyModel',
+            require(['config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel',
             'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView'],
             function (FWPolicyWizardModel, FWPolicyWizardEditView) {
                 var fwPolicyWizardModel =  new FWPolicyWizardModel(),

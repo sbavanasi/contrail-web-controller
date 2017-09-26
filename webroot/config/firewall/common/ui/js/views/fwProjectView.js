@@ -33,7 +33,7 @@ define([
         },
         openFWPolicyWizard: function () {
             var self = this;
-            require(['config/firewall/common/applicationpolicy/ui/js/models/applicationPolicyModel',
+            require(['config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel',
             'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView'],
             function (FWPolicyWizardModel, FWPolicyWizardEditView) {
                 var fwPolicyWizardModel =  new FWPolicyWizardModel(),

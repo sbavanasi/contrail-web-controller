@@ -181,6 +181,7 @@ define([
             },
             {    "title": "Create Stand Alone firewall policy",
                 "onClick": function () {
+                    newApplicationSet = {};
                     $('#aps-main-back-button').hide();
                     $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
                 }
