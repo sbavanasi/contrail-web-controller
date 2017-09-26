@@ -29,7 +29,7 @@ define([
                 Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                 $('#aps-save-button').text('Save');
                 Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                var seletedRows = getSelectedRows(previousRows);
+                var seletedRows = getSelectedRows(previousRows, []);
                 if(applicationObj.id_perms !== undefined){
                     applicationObj.id_perms.description = applicationObj.description;
                 }
@@ -44,7 +44,7 @@ define([
             $("#aps-save-button").off('click').on('click', function(){
                 $('#aps-save-button').text('Save');
                 var gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID;
-                var seletedRows = getSelectedRows($(gridElId).data("contrailGrid").getCheckedRows());
+                var seletedRows = getSelectedRows($(gridElId).data("contrailGrid").getCheckedRows(), previousRows);
                 Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                 if(applicationObj.id_perms !== undefined){
                     applicationObj.id_perms.description = applicationObj.description;
@@ -86,9 +86,10 @@ define([
             viewConfig: $.extend(true, {}, {isInventory: true})
         }
     }
-    var fwPolicyList = [];
-    function getSelectedRows(model){
-        _.each(model, function(fwPolicy) {
+    function getSelectedRows(model, previousRows){
+        var fwPolicyList = [];
+        var newRecoreds = previousRows.concat(model);
+        _.each(newRecoreds, function(fwPolicy) {
             delete fwPolicy.cgrid;
             fwPolicyList.push(fwPolicy);
         });
