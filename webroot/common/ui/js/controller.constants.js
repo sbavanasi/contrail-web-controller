@@ -915,6 +915,21 @@ define([
 
         /* Firewall constants */
         this.FW_POLICY_WIZARD = 'fw_policy_wizard';
+        this.FW_WZ_SECURITY_POLICY_AS_GLOBAL_LIST_VIEW_ID = 'fw_security_policy_as_global_list_view';
+        this.FW_WZ_SECURITY_POLICY_SG_GLOBAL_LIST_VIEW_ID = 'fw_security_policy_sg_global_list_view';
+        this.FW_WZ_SECURITY_POLICY_AS_PROJECT_LIST_VIEW_ID = 'fw_security_policy_as_project_list_view';
+        this.FW_WZ_SECURITY_POLICY_SG_PROJECT_LIST_VIEW_ID = 'fw_security_policy_sg_project_list_view';
+        this.FW_WZ_SECURITY_POLICY_GLOBAL_ADDRESS_GRP_SECTION_ID = 'fw_security_policy_global_adressgroup_section_view';
+        this.FW_WZ_SECURITY_POLICY_PROJECT_ADDRESS_GRP_SECTION_ID = 'fw_security_policy_project_adressgroup_section_view';
+        this.FW_WZ_SECURITY_POLICY_GLOBAL_SERVICE_GRP_SECTION_ID = 'fw_security_policy_global_servicegroup_section_view';
+        this.FW_WZ_SECURITY_POLICY_PROJECT_SERVICE_GRP_SECTION_ID = 'fw_security_policy_project_servicegroup_section_view';
+        this.FW_WZ_SECURITY_POLICY_GLOBAL_ADDRESS_GRP = 'fw_security_policy_global_adressgroup';
+        this.FW_WZ_SECURITY_POLICY_GLOBAL_SERVICE_GRP = 'fw_security_policy_global_servicegroup';
+        this.FW_WZ_SECURITY_POLICY_PROJECT_SERVICE_GRP = 'fw_security_policy_project_servicegroup';
+        this.FW_WZ_SECURITY_POLICY_ADDRESS_GRP_LIST_VIEW_ID = 'fw_security_policy_as_list_view';
+        this.FW_WZ_SECURITY_POLICY_SERVICE_GRP_LIST_VIEW_ID = 'fw_security_policy_service_gp_list_view';
+        this.FW_WZ_SECURITY_POLICY_ADDRESS_GRP_GRID_ID = 'fw_security_policy_as_grid_view';
+        this.FW_WZ_SECURITY_POLICY_SERVICE_GRP_GRID_ID = 'fw_security_policy_service_gp_grid_view';
         this.FW_POLICY_GLOBAL_PAGE_ID = "config-fw-policy-global-list";
         this.CONFIG_FW_POLICY_GLOBAL_SECTION_ID = "config-fw-policy-global-section";
         this.CONFIG_FW_RULE_SECTION_ID = "config-fw-rule-section";

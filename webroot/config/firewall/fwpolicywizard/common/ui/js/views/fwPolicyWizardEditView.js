@@ -39,7 +39,7 @@ define([
                     });
                     $("#aps-plus-icon").on('click', function(){
                         self.renderObject(options, 'addIcon', self);
-                    })
+                    });
                     $("#aps-back-button").on('click', function(){
                         $('#modal-landing-container').show();
                         $("#aps-gird-container").empty();
@@ -402,19 +402,19 @@ define([
         if(viewConfig.isGlobal) {
             return {
                 elementId:
-                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-                view: "addressGroupGlobalListView",
+                    cowu.formatElementId([ctwc.FW_WZ_SECURITY_POLICY_AS_GLOBAL_LIST_VIEW_ID]),
+                view: "fwPolicyWizardASGlobalListView",
                 app: cowc.APP_CONTRAIL_CONTROLLER,
-                viewPathPrefix: "config/infra/firewall/ui/js/views/",
+                viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
                 viewConfig: $.extend(true, {}, viewConfig)
             };
         } else {
             return {
                 elementId:
-                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-                view: "addressGroupProjectListView",
+                    cowu.formatElementId([ctwc.FW_WZ_SECURITY_POLICY_AS_PROJECT_LIST_VIEW_ID]),
+                view: "fwPolicyWizardASProjectListView",
                 app: cowc.APP_CONTRAIL_CONTROLLER,
-                viewPathPrefix: "config/firewall/project/addressgroup/ui/js/views/",
+                viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
                 viewConfig: $.extend(true, {}, viewConfig,
                                      {projectSelectedValueData: viewConfig.projectSelectedValueData})
             };
@@ -424,19 +424,19 @@ define([
         if(viewConfig.isGlobal) {
             return {
                 elementId:
-                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-                view: "serviceGroupGlobalListView",
+                    cowu.formatElementId([ctwc.FW_WZ_SECURITY_POLICY_SG_GLOBAL_LIST_VIEW_ID]),
+                view: "fwPolicyWizardServiceGlobalListView",
                 app: cowc.APP_CONTRAIL_CONTROLLER,
-                viewPathPrefix: "config/infra/firewall/ui/js/views/",
+                viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
                 viewConfig: $.extend(true, {}, viewConfig)
             };
         } else {
             return {
                 elementId:
-                    cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
-                view: "serviceGroupProjectListView",
+                    cowu.formatElementId([ctwc.FW_WZ_SECURITY_POLICY_SG_PROJECT_LIST_VIEW_ID]),
+                view: "fwPolicyWizardServiceProjectListview",
                 app: cowc.APP_CONTRAIL_CONTROLLER,
-                viewPathPrefix: "config/firewall/project/servicegroup/ui/js/views/",
+                viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
                 viewConfig: $.extend(true, {}, viewConfig,
                                      {projectSelectedValueData: viewConfig.projectSelectedValueData})
             };
