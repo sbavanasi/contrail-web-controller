@@ -96,7 +96,10 @@ define([
                                 elementId: ctwc.FW_POLICY_WIZARD,
                                 view: 'FormButtonView',
                                 viewConfig: {
-                                    label: ctwl.FW_POLICY_WIZARD
+                                    label: ctwl.FW_POLICY_WIZARD,
+                                    elementConfig:{
+                                        btnClass:'btn-primary'
+                                    }
                                 }
                             }]
                         }]

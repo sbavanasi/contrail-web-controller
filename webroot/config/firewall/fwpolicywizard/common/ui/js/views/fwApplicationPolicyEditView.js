@@ -18,7 +18,7 @@ define([
             var mode = options.viewConfig.mode, headerText;
             var viewConfig = options.viewConfig;
             if(mode === 'edit'){
-                disable = true;
+                disable = false;
                 headerText = 'Edit Application Policy Sets';
                 viewConfig.isEdit = true;
                 slecectedPolicyList  = getPolicyList(options.policy);

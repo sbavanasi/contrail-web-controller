@@ -80,8 +80,8 @@ define([
             viewConfig: $.extend(true, {}, {isInventory: true})
         }
     }
+    var fwPolicyList = [];
     function getSelectedRows(model){
-        var fwPolicyList = [];
         _.each(model, function(fwPolicy) {
             delete fwPolicy.cgrid;
             fwPolicyList.push(fwPolicy);

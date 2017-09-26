@@ -179,7 +179,7 @@ define([
                     });
                 }
             },
-            {    "title": "Create Stand Alone firewall policy",
+            {    "title": "Create stand alone firewall policy",
                 "onClick": function () {
                     newApplicationSet = {};
                     $('#aps-main-back-button').hide();
