@@ -682,6 +682,9 @@ form h5.margin-0-0-10~.section-content {
 }
 #aps-landing-container{
     background:linear-gradient(#f7fdff,#fff);
+    display:none;
+    height:450px;
+    position: relative;
 }
 #aps-overlay-container{
     border-left: 1px solid #e5e5e5;
@@ -695,7 +698,7 @@ form h5.margin-0-0-10~.section-content {
     box-shadow: -4px 5px 5px -4px rgba(0,0,0,0.25);
 }
 #aps-gird-container{
-	height: 555px;
+	height: 415px;
     overflow-y: auto;
     padding: 0px 6px 0px 6px;
 }

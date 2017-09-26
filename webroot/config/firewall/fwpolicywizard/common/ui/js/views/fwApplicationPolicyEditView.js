@@ -86,7 +86,7 @@ define([
                             $("#aps-gird-container").empty();
                             var modalId = 'configure-' + ctwc.APPLICATION_POLICY_SET_PREFIX_ID;
                             $("#" + modalId).modal('hide');
-                            $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
+                            $('#firewall-application-policy-grid').data("contrailGrid")._dataView.refreshData();
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
