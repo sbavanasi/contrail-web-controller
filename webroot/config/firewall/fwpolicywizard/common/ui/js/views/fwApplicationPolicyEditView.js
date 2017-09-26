@@ -18,7 +18,7 @@ define([
             var mode = options.viewConfig.mode, headerText;
             var viewConfig = options.viewConfig;
             if(mode === 'edit'){
-                disable = false;
+                disable = true;
                 headerText = 'Edit Application Policy Sets';
                 viewConfig.isEdit = true;
                 slecectedPolicyList  = getPolicyList(options.policy);
@@ -220,7 +220,6 @@ define([
                                    elementId: "description",
                                    view: "FormTextAreaView",
                                    viewConfig: {
-                                       disabled : isDisable,
                                        path: "description",
                                        dataBindValue: "description",
                                        label: "Description",

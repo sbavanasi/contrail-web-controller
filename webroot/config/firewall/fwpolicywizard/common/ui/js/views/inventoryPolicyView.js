@@ -30,6 +30,9 @@ define([
                 $('#aps-save-button').text('Save');
                 Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                 var seletedRows = getSelectedRows(previousRows);
+                if(applicationObj.id_perms !== undefined){
+                    applicationObj.id_perms.description = applicationObj.description;
+                }
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel(applicationObj);
                 fwApplicationPolicyEditView.renderApplicationPolicy({
                                           'mode': mode,
@@ -43,6 +46,9 @@ define([
                 var gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID;
                 var seletedRows = getSelectedRows($(gridElId).data("contrailGrid").getCheckedRows());
                 Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                if(applicationObj.id_perms !== undefined){
+                    applicationObj.id_perms.description = applicationObj.description;
+                }
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel(applicationObj);
                 fwApplicationPolicyEditView.renderApplicationPolicy({
                                           'mode': mode,

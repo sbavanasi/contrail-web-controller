@@ -213,16 +213,6 @@ define([
                 "title": ctwl.TITLE_CREATE_APP_POLICY_SET,
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
-                    if(viewConfig.isWizard){
-                        FwPolicyWizardEditView.model = new FwPolicyWizardModel();
-                        FwPolicyWizardEditView.renderFwWizard({
-                                        "title": 'Add new firewall policy',
-                                        'isGlobal': viewConfig.isGlobal,
-                                        'viewConfig': viewConfig['viewConfig'],
-                                         callback: function () {
-                            $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
-                        }});
-                    }else{
                         applicationPolicyEditView.model = new ApplicationPolicyModel();
                         applicationPolicyEditView.renderAddEditApplicationPolicy({
                                                   "title": ctwl.TITLE_CREATE_APP_POLICY_SET,
@@ -231,7 +221,6 @@ define([
                                                   callback: function () {
                            $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();
                         }});
-                    }
                 }
             }
         ];
