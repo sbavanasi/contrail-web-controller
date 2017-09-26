@@ -681,6 +681,7 @@ form h5.margin-0-0-10~.section-content {
 }
 #aps-main-back-button{
     margin-right:15px;
+    margin-top:15px;
 }
 #aps-landing-container{
     background:linear-gradient(#f7fdff,#fff);
@@ -742,6 +743,9 @@ form h5.margin-0-0-10~.section-content {
 }
 .error-font-weight {
     font-weight: bold;
+}
+#applicationpolicyset_policy_wizard .actions{
+    display:none;
 }
 #fw_policy_wizard{
 position:absolute;

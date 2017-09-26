@@ -301,6 +301,7 @@ define([
                         },
                         onPrevious: function(params) {
                             $("#aps-main-back-button").show();
+                            $('#applicationpolicyset_policy_wizard .actions').css("display", "none");
                             params.model.onNext(false);
                             return true;
                         }
