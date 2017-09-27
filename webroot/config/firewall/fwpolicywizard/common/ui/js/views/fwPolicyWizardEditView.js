@@ -28,27 +28,59 @@ define([
                                    getApplicationPolicyViewConfig(), "",
                                    null, null, function() {
                     $("#" + modalId).find('.modal-footer').hide();
-                    $("#review_address_groups").on('click', function() {
+
+                    function getAdressGroupClick(e){
+                        e.preventDefault();
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                        $('#aps-overlay-container .dropdown').hide();
                         self.renderObject(options, 'address_groups');
-                    });
-                    $("#review_service_groups").on('click', function() {
+                        return true;
+                    }
+                    function getServiceGroupClick(e){
+                        e.preventDefault();
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                        $('#aps-overlay-container .dropdown').hide();
                         self.renderObject(options, 'service_groups');
-                    });
-                    $("#review_visible_tag_for_project").on('click', function() {
+                    }
+                    function visibleTagClick(e){
+                        e.preventDefault();
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                        $('#aps-overlay-container .dropdown').hide();
                         self.renderObject(options, 'tag');
+                    }
+                    function backButtonClick(){
+                        $('#modal-landing-container').show();
+                        $("#aps-gird-container").empty();
+                        $('#aps-landing-container').hide();
+                    }
+
+                    $("#review_address_groups").on('click', function(e) {
+                        getAdressGroupClick(e);
+                    });
+                    $("#review_service_groups").on('click', function(e) {
+                        getServiceGroupClick(e);
+                    });
+                    $("#review_visible_tag_for_project").on('click', function(e) {
+                        visibleTagClick(e);
                     });
                     $("#aps-plus-icon").on('click', function(){
+                        $('#aps-overlay-container .dropdown').show();
                         self.renderObject(options, 'addIcon', self);
                     });
+                    $("#view-address-group").on('click', function(e) {
+                        getAdressGroupClick(e);
+                    });
+                    $("#view-service-group").on('click', function(e) {
+                       getServiceGroupClick(e);
+                    });
+                    $("#view-visble-tags").on('click', function(e) {
+                        visibleTagClick(e);
+                    });
                     $("#aps-back-button").on('click', function(){
-                        $('#modal-landing-container').show();
-                        $("#aps-gird-container").empty();
-                        $('#aps-landing-container').hide();
+                        backButtonClick();
                     });
                     $("#aps-main-back-button").on('click', function(){
-                        $('#modal-landing-container').show();
-                        $("#aps-gird-container").empty();
-                        $('#aps-landing-container').hide();
+                       backButtonClick();
                     });
                     $("#aps-create-fwpolicy-remove-icon").on('click', function(){
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
@@ -56,9 +88,7 @@ define([
                     });
                     $("#aps-remove-icon").on('click', function(){
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                        $('#modal-landing-container').show();
-                        $("#aps-gird-container").empty();
-                        $('#aps-landing-container').hide();
+                        backButtonClick();
                     })
             },null,false);
         },
