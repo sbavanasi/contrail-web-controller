@@ -213,8 +213,7 @@ define([
                     var model = $.extend(true,{},this.model().attributes);
                     var gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID;
                     var selectedRows = $(gridElId).data("contrailGrid")._dataView.getItems();
-                    if(selectedRows.length > 0){
-                        for(var j = 0; j < selectedRows.length;j++){
+                    for(var j = 0; j < selectedRows.length;j++){
                                 var obj = {};
                                 var to = selectedRows[j].fq_name;
                                 obj.to = to;
@@ -223,7 +222,7 @@ define([
                                 policyList.push(obj);
                             }
                         updatedModel.fq_name = [];
-                        if(options.isGlobal) {
+                        if(options.viewConfig.isGlobal) {
                             updatedModel.fq_name.push('default-policy-management');
                             updatedModel.fq_name.push(model.name);
                             updatedModel.parent_type = 'policy-management';
@@ -239,7 +238,7 @@ define([
                         this.updateRBACPermsAttrs(model);
                         updatedModel.tag_refs = model.tag_refs;
                         updatedModel.firewall_policy_refs = policyList;
-                        if (options.mode == 'add') {
+                        if (options.viewConfig.mode == 'add') {
                             var obj = {};
                             obj.description = model.description;
                             updatedModel.id_perms = obj;
@@ -273,13 +272,6 @@ define([
                             returnFlag = false;
                         });
                       return returnFlag;
-                   } else{
-                        if (contrail.checkIfFunction(callbackObj.error)) {
-                            var error = {};
-                            error.responseText = 'Please create new firewall policy or add firewall policy from inventory.'
-                            callbackObj.error(error);
-                        }
-                    }
                 }else{
                     if (contrail.checkIfFunction(callbackObj.error)) {
                         callbackObj.error(this.getFormErrorText(ctwc.FIREWALL_APPLICATION_POLICY_PREFIX_ID));

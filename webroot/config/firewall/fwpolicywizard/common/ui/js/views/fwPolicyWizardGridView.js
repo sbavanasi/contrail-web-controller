@@ -134,14 +134,16 @@ define([
         return gridElementConfig;
     };
     function getRowActionConfig(dc) {
-        var viewConfig = this,
+        var viewConfig = this, policy = [],
             appPolicySetName = getValueByJsonPath(dc, 'name', '', false),
             rowActionConfig = [
             ctwgc.getEditConfig('Edit', function(rowIndex) {
                 var dataItem = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).
                         data('contrailGrid')._dataView.getItem(rowIndex);
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel(dataItem);
-                var policy = dataItem.firewall_policy_refs.reverse();
+                if(dataItem.firewall_policy_refs !== undefined){
+                   policy = dataItem.firewall_policy_refs.reverse();
+                }
                 fwApplicationPolicyEditView.renderApplicationPolicy({
                                           'viewConfig': $.extend({mode: 'edit'}, viewConfig),
                                           'policy': policy

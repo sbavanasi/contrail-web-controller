@@ -221,7 +221,7 @@ define([
                          }
                      }
                      //tags
-                     var tags = fwPolicyFormatter.filterTagsByProjects(getValueByJsonPath(results, '1;0;0;tags', [], false), options.isGlobal);
+                     var tags = fwPolicyFormatter.filterTagsByProjects(getValueByJsonPath(results, '1;0;0;tags', [], false), options.viewConfig.isGlobal);
                      var addrFields = [];
                      //application
                      var tagGroupData = fwPolicyFormatter.parseTags(tags);
@@ -252,7 +252,7 @@ define([
                          value:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
                          id:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
                          disabled : true }];
-                     var addressGroups = fwPolicyFormatter.filterAddressGroupByProjects(getValueByJsonPath(results, '2;0;0;address-groups', [], false), options.isGlobal);
+                     var addressGroups = fwPolicyFormatter.filterAddressGroupByProjects(getValueByJsonPath(results, '2;0;0;address-groups', [], false), options.viewConfig.isGlobal);
                      if(addressGroups.length > 0){
                          for(var k = 0; k < addressGroups.length; k++){
                              var address = addressGroups[k]['address-group'];

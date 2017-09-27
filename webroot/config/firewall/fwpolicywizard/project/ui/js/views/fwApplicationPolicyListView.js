@@ -17,10 +17,13 @@ define([
             viewConfig = self.attributes.viewConfig,
             currentProject = viewConfig["projectSelectedValueData"];
             self.mode = viewConfig.mode;
-            self.selectedRows = [];
+            self.selectedRows = [], self.oldRecords =[];
             deletedObj = [];
             self.selectedPolicy = viewConfig.policyList;
+            self.oldRecords = viewConfig.oldRecords;
             self.selectedRows = viewConfig.seletedRows;
+            self.isGlobal = viewConfig.isGlobal;
+            self.projectSelected = viewConfig.projectSelected;
             if(viewConfig.isGlobal || viewConfig.isInventory || viewConfig.isEdit){
                 dataObj = JSON.stringify(
                         {data: [{type: 'firewall-policys', fields: ['application_policy_set_back_refs']}]});
@@ -98,10 +101,44 @@ define([
                     }
                 }
             } else {
-               return fwPolicyList; 
+                if(self.oldRecords.length > 0){
+                    var newFwPolicyList = [];
+                    _.each(fwPolicyList, function(policy) {
+                        if(self.oldRecords.indexOf(policy.uuid) === -1){
+                            newFwPolicyList.push(policy);
+                        }
+                    });
+                    return self.fetchGlobalAndProjectRecord(newFwPolicyList, self.isGlobal, self.projectSelected);
+                }else{
+                    return self.fetchGlobalAndProjectRecord(fwPolicyList, self.isGlobal, self.projectSelected);
+                }
             }
         },
-
+        fetchGlobalAndProjectRecord: function(policyList, isGlobal, projectSelected){
+            var newUpdatedList = [];
+            if(isGlobal){
+                _.each(policyList, function(policy) {
+                    if(policy.fq_name.length === 2){
+                        newUpdatedList.push(policy);
+                    }
+                });
+                return newUpdatedList;
+            }else{
+                _.each(policyList, function(policy) {
+                    if(policy.fq_name.length === 2){
+                        newUpdatedList.push(policy);
+                    }
+                });
+                _.each(policyList, function(policy) {
+                    if(policy.fq_name.length === 3){
+                        if(policy.fq_name[1] === projectSelected){
+                           newUpdatedList.push(policy); 
+                        }
+                    }
+                });
+                return newUpdatedList;  
+            }
+        },
         getFWPolicyGlobalGridViewConfig: function(viewConfig) {
             return {
                 elementId:

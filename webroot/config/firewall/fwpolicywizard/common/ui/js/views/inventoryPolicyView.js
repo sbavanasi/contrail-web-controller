@@ -13,12 +13,15 @@ define([
     var inventryPolicyView = ContrailView.extend({
         renderInventoryView: function(options) {
             var self = this;
-            deletedObj = [];
-            headerText = 'Add firewall policy from inventory'
+            deletedObj = []; var projectSelected;
+            var headerText = 'Add firewall policy from inventory'
             var viewConfig = options.viewConfig.viewConfig;
             var applicationObj = options.applicationObj;
             var previousRows = options.previousRows;
             var mode = options.mode;
+            if(viewConfig.projectSelectedValueData !== undefined){
+                projectSelected = viewConfig.projectSelectedValueData.name;
+            }
             $('#aps-overlay-container').show();
             $("#aps-gird-container").empty();
             $('#aps-save-button').show();
@@ -60,7 +63,7 @@ define([
                 }});
             });
             self.renderView4Config($('#gird-details-container'),'',
-                    getInventoryPolicyViewConfig(),
+                    getInventoryPolicyViewConfig(previousRows, viewConfig, projectSelected),
                     '',null, null, function() {
             },null,false);
            
@@ -76,14 +79,22 @@ define([
             $('#aps-gird-container').append($('<div id = "gird-details-container"></div>'));
         }
     });
-    function getInventoryPolicyViewConfig(){
+    function getInventoryPolicyViewConfig(previousRows, viewConfig, projectSelected){
+        var oldRecordsID = [];
+        if(previousRows.length > 0){
+            _.each(previousRows, function(row) {
+                oldRecordsID.push(row.uuid);
+            });
+        }
         return {
             elementId:
                 cowu.formatElementId([ctwc.SECURITY_POLICY_TAG_LIST_VIEW_ID]),
             view: "fwApplicationPolicyListView",
             app: cowc.APP_CONTRAIL_CONTROLLER,
             viewPathPrefix: "config/firewall/fwpolicywizard/project/ui/js/views/",
-            viewConfig: $.extend(true, {}, {isInventory: true})
+            viewConfig: $.extend(true, {}, {isInventory: true,
+                oldRecords: oldRecordsID, isGlobal: viewConfig.isGlobal,
+                projectSelected: projectSelected})
         }
     }
     function getSelectedRows(model, previousRows){
