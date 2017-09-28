@@ -364,10 +364,15 @@ define([
                         onNext: function(params) {
                             return params.model.addEditApplicationSet({
                                 success: function () {
-                                    $("#" + modalId).find(".contrailWizard").data("contrailWizard").destroy();
+                                    if($("#" + modalId).find(".contrailWizard").data("contrailWizard")){
+                                        $("#" + modalId).find(".contrailWizard").data("contrailWizard").destroy();
+                                    }
                                     $("#" + modalId).modal("hide");
-                                    if($('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid") !== undefined){
-                                        $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid")._dataView.refreshData();  
+                                    if($('#fw-policy-grid').data("contrailGrid") !== undefined){
+                                        $('#fw-policy-grid').data("contrailGrid")._dataView.refreshData();
+                                    }
+                                    if($('#firewall-application-policy-grid').data("contrailGrid") !== undefined){
+                                        $('#firewall-application-policy-grid').data("contrailGrid")._dataView.refreshData();
                                     }
                                     isBinding = false;
                                 },

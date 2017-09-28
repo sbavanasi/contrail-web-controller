@@ -905,7 +905,7 @@ and need to add the iconClass tag wherever we need to show some icons
                                     <rootDir>/config/infra/tag/ui</rootDir>
                                     <js>tagGlobal.main.js</js>
                                     <class>tagGlobalPageLoader</class>
-                                    <function>renderTagView</function>
+                                    <function>render</function>
                                 </resource>
                             </resources>
                             <searchStrings>Configure Tags, Global Tags</searchStrings>

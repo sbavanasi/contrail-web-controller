@@ -3,7 +3,7 @@
  */
 
 define([
-    'underscore',
+    'lodash',
     'contrail-view',
     'contrail-list-model',
     'config/firewall/common/tag/ui/js/tagUtils'
@@ -12,7 +12,7 @@ define([
         el: $(contentContainer),
         render: function () {
             var self = this,
-                viewConfig = this.attributes.viewConfig;
+                viewConfig = _.get(this, 'attributes.viewConfig', {});
             var listModelConfig = {
                 remote: {
                     ajaxConfig: {
@@ -68,7 +68,7 @@ define([
                                         }
                                     },
                                     isGlobal: true,
-                                    isWizard: viewConfig.isWizard
+                                    isWizard: viewConfig ? viewConfig.isWizard : false
                                 }
                             }
                         ]
