@@ -436,7 +436,10 @@ define([
             });
             $.when.apply($, getAjaxs).then(function(){
                 var fwPolicyData = getValueByJsonPath(arguments, "0;0;firewall-policys", []);
-                var policyList = [];
+                var policyList = [], sequenceCount = '0';
+                if(newApplicationSet.existingRows.length > 0){
+                    sequenceCount = newApplicationSet.existingRows.length.toString();
+                }
                 _.each(fwPolicyData, function(val){
                         if('firewall-policy' in val){
                             if(val['firewall-policy'].uuid === model[0].uuid){
@@ -444,12 +447,27 @@ define([
                                 var to = val['firewall-policy'].fq_name;
                                 obj.to = to;
                                 obj.attr = {};
-                                obj.attr.sequence = '0';
+                                obj.attr.sequence = sequenceCount;
                                 policyList.push(obj);
                             }
                        }
                 });
-                self.addApplicationPolicySet(policyList, callbackObj, options);
+                if(newApplicationSet.existingRows.length > 0){
+                    var existingRows = newApplicationSet.existingRows;
+                    var existingPolicy = [];
+                    for(var m = 0; m < existingRows.length; m++){
+                        var obj = {};
+                        var to = existingRows[m].fq_name;
+                        obj.to = to;
+                        obj.attr = {};
+                        obj.attr.sequence = m.toString();
+                        existingPolicy.push(obj);
+                    }
+                    var newPolicyList = existingPolicy.concat(policyList);
+                    self.addApplicationPolicySet(newPolicyList, callbackObj, options);
+                }else{
+                    self.addApplicationPolicySet(policyList, callbackObj, options);
+                }
             })
         },
         addApplicationPolicySet : function(policyList, callbackObj, options){

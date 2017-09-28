@@ -156,6 +156,8 @@ define([
                         newApplicationSet.uuid = ko.contextFor($('#name').get(0)).$data.uuid();
                         newApplicationSet.id_perms = ko.contextFor($('#name').get(0)).$data.id_perms();
                     }
+                    var existingRows = $(gridElId).data("contrailGrid")._dataView.getItems();
+                    newApplicationSet.existingRows = existingRows;
                     $('#aps-overlay-container').hide();
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
