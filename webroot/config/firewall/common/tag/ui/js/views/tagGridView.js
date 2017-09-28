@@ -154,9 +154,9 @@ define([
                         {
                             id: "ref_obj",
                             field: "ref_obj",
-                            name: "Associated Objects",
+                            name: "Associated Projects",
                             width: 180,
-                            formatter: othersFormatter,
+                            formatter: associatedProjectFormatter,
                             sortable: {
                                 sortBy: 'formattedValue'
                             }
@@ -329,6 +329,14 @@ define([
                                                 },{
                                                     key: 'tag_id',
                                                     templateGenerator: 'TextGenerator',
+                                                    label: 'Associated Projects',
+                                                    keyClass:'col-xs-4',
+                                                    templateGeneratorConfig: {
+                                                        formatter: 'detailsAssociatedProjectFormatter'
+                                                    }
+                                                },{
+                                                    key: 'tag_id',
+                                                    templateGenerator: 'TextGenerator',
                                                     label: 'Associated Objects',
                                                     keyClass:'col-xs-4',
                                                     templateGeneratorConfig: {
@@ -359,7 +367,10 @@ define([
     };
     this.detailsOthersFormatter = function(value, dc) {
         return othersFormatter(null, null, null, value, dc, true);
-    }
+    };
+    this.detailsAssociatedProjectFormatter = function(value, dc) {
+        return associatedProjectFormatter(null, null, null, value, dc, true);
+    };
     function virtualNetworkFormatter(r, c, v, cd, dc, showAll){
     	var returnString = '',refList = [];
     	var vn = getValueByJsonPath(dc, 'virtual_network_back_refs', []);
@@ -492,6 +503,40 @@ define([
             }
         }else{
         	returnString = '-';
+        }
+        return  returnString;
+    };
+    function associatedProjectFormatter(r, c, v, cd, dc, showAll){
+        var returnString = '',projectList = [];
+        var projectRef = getValueByJsonPath(dc, 'project_back_refs', []);
+        for(var j = 0; j < projectRef.length; j++){
+            var to = projectRef[j].to;
+            var name = to[to.length-1];
+            var projectText = '<span>'+ name +'</span>';
+            projectList.push(projectText);
+        }
+
+        if(projectList.length > 0){
+            if ((null != showAll) && (true == showAll)) {
+                for (var q = 0; q < projectList.length; q++) {
+                    if (typeof projectList[q] !== "undefined") {
+                        returnString += projectList[q] + "<br>";
+                    }
+                }
+                return returnString;
+            }
+            for(var l = 0; l< projectList.length,l < 2; l++){
+                if(projectList[l]) {
+                    returnString += projectList[l] + "<br>";
+                }
+            }
+            if (projectList.length > 2) {
+                returnString += '<span class="moredataText">(' +
+                    (projectList.length-2) + ' more)</span> \
+                    <span class="moredata" style="display:none;" ></span>';
+            }
+        }else{
+            returnString = '-';
         }
         return  returnString;
     };
