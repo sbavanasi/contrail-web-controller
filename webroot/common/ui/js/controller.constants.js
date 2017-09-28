@@ -938,6 +938,8 @@ define([
         this.FW_POLICY_GLOBAL_TAB_ID = "config-fw-policy-tab";
         this.CONFIG_SECURITY_POLICY_PAGE_ID = 'config-security-policy-page';
         this.TITLE_SEC_GRP_TAG = "Tags";
+        this.STANDALONE_FIREWALL_POLICIES = "Stand Alone Firewall Policies";
+        this.ALL_FIREWALL_POLICIES = "All Firewall Policies";
         this.TITLE_SEC_GRP_SERVICE_GROUP = "Service Groups";
         this.TITLE_SEC_GRP_ADDRESS_GROUP = "Address Groups";
         this.GLOBAL_SECURITY_POLICY_TAB_ID = 'security-policy-tab';

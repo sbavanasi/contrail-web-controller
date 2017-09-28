@@ -166,9 +166,14 @@ define([
                              dataView.refreshData();
                  }});
              })
-            //rowActionConfig.push(deleteActionConfig);
         }
-        return rowActionConfig;
+        if(appPolicySetName === ctwc.STANDALONE_FIREWALL_POLICIES ||
+                appPolicySetName === ctwc.ALL_FIREWALL_POLICIES){
+                 return false;
+        }
+        else{
+            return rowActionConfig;
+        }
     }
     function getHeaderActionConfig(viewConfig) {
         var dropdownActions = [
