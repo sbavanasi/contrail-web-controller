@@ -29,6 +29,11 @@ define([
             };
             this.contrailListModel = new ContrailListModel(listModelConfig);
             this.renderView4Config(this.$el, this.contrailListModel, getTagGridViewConfig(viewConfig));
+            $("#aps-back-button").off('click').on('click', function(){
+                $('#modal-landing-container').show();
+                $("#aps-gird-container").empty();
+                $('#aps-landing-container').hide();
+            });
         },
         parseTagData : function(response){
             var dataItems = [],

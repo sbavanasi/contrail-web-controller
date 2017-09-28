@@ -28,6 +28,11 @@ define([
             var contrailListModel = new ContrailListModel(listModelConfig);
             this.renderView4Config(this.$el,
                  contrailListModel, getAddressGroupGridViewConfig(viewConfig));
+            $("#aps-back-button").off('click').on('click', function(){
+                $('#modal-landing-container').show();
+                $("#aps-gird-container").empty();
+                $('#aps-landing-container').hide();
+            });
         },
         parseAddressData : function(response){
             var dataItems = [],
