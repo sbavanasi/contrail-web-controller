@@ -25,8 +25,8 @@ define([
 	        self.setErrorContainer(headerText);
 	        if(mode === 'delete'){
 	            $('#aps-save-button').text('Confirm');
-	            var deleteContainer = $('<div style="padding-top:30px;"></div>');
-	            var deletText = $('<span style="padding-left:300px;">Are you sure you want to delete ?</span>');
+	            var deleteContainer = $('<div></div>');
+	            var deletText = $('<span style="padding-left:10px;">Are you sure you want to delete ?</span>');
 	            deleteContainer.append(deletText);
 	            $('#gird-details-container').append(deleteContainer);
 	            //back method

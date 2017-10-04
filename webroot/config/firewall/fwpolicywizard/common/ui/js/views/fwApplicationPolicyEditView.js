@@ -73,12 +73,14 @@ define([
             }else{
                 $("#aps-back-button").text('Cancel');
                 $("#aps-back-button").off('click').on('click', function(){
+                    $("#overlay-background-id").removeClass("overlay-background");
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
                     $('#aps-save-button').text('Save');
                     $('#aps-overlay-container').hide();
                 });
                 $("#aps-save-button").off('click').on('click', function(){
+                    $("#overlay-background-id").addClass("overlay-background");
                     self.model.addEditApplicationSet({
                         success: function () {
                             $('#aps-save-button').hide();

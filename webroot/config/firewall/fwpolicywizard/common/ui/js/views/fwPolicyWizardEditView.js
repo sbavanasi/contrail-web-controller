@@ -30,30 +30,24 @@ define([
                     $("#" + modalId).find('.modal-footer').hide();
 
                     function getAdressGroupClick(e){
+                        fwzUtils.viewAdressGroup();
                         e.preventDefault();
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                        $('#aps-overlay-container .dropdown').hide();
                         self.renderObject(options, 'address_groups');
                         return true;
                     }
                     function getServiceGroupClick(e){
+                        fwzUtils.viewServiceGroup();
                         e.preventDefault();
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                        $('#aps-overlay-container .dropdown').hide();
                         self.renderObject(options, 'service_groups');
                     }
                     function visibleTagClick(e){
+                        fwzUtils.viewTags();
                         e.preventDefault();
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                        $('#aps-overlay-container .dropdown').hide();
                         self.renderObject(options, 'tag');
                     }
-                    function backButtonClick(){
-                        $('#modal-landing-container').show();
-                        $("#aps-gird-container").empty();
-                        $('#aps-landing-container').hide();
-                    }
-
                     $("#review_address_groups").on('click', function(e) {
                         getAdressGroupClick(e);
                     });
@@ -63,8 +57,13 @@ define([
                     $("#review_visible_tag_for_project").on('click', function(e) {
                         visibleTagClick(e);
                     });
+                    $("#create-firewall-policy").on('click',function(e){
+                        e.preventDefault();
+                        fwzUtils.viewApplicationPolicySet();
+                        self.renderObject(options, 'addIcon', self);
+                    });
                     $("#aps-plus-icon").on('click', function(){
-                        $('#aps-overlay-container .dropdown').show();
+                        fwzUtils.viewApplicationPolicySet();
                         self.renderObject(options, 'addIcon', self);
                     });
                     $("#view-address-group").on('click', function(e) {
@@ -77,18 +76,20 @@ define([
                         visibleTagClick(e);
                     });
                     $("#aps-back-button").on('click', function(){
-                        backButtonClick();
+                        fwzUtils.backButtonClick();
                     });
                     $("#aps-main-back-button").on('click', function(){
-                       backButtonClick();
+                        fwzUtils.backButtonClick();
                     });
                     $("#aps-create-fwpolicy-remove-icon").on('click', function(){
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                         $('#aps-overlay-container').hide();
+                        $("#overlay-background-id").removeClass("overlay-background");
                     });
                     $("#aps-remove-icon").on('click', function(){
                         Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                        backButtonClick();
+                        $("#overlay-background-id").removeClass("overlay-background");
+                        fwzUtils.backButtonClick();
                     })
             },null,false);
         },

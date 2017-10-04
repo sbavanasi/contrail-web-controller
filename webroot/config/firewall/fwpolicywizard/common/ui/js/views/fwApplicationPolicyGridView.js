@@ -147,6 +147,7 @@ define([
                 "title": "Create new firewall policy",
                 "onClick": function () {
                     $('#aps-main-back-button').hide();
+                    $("#overlay-background-id").removeClass("overlay-background");
                     newApplicationSet = {
                             name:  ko.contextFor($('#name').get(0)).$data.name(),
                             Application: ko.contextFor($('#Application').get(0)).$data.Application(),

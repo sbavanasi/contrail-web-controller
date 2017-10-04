@@ -8,9 +8,11 @@ define([
     'backbone',
     'contrail-view',
     'config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel',
-    'config/firewall/fwpolicywizard/common/ui/js/views/fwApplicationPolicyEditView'
-], function (_, moment, Backbone, ContrailView, FwPolicyWizardModel, FwApplicationPolicyEditView) {
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwApplicationPolicyEditView',
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizard.utils'
+], function (_, moment, Backbone, ContrailView, FwPolicyWizardModel, FwApplicationPolicyEditView,FWZUtils) {
     var fwApplicationPolicyEditView = new FwApplicationPolicyEditView(),
+        fwzUtils = new FWZUtils(),
         gridElId = "#" + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID;
 
     var fwPolicyWizardGridView = ContrailView.extend({
@@ -180,6 +182,7 @@ define([
             {
                 "title": "Create application policy set",
                 "onClick": function () {
+                    fwzUtils.createApplicationPolicySet();
                     fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
                     fwApplicationPolicyEditView.renderApplicationPolicy({
                                               'viewConfig': $.extend({mode:'add'}, viewConfig)

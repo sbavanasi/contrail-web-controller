@@ -396,6 +396,40 @@ define([
             };
             return retStr;
         }
+        self.createApplicationPolicySet = function(){
+            $("#overlay-background-id").addClass("overlay-background");
+            $('#view-address-group').show();
+            $('#view-service-group').show();
+            $('#view-visble-tags').show();
+        }
+        self.viewAdressGroup = function(){
+            $('#create-firewall-policy').show();
+            $('#view-address-group').hide();
+            $('#view-service-group').show();
+            $('#view-visble-tags').show();
+        }
+        self.viewServiceGroup = function(){
+            $('#create-firewall-policy').show();
+            $('#view-address-group').show();
+            $('#view-service-group').hide();
+            $('#view-visble-tags').show();
+        }
+        self.viewTags = function(){
+            $('#create-firewall-policy').show();
+            $('#view-address-group').show();
+            $('#view-service-group').show();
+            $('#view-visble-tags').hide();
+        }
+        self.viewApplicationPolicySet = function(){
+            $('#aps-overlay-container .dropdown').show();
+            $('#create-firewall-policy').hide();
+            $("#overlay-background-id").removeClass("overlay-background");
+        }
+        self.backButtonClick = function(){
+            $('#modal-landing-container').show();
+            $("#aps-gird-container").empty();
+            $('#aps-landing-container').hide();
+        }
     };
     this.serviceGroupDataFormatter = function(response){
         var serviceGrpList = [];

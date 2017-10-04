@@ -689,11 +689,21 @@ form h5.margin-0-0-10~.section-content {
     height:500px;
     position: relative;
 }
+.overlay-background{
+    position:absolute;
+    background:#e8e8e8;
+    opacity:0.2;
+    height:100%;
+    width:100%;
+    top:0;
+    z-index:12;
+    cursor:auto;
+}
 #aps-overlay-container{
     border-left: 1px solid #e5e5e5;
     position: absolute;
     width: 70%;
-    z-index: 5;
+    z-index: 16;
     right: 0;
     top: 0;
     background:#fff;
@@ -707,10 +717,10 @@ form h5.margin-0-0-10~.section-content {
 }
 #aps-overlay-container .ellipsis > li > a{
     font-size: 12px;
-    color:#3182BD;
+    color:#3182BD !important;
  }
 #aps-overlay-container .ellipsis > li > a:hover, #aps-overlay-container .ellipsis > li > a:visited{
-    color:#ffffff;
+    color:#fff !important;
 }
 #aps-overlay-container .ellipsis{
   padding:5px;
@@ -718,6 +728,21 @@ form h5.margin-0-0-10~.section-content {
   border:#D8E2E5 solid 2px;
   left:-150px!important;
   top:30px!important;
+}
+#aps-overlay-container .dropdown{
+    position:absolute;
+    right:30px;
+    z-index:10;
+}
+#aps-overlay-container .close-btn-container{
+    position:absolute;
+    right:0px;
+    z-index:10;
+}
+#fw_security_policy_as_grid_view-header div.widget-toolbar:nth-child(2),
+#fw_security_policy_service_gp_grid_view-header div.widget-toolbar:nth-child(2),
+#security-policy-tag-grid-header div.widget-toolbar:nth-child(2){
+    margin-right: 60px;
 }
 #aps-overlay-container .dropdown-toggle{
     margin-top:12px;
@@ -748,6 +773,7 @@ form h5.margin-0-0-10~.section-content {
     font-weight: normal;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 5px 0px 0px 2px;
+    padding:5px;
 }
 #gird-details-container{
 	padding-top: 10px;
@@ -776,4 +802,7 @@ right:12px;}
 }
 #aps-landing-container .wizard > .content > .body ul{
     list-style:none !important;
+}
+#fw-wz-policy-grid #btnAddPolicy{
+    margin-top:0px !important;
 }
