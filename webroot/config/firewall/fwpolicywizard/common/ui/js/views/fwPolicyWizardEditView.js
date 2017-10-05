@@ -101,23 +101,23 @@ define([
             var placeHolder = $('#aps-gird-container');
             var viewConfig = options['viewConfig'];
             if(objName === 'address_groups'){
-                $('#aps-main-container').hide();
-                $('#aps-create-fwpolicy-remove-icon').hide();
-                $('#aps-remove-icon').show();
-                $('#aps-overlay-container').show();
-                this.renderView4Config(placeHolder, null, getAddressGroup(viewConfig));
+                $('#aps-main-container').show();
+                $('#aps-create-fwpolicy-remove-icon').show();
+                $('#aps-remove-icon').hide();
+                $('#aps-overlay-container').hide();
+                this.renderView4Config($('#aps-sub-container'), null, getAddressGroup(viewConfig));
             }else if(objName === 'service_groups'){
-                $('#aps-main-container').hide();
-                $('#aps-create-fwpolicy-remove-icon').hide();
-                $('#aps-remove-icon').show();
-                $('#aps-overlay-container').show();
-                this.renderView4Config(placeHolder, null, getServiceGroup(viewConfig));
+                $('#aps-main-container').show();
+                $('#aps-create-fwpolicy-remove-icon').show();
+                $('#aps-remove-icon').hide();
+                $('#aps-overlay-container').hide();
+                this.renderView4Config($('#aps-sub-container'), null, getServiceGroup(viewConfig));
             }else if(objName === 'tag'){
-                $('#aps-main-container').hide();
-                $('#aps-create-fwpolicy-remove-icon').hide();
-                $('#aps-remove-icon').show();
-                $('#aps-overlay-container').show();
-                this.renderView4Config(placeHolder, null, getTag(viewConfig));
+                $('#aps-main-container').show();
+                $('#aps-create-fwpolicy-remove-icon').show();
+                $('#aps-remove-icon').hide();
+                $('#aps-overlay-container').hide();
+                this.renderView4Config($('#aps-sub-container'), null, getTag(viewConfig));
             }else if(objName === 'addIcon'){
                 $('#aps-main-container').show();
                 $('#aps-create-fwpolicy-remove-icon').show();

@@ -189,6 +189,7 @@ define([
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
                     if(viewConfig.isWizard){
+                        $("#overlay-background-id").addClass("overlay-background");
                         overlayAddressGroupEditView.model = new AddressGroupModel();
                         overlayAddressGroupEditView.renderAddressGroup({
                             'mode': 'add',

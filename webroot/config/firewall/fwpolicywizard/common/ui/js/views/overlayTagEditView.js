@@ -17,6 +17,7 @@ define([
                 headerText = 'Delete Tag';
             }
             var viewConfig = options.viewConfig;
+            $('#aps-overlay-container').show();
             $("#aps-gird-container").empty();
             $('#aps-save-button').show();
             self.setErrorContainer(headerText);
@@ -29,6 +30,8 @@ define([
                 //back method
                 $("#aps-back-button").off('click').on('click', function(){
                     $('#aps-save-button').hide();
+                    $('#aps-overlay-container').hide();
+                    $("#overlay-background-id").removeClass("overlay-background");
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
                     self.renderView4Config($("#aps-gird-container"), null, getTag(viewConfig));
@@ -40,10 +43,12 @@ define([
                     self.model.deleteTag(options['selectedGridData'],{
                         success: function () {
                             $('#aps-save-button').text('Save');
+                            $('#aps-overlay-container').hide();
+                            $("#overlay-background-id").removeClass("overlay-background");
                             $('#aps-save-button').hide();
+                            $('#security-policy-tag-grid').data("contrailGrid")._dataView.refreshData();
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
-                            self.renderView4Config($("#aps-gird-container"), null, getTag(viewConfig));
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -60,17 +65,22 @@ define([
                         null, null, function() {
                              $("#aps-back-button").off('click').on('click', function(){
                                  $('#aps-save-button').hide();
+                                 $('#aps-overlay-container').hide();
+                                 $("#overlay-background-id").removeClass("overlay-background");
                                  Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                  $("#aps-gird-container").empty();
-                                 self.renderView4Config($("#aps-gird-container"), null, getTag(viewConfig));
+                                 //self.renderView4Config($("#aps-gird-container"), null, getTag(viewConfig));
                              });
                              $("#aps-save-button").off('click').on('click', function(){
                                  self.model.addEditTag({
                                      success: function () {
                                          $('#aps-save-button').hide();
+                                         $('#aps-overlay-container').hide();
                                          Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                          $("#aps-gird-container").empty();
-                                         self.renderView4Config($("#aps-gird-container"), null, getTag(viewConfig));
+                                         //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                                         $('#security-policy-tag-grid').data("contrailGrid")._dataView.refreshData();
+                                         $("#overlay-background-id").removeClass("overlay-background");
                                      },
                                      error: function (error) {
                                          $("#grid-details-error-container").text('');

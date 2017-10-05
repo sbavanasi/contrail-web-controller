@@ -403,18 +403,21 @@ define([
             $('#view-visble-tags').show();
         }
         self.viewAdressGroup = function(){
+            $("#overlay-background-id").removeClass("overlay-background");
             $('#create-firewall-policy').show();
             $('#view-address-group').hide();
             $('#view-service-group').show();
             $('#view-visble-tags').show();
         }
         self.viewServiceGroup = function(){
+            $("#overlay-background-id").removeClass("overlay-background");
             $('#create-firewall-policy').show();
             $('#view-address-group').show();
             $('#view-service-group').hide();
             $('#view-visble-tags').show();
         }
         self.viewTags = function(){
+            $("#overlay-background-id").removeClass("overlay-background");
             $('#create-firewall-policy').show();
             $('#view-address-group').show();
             $('#view-service-group').show();

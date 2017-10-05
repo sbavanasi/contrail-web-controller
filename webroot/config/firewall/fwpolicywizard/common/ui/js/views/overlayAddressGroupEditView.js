@@ -20,8 +20,9 @@ define([
                 headerText = 'Delete Address Group';
             }
            var viewConfig = options.viewConfig;
-            $("#aps-gird-container").empty();
-	        $('#aps-save-button').show();
+           $('#aps-overlay-container').show();
+           $("#aps-gird-container").empty();
+           $('#aps-save-button').show();
 	        self.setErrorContainer(headerText);
 	        if(mode === 'delete'){
 	            $('#aps-save-button').text('Confirm');
@@ -32,6 +33,8 @@ define([
 	            //back method
 	            $("#aps-back-button").off('click').on('click', function(){
 	                $('#aps-save-button').hide();
+	                $('#aps-overlay-container').hide();
+                    $("#overlay-background-id").removeClass("overlay-background");
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
                     self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
@@ -43,10 +46,13 @@ define([
                     self.model.deleteAddressGroup(options['selectedGridData'],{
                         success: function () {
                             $('#aps-save-button').text('Save');
+                            $('#aps-overlay-container').hide();
+                            $("#overlay-background-id").removeClass("overlay-background");
                             $('#aps-save-button').hide();
+                            $('#fw_security_policy_as_grid_view').data("contrailGrid")._dataView.refreshData();
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
-                            self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                            //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -63,17 +69,22 @@ define([
                         null, null, function() {
                              $("#aps-back-button").off('click').on('click', function(){
                                  $('#aps-save-button').hide();
+                                 $('#aps-overlay-container').hide();
+                                 $("#overlay-background-id").removeClass("overlay-background");
                                  Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                  $("#aps-gird-container").empty();
-                                 self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                                 //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                              });
                              $("#aps-save-button").off('click').on('click', function(){
                                  self.model.addEditAddressGroup({
                                      success: function () {
                                          $('#aps-save-button').hide();
+                                         $('#aps-overlay-container').hide();
                                          Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                          $("#aps-gird-container").empty();
-                                         self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                                         //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                                         $('#fw_security_policy_as_grid_view').data("contrailGrid")._dataView.refreshData();
+                                         $("#overlay-background-id").removeClass("overlay-background");
                                      },
                                      error: function (error) {
                                          $("#grid-details-error-container").text('');

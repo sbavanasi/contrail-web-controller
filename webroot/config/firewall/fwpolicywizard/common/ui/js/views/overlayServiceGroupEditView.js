@@ -20,6 +20,7 @@ define([
                 headerText = 'Delete Service Group';
             }
             var viewConfig = options.viewConfig;
+            $('#aps-overlay-container').show();
             $("#aps-gird-container").empty();
             $('#aps-save-button').show();
             self.setErrorContainer(headerText);
@@ -32,6 +33,8 @@ define([
                 //back method
                 $("#aps-back-button").off('click').on('click', function(){
                     $('#aps-save-button').hide();
+                    $('#aps-overlay-container').hide();
+                    $("#overlay-background-id").removeClass("overlay-background");
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
                     self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
@@ -43,10 +46,13 @@ define([
                     self.model.deleteServiceGroup(options['selectedGridData'],{
                         success: function () {
                             $('#aps-save-button').text('Save');
+                            $('#aps-overlay-container').hide();
+                            $("#overlay-background-id").removeClass("overlay-background");
                             $('#aps-save-button').hide();
+                            $('#fw_security_policy_service_gp_grid_view').data("contrailGrid")._dataView.refreshData();
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
-                            self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
+                           // self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -63,17 +69,22 @@ define([
                         null, null, function() {
                              $("#aps-back-button").off('click').on('click', function(){
                                  $('#aps-save-button').hide();
+                                 $('#aps-overlay-container').hide();
+                                 $("#overlay-background-id").removeClass("overlay-background");
                                  Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                  $("#aps-gird-container").empty();
-                                 self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
+                                 //self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
                              });
                              $("#aps-save-button").off('click').on('click', function(){
                                  self.model.addEditServiceGroup({
                                      success: function () {
                                          $('#aps-save-button').hide();
+                                         $('#aps-overlay-container').hide();
                                          Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                          $("#aps-gird-container").empty();
-                                         self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
+                                         //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
+                                         $('#fw_security_policy_service_gp_grid_view').data("contrailGrid")._dataView.refreshData();
+                                         $("#overlay-background-id").removeClass("overlay-background");
                                      },
                                      error: function (error) {
                                          $("#grid-details-error-container").text('');
