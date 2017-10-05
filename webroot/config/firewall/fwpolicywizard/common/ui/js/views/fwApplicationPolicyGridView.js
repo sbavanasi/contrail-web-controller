@@ -11,7 +11,7 @@ define([
     'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView',
     'config/firewall/fwpolicywizard/common/ui/js/views/inventoryPolicyView'
 ], function(_, ContrailView, Knockback, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView, InventoryPolicyView) {
-    var self, gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID,
+    var self, gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID, updatedGridList = [];
       fwPolicyFormatter = new FWPolicyFormatter(),
       fwPolicyEditView =  new FWPolicyEditView(),
       inventoryPolicyView = new InventoryPolicyView();
@@ -52,43 +52,75 @@ define([
         }
     };
 
-    function getRowActionConfig() {
-        var rowActionConfig = [];
-        rowActionConfig.push(ctwgc.getEditConfig("Edit", function (rowIndex) {
-            var dataItem = $(gridElId).data("contrailGrid").
-                _dataView.getItem(rowIndex),
-                fwPolicyModel = new FWPolicyModel(dataItem);
-            fwPolicyEditView.model = fwPolicyModel;
-            fwPolicyEditView.renderEditFirewallPolicyDescription(
-                {"title": ctwl.EDIT,
-                    mode: ctwl.EDIT_ACTION,
-                    callback: function () {
-                        var dataView =
-                            $(gridElId).data("contrailGrid")._dataView;
-                        dataView.refreshData();
-                    }
+    function getRowActionConfig(dc) {
+        var viewConfig = this;
+        var rowActionConfig = [
+            {
+                "type" : "link",
+                "title" : 'Move Policy Up',
+                "iconClass" : "fa fa-arrow-up",
+                "onClick" : function(rowIndex) {
+                    var dataView = $('#' + ctwc.FW_WZ_POLICY_GRID_ID).data("contrailGrid")._dataView;
+                    var items = dataView.getItems();
+                    var nextIndex = rowIndex - 1;
+                    var currentData = items[rowIndex];
+                    currentData.cgrid = 'id_' + nextIndex;
+                    var nextData = items[nextIndex];
+                    nextData.cgrid = 'id_' + rowIndex;
+                    items[rowIndex] = nextData;
+                    items[rowIndex - 1] = currentData;
+                    updatedGridList = [];
+                    _.each(items, function(obj) {
+                        var fqName = obj.fq_name;
+                        updatedGridList.push(fqName[fqName.length - 1]);
+                    });
+                    dataView.updateData(items);
                 }
-            );
-        }));
-        rowActionConfig.push(ctwgc.getDeleteAction(function (rowIndex) {
-              var dataItem = $(gridElId).data("contrailGrid").
-                  _dataView.getItem(rowIndex),
-                  fwPolicyModel = new FWPolicyModel(dataItem),
-                  checkedRow = [dataItem];
-
-              fwPolicyEditView.model = fwPolicyModel;
-              fwPolicyEditView.renderDeleteFWPolicies(
-                  {"title": ctwl.TITLE_FW_POLICY_DELETE,
-                      checkedRows: checkedRow,
-                      callback: function () {
-                          var dataView =
-                              $(gridElId).data("contrailGrid")._dataView;
-                          dataView.refreshData();
-                      }
-                  }
-              );
-        }));
-        return rowActionConfig;
+            },
+            {
+                "type" : "link",
+                "title" : 'Move Policy Down',
+                "iconClass" : "fa fa-arrow-down",
+                "onClick" : function(rowIndex) {
+                    var dataView = $('#' + ctwc.FW_WZ_POLICY_GRID_ID).data("contrailGrid")._dataView;
+                    var items = dataView.getItems();
+                    var nextIndex = rowIndex + 1;
+                    var currentData = items[rowIndex];
+                    currentData.cgrid = 'id_' + nextIndex;
+                    var nextData = items[nextIndex];
+                    nextData.cgrid = 'id_' + rowIndex;
+                    items[rowIndex] = nextData;
+                    items[rowIndex + 1] = currentData;
+                    updatedGridList = [];
+                    _.each(items, function(obj) {
+                        var fqName = obj.fq_name;
+                        updatedGridList.push(fqName[fqName.length - 1]);
+                    });
+                    dataView.updateData(items);
+                }
+            }
+        ];
+        var list = viewConfig.policyGridList.list;
+        if(list.length == 1){
+            return [];
+        }else {
+           var fqName = dc.fq_name[dc.fq_name.length - 1];
+           if(updatedGridList.length > 0){
+               list = updatedGridList;
+           }
+           var lastCount = list.length - 1;
+           if(list.indexOf(fqName) === 0){
+               var option = [];
+               option.push(rowActionConfig[1]);
+               return option;
+           }else if(list.indexOf(fqName) === lastCount){
+               var option = [];
+               option.push(rowActionConfig[0]);
+               return option;
+           }else{
+              return rowActionConfig;
+           }
+        }
     };
 
     function getConfiguration (viewConfig) {
@@ -101,7 +133,7 @@ define([
         var gridElementConfig = {
             header: {
                 title: {
-                    text: ctwl.TITLE_FW_POLICY
+                    text: ctwl.TITLE_ASSOCIATED_POLICY
                 },
                advanceControls: getHeaderActionConfig(viewConfig)
             },
@@ -116,7 +148,7 @@ define([
                                 removeClass('disabled-link');
                         }
                     },
-                    actionCell: [],  //getRowActionConfig(viewConfig),
+                    actionCell: getRowActionConfig.bind(viewConfig),
                     detail: {
                         template:
                             cowu.generateDetailTemplateHTML(
@@ -137,6 +169,9 @@ define([
             },
             columnHeader: { columns: getfwPolicyColumns(viewConfig)}
         };
+        if(viewConfig.viewConfig.isInventory){
+            gridElementConfig.body.options.actionCell = [];
+        }
         return gridElementConfig;
     };
 
@@ -251,11 +286,11 @@ define([
         var fwPolicyColumns = [{
             id: 'name',
             field: 'name',
-            name: 'Name',
-            cssClass :'cell-hyperlink-blue',
-            events : {
-                onClick : onPolicyClick.bind({viewConfig:viewConfig})
-            }
+            name: 'Name'//,
+            //cssClass :'cell-hyperlink-blue',
+            //events : {
+              //  onClick : onPolicyClick.bind({viewConfig:viewConfig})
+            //}
          }, {
              id: 'id_perms.description',
              field: 'id_perms.description',
@@ -272,10 +307,10 @@ define([
              id: 'firewall_rule_refs',
              field: 'firewall_rule_refs',
              name: 'Rules',
-             cssClass :'cell-hyperlink-blue',
-             events : {
-                 onClick : onPolicyClick.bind({viewConfig:viewConfig})
-             },
+             //cssClass :'cell-hyperlink-blue',
+             //events : {
+                // onClick : onPolicyClick.bind({viewConfig:viewConfig})
+            // },
              minWidth : 80,
              formatter:
                  fwPolicyFormatter.fwRuleFormatter

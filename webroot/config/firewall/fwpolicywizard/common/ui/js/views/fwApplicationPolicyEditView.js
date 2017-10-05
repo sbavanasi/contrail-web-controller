@@ -14,7 +14,7 @@ define([
     var fwApplicationPolicyEditView = ContrailView.extend({
         renderApplicationPolicy: function(options) {
 
-            var self = this,disable = false, slecectedPolicyList;
+            var self = this,disable = false, slecectedPolicyList, apsName;
             var mode = options.viewConfig.mode, headerText;
             var viewConfig = options.viewConfig;
             if(mode === 'edit'){
@@ -22,6 +22,7 @@ define([
                 headerText = 'Edit Application Policy Sets';
                 viewConfig.isEdit = true;
                 slecectedPolicyList  = getPolicyList(options.policy);
+                apsName = options.apsName;
             }else if(mode === 'add'){
                 headerText = 'Create Application Policy Sets';
             }else{
@@ -99,7 +100,7 @@ define([
                 });
                 self.renderView4Config($('#gird-details-container'),
                         this.model,
-                        getApplicationPolicyViewConfig(disable, viewConfig, seletedRows, slecectedPolicyList),
+                        getApplicationPolicyViewConfig(disable, viewConfig, seletedRows, slecectedPolicyList, apsName),
                         "applicationPolicyValidation",
                         null, null, function() {
                     //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
@@ -127,7 +128,7 @@ define([
         });
         return uuidList;
     };
-    var getApplicationPolicyViewConfig = function (isDisable, viewConfig, seletedRows, slecectedPolicyList) {
+    var getApplicationPolicyViewConfig = function (isDisable, viewConfig, seletedRows, slecectedPolicyList, apsName) {
         var policyParam = {data: [{type: 'firewall-policys'}]};
         var tagsFiiteredArray = [];
         var tagsArray = [];
@@ -243,7 +244,8 @@ define([
                                    viewConfig: $.extend(true, {}, viewConfig,{
                                        projectSelectedValueData: viewConfig.projectSelectedValueData,
                                        seletedRows : seletedRows,
-                                       policyList : slecectedPolicyList
+                                       policyList : slecectedPolicyList,
+                                       apsName : apsName
                                    })
                                }
                            ]

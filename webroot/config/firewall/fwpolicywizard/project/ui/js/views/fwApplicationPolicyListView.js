@@ -19,6 +19,9 @@ define([
             self.mode = viewConfig.mode;
             self.selectedRows = [], self.oldRecords =[];
             deletedObj = [];
+            self.policyGridList = {};
+            self.policyGridList.list = [];
+            self.apsName = viewConfig.apsName;
             self.selectedPolicy = viewConfig.policyList;
             self.oldRecords = viewConfig.oldRecords;
             self.selectedRows = viewConfig.seletedRows;
@@ -45,7 +48,7 @@ define([
             };
             contrailListModel = new ContrailListModel(listModelConfig);
             self.renderView4Config(self.$el,
-                    contrailListModel, self.getFWPolicyGlobalGridViewConfig(viewConfig));
+                    contrailListModel, self.getFWPolicyGlobalGridViewConfig(viewConfig, self.policyGridList));
         },
 
         parseFWPolicyData: function(result) {
@@ -65,8 +68,10 @@ define([
                             policyList.push(fwPolicy);
                         }
                     });
+                    self.policyGridList.list = self.getFqNameList(policyList);
                     return policyList;
                 }else{
+                    self.policyGridList.list = [];
                     return [];
                 }
             } else if(self.mode === 'edit'){
@@ -78,8 +83,10 @@ define([
                                 updatedList.push(row);
                             }
                         });
+                        self.policyGridList.list = self.getFqNameList(updatedList);
                         return updatedList;
                      }else{
+                         self.policyGridList.list = self.getFqNameList(self.selectedRows);
                         return self.selectedRows;
                      }
                 } else if(self.selectedPolicy !== undefined){
@@ -95,9 +102,9 @@ define([
                                updatedList.push(policy);
                            } 
                        });
-                       return updatedList;
+                       return self.sortPolicy(updatedList, self.apsName);
                     }else{
-                       return policyList;  
+                       return self.sortPolicy(policyList, self.apsName);
                     }
                 }
             } else {
@@ -113,6 +120,31 @@ define([
                     return self.fetchGlobalAndProjectRecord(fwPolicyList, self.isGlobal, self.projectSelected);
                 }
             }
+        },
+        sortPolicy: function(policyList, apsName){
+            var matchAps;
+            var updatedList = 
+                _.sortBy(policyList, function (pol) {
+                    var apsBackRefs = getValueByJsonPath(pol, 'application_policy_set_back_refs', []);
+                    _.each(apsBackRefs, function(aps) {
+                        var to = aps.to;
+                        if(to[to.length - 1] === apsName){
+                            matchAps = aps
+                        }
+                    });
+                    var sequence = Number(getValueByJsonPath(matchAps, 'attr;sequence', 0));
+                    return ((1 + sequence) * 100000 ) - sequence;
+               });
+            self.policyGridList.list = self.getFqNameList(updatedList);
+            return updatedList;
+        },
+        getFqNameList: function(list){
+           var fqNameList = [];
+           _.each(list, function(obj) {
+               var fqName = obj.fq_name;
+               fqNameList.push(fqName[fqName.length - 1]);
+           });
+           return fqNameList;
         },
         fetchGlobalAndProjectRecord: function(policyList, isGlobal, projectSelected){
             var newUpdatedList = [];
@@ -139,7 +171,7 @@ define([
                 return newUpdatedList;  
             }
         },
-        getFWPolicyGlobalGridViewConfig: function(viewConfig) {
+        getFWPolicyGlobalGridViewConfig: function(viewConfig, policyGridList) {
             return {
                 elementId:
                 cowu.formatElementId(["fw-policy-list-view"]),
@@ -162,7 +194,8 @@ define([
                                     },
                                     viewConfig: viewConfig,
                                     //isProject: false,
-                                    isGlobal: false
+                                    isGlobal: false,
+                                    policyGridList : policyGridList
                                 }
                             }
                         ]

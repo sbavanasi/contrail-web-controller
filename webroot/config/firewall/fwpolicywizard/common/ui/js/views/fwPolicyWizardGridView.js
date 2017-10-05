@@ -146,9 +146,11 @@ define([
                 if(dataItem.firewall_policy_refs !== undefined){
                    policy = dataItem.firewall_policy_refs.reverse();
                 }
+                var apsName = dataItem.fq_name[dataItem.fq_name.length - 1];
                 fwApplicationPolicyEditView.renderApplicationPolicy({
                                           'viewConfig': $.extend({mode: 'edit'}, viewConfig),
-                                          'policy': policy
+                                          'policy': policy,
+                                          'apsName':apsName
                 });
             })];
         if(appPolicySetName !== ctwc.GLOBAL_APPLICATION_POLICY_SET) {
