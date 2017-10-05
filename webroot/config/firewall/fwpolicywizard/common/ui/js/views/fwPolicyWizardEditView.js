@@ -13,6 +13,7 @@ define([
         prefixId = ctwc.APPLICATION_POLICY_SET_PREFIX_ID,
         modalId = 'configure-' + prefixId,
         formId = '#' + modalId + '-form';
+    var titleTags = '';
     var fwzUtils = new FWZUtils();
     var fwPolicyFormatter = new FwPolicyFormatter();
     var fwPolicyWizardEditView = ContrailView.extend({
@@ -25,7 +26,7 @@ define([
 
             self.renderView4Config($("#" + modalId).find('#aps-button-container'),
                                    this.model,
-                                   getApplicationPolicyViewConfig(), "",
+                                   getApplicationPolicyViewConfig(options), "",
                                    null, null, function() {
                     $("#" + modalId).find('.modal-footer').hide();
 
@@ -509,7 +510,13 @@ define([
             };
         }
     }
-    var getApplicationPolicyViewConfig = function () {
+    var getApplicationPolicyViewConfig = function (options) {
+        if(options.viewConfig.isGlobal === true){
+            titleTags = "Review Visible Tags";
+        }
+        else if(options.viewConfig.isGlobal === false){
+            titleTags = "Review Visible Tags For Project";
+        }
         return {
             elementId: ctwc.APPLICATION_POLICY_SET_PREFIX_ID,
             view: 'SectionView',
@@ -521,9 +528,9 @@ define([
                             {
                                 elementId: 'review_address_groups',
                                 view: "FormButtonView",
-                                label: "Review Address Groups",
                                 width:300,
                                 viewConfig: {
+                                    label: "Review Address Groups",
                                     class: 'display-inline-block'
                                 }
                             }
@@ -534,9 +541,9 @@ define([
                               {
                                   elementId: 'review_service_groups',
                                   view: "FormButtonView",
-                                  label: "Review Service Groups",
                                   width:300,
                                   viewConfig: {
+                                      label: "Review Service Groups",
                                       class: 'display-inline-block'
                                   }
                               }
@@ -546,9 +553,9 @@ define([
                                 {
                                     elementId: 'review_visible_tag_for_project',
                                     view: "FormButtonView",
-                                    label: "Review Visible Tag For Project",
                                     width:300,
                                     viewConfig: {
+                                        label: titleTags,
                                         class: 'display-inline-block'
                                     }
                                 }

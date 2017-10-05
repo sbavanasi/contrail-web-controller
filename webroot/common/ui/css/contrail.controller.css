@@ -806,3 +806,43 @@ right:12px;}
 #fw-wz-policy-grid #btnAddPolicy{
     margin-top:0px !important;
 }
+.create-policyset-btn{
+    border:1px solid blue;
+    width:100px;
+    color:#fff;
+    background-color:blue;
+}
+#new-application-policy-set-grid-header [id^=btnAddPolicy]{
+    padding:0px 8px;
+}
+#new-application-policy-set-grid-header [id^=btnAddPolicy] span{
+    font-size:12px;
+    padding-left:5px;
+}
+#new-application-policy-set-grid-header .widget-toolbar:nth-child(n+4):before{
+    border: none!important;
+}
+#new-application-policy-set-grid-header .widget-toolbar:nth-child(n+5){
+    padding-right:0px;
+    padding-left:5px;
+}
+#new-application-policy-set-grid-header [id^=btnAddPolicy].btn:focus{
+  border-color:#2e73a0;
+}
+#new-application-policy-set-grid-header a[id^=btnAddPolicy],
+#new-application-policy-set-grid-header a[id^=btnAddPolicy]:hover {
+    background-color: #599AC9;
+    border-color: #599AC9;
+    color:#fff;
+}
+#new-application-policy-set-grid-header .widget-toolbar:nth-child(n+5){
+    line-height:32px;
+}
+#new-application-policy-set-grid-header .widget-toolbar:nth-child(n+5) a{
+      line-height:20px;
+}
+#fw_security_policy_global_adressgroup,
+#fw_security_policy_service_gp_grid_view,
+#security-policy-tag{
+    padding:0px 10px;
+}

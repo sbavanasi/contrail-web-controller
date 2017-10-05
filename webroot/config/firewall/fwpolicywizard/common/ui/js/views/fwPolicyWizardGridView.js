@@ -180,71 +180,33 @@ define([
         }
     }
     function getHeaderActionConfig(viewConfig) {
-        var dropdownActions = [
+        var headerActionConfig = [
             {
-                "title": "Create application policy set",
-                "onClick": function () {
+                "type" : "custom-link",
+                "title" : "Create stand alone firewall policy",
+                "iconTitle":'Firewall Policy',
+                "iconClass" : "fa fa-plus",
+                "linkElementId": 'btnAddPolicy-firewall-policy',
+                "onClick" : function() {
+                    newApplicationSet = {};
+                    $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
+                    $('#aps-main-back-button').hide();
+                    $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
+                }
+            },
+            {
+                "type" : "custom-link",
+                "title" : "Create application policy set",
+                "iconClass" : "fa fa-plus",
+                "iconTitle":'Policy Set',
+                "linkElementId": 'btnAddPolicy-app-set',
+                "onClick" : function() {
                     fwzUtils.createApplicationPolicySet();
                     fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
                     fwApplicationPolicyEditView.renderApplicationPolicy({
                                               'viewConfig': $.extend({mode:'add'}, viewConfig)
                     });
                 }
-            },
-            {    "title": "Create stand alone firewall policy",
-                "onClick": function () {
-                    newApplicationSet = {};
-                    $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
-                    $('#aps-main-back-button').hide();
-                    $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
-                }
-            }
-        ];
-        var headerActionConfig = [
-            /*{
-                "type" : "link",
-                "title" : ctwl.TITLE_APP_POLICY_SET_MULTI_DELETE,
-                "iconClass": 'fa fa-trash',
-                "linkElementId": 'btnDeleteAppPolicy',
-                "onClick" : function() {
-                    var applicationPolicyModel = new ApplicationPolicyModel();
-                    var checkedRows = $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).data("contrailGrid").getCheckedRows();
-                    if(checkedRows && checkedRows.length > 0) {
-                        fwApplicationPolicyEditView.model = applicationPolicyModel;
-                        fwApplicationPolicyEditView.renderDeleteApplicationPolicy(
-                            {"title": ctwl.TITLE_APP_POLICY_SET_MULTI_DELETE,
-                                selectedGridData: checkedRows,
-                                callback: function () {
-                                    var dataView =
-                                        $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).
-                                        data("contrailGrid")._dataView;
-                                    dataView.refreshData();
-                                }
-                            }
-                        );
-                    }
-                }
-
-            },
-            {
-                "type": "link",
-                "title": ctwl.TITLE_CREATE_APP_POLICY_SET,
-                "iconClass": "fa fa-plus",
-                "onClick": function () {
-                    fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
-                    fwApplicationPolicyEditView.renderApplicationPolicy({
-                                              'mode': 'add',
-                                              'isGlobal': viewConfig.isGlobal,
-                                              'viewConfig': viewConfig['viewConfig']
-                    });
-                }
-            },*/
-            {
-                "type" : "dropdown",
-                "title" : "Create application policy set/standaloe firewall policy",
-                "iconClass" : "fa fa-plus",
-                "linkElementId": 'btnAddPolicy',
-                "actions": dropdownActions
             }
         ];
         return headerActionConfig;
