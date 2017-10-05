@@ -108,7 +108,23 @@ define([
             };
         }
     });
-
+    function getProjectPolicyDetails(viewConfig,policyNameFormat){
+        return {
+            elementId: "fwrule-project-policy-page-id",
+            view: "SectionView",
+            viewConfig: {
+                title: ctwc.FIREWALL_POLICY_HEADING + " : " + policyNameFormat,
+                elementId: "fwrule-project-policy-page-tabs",
+                rows: [{
+                    columns: [{
+                        elementId: "fwrule-project-policy-tab-id",
+                        view: 'TabsView',
+                        viewConfig: getfwRulePolicyTabs(viewConfig)
+                    }]
+                }]
+            }
+        };
+    };
     function getDomainProjectDetails (viewConfig) {
         var hashParams = viewConfig.hashParams,
             customProjectDropdownOptions = {
