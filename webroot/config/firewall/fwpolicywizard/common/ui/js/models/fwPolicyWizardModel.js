@@ -281,8 +281,7 @@ define([
                var fwRules = this.model().attributes.firewall_rules ?
                         this.model().attributes.firewall_rules.toJSON(): [],
                 postFWRules = [];
-                if(fwRules.length > 0){
-                    _.each(fwRules, function(rule) {
+                _.each(fwRules, function(rule) {
                         var attr = $.extend(true, {}, rule.model().attributes),
                             newFWRuleData = {};
                         attr.name = UUIDjs.create().hex;
@@ -387,13 +386,6 @@ define([
                         }
                         returnFlag = false;
                     });
-                }else{
-                    if (contrail.checkIfFunction(callbackObj.error)) {
-                        var error = {};
-                        error.responseText = 'Please create the Rule.'
-                        callbackObj.error(error);
-                    }
-                }
             }
         },
         addPolicyRules: function (fwPolicyId, postFWRuleData, callbackObj, options){
@@ -410,7 +402,11 @@ define([
                 }
             }, function (response) {
                 if(Object.keys(newApplicationSet).length > 0){
-                    self.callPolicyList(response, self, callbackObj, options);  
+                    if(response == null){
+                        self.callPolicyList(fwPolicyId, self, callbackObj, options);
+                    }else{
+                        self.callPolicyList(response[0].uuid, self, callbackObj, options); 
+                    }
                 }else{
                     if (contrail.checkIfFunction(callbackObj.success)) {
                         callbackObj.success();
@@ -423,7 +419,7 @@ define([
                 returnFlag = false;
             })
         },
-        callPolicyList : function(model, self, callbackObj, options){
+        callPolicyList : function(policyUUID, self, callbackObj, options){
             var getAjaxs = [];
             getAjaxs[0] = $.ajax({
                 url:"/api/tenants/config/get-config-details",
@@ -442,7 +438,7 @@ define([
                 }
                 _.each(fwPolicyData, function(val){
                         if('firewall-policy' in val){
-                            if(val['firewall-policy'].uuid === model[0].uuid){
+                            if(val['firewall-policy'].uuid === policyUUID){
                                 var obj = {};
                                 var to = val['firewall-policy'].fq_name;
                                 obj.to = to;
