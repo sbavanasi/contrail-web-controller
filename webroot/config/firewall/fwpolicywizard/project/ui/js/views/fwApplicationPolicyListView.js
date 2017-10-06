@@ -68,8 +68,25 @@ define([
                             policyList.push(fwPolicy);
                         }
                     });
+                    updatedGridList = [];
                     self.policyGridList.list = self.getFqNameList(policyList);
                     return policyList;
+                }else if(self.selectedPolicy !== undefined){
+                    if(deletedObj.length > 0){
+                        var updatedList = [];
+                        _.each(self.selectedPolicy, function(policy) {
+                            if(deletedObj.indexOf(policy.uuid) === -1){
+                                delete policy.cgrid;
+                                updatedList.push(policy);
+                            } 
+                        });
+                        updatedGridList = [];
+                        self.policyGridList.list = self.getFqNameList(updatedList);
+                        return updatedList; 
+                    }else{
+                        self.policyGridList.list = self.getFqNameList(self.selectedPolicy);
+                        return self.selectedPolicy; 
+                    }
                 }else{
                     self.policyGridList.list = [];
                     return [];
@@ -83,6 +100,7 @@ define([
                                 updatedList.push(row);
                             }
                         });
+                        updatedGridList = [];
                         self.policyGridList.list = self.getFqNameList(updatedList);
                         return updatedList;
                      }else{
@@ -102,6 +120,7 @@ define([
                                updatedList.push(policy);
                            } 
                        });
+                       updatedGridList = [];
                        return self.sortPolicy(updatedList, self.apsName);
                     }else{
                        return self.sortPolicy(policyList, self.apsName);

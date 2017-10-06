@@ -25,6 +25,9 @@ define([
                 apsName = options.apsName;
             }else if(mode === 'add'){
                 headerText = 'Create Application Policy Sets';
+                if(options.policy !== undefined){
+                  slecectedPolicyList  = options.policy;
+                }
             }else{
                 headerText = 'Delete Application Policy Sets';
             }

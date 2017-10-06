@@ -7,12 +7,15 @@ define([
     'contrail-view',
     'knockback',
     'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizard.utils',
-    'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter'
-], function (_, ContrailView, Knockback, FWZUtils, FwPolicyFormatter) {
+    'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter',
+    'config/firewall/fwpolicywizard/common/ui/js/models/fwPolicyWizardModel',
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwApplicationPolicyEditView'
+], function (_, ContrailView, Knockback, FWZUtils, FwPolicyFormatter, FwPolicyWizardModel, FwApplicationPolicyEditView) {
     var gridElId = '#' + ctwc.APPLICATION_POLICY_SET_GRID_ID,
         prefixId = ctwc.APPLICATION_POLICY_SET_PREFIX_ID,
         modalId = 'configure-' + prefixId,
         formId = '#' + modalId + '-form';
+    var fwApplicationPolicyEditView = new FwApplicationPolicyEditView();
     var titleTags = '';
     var fwzUtils = new FWZUtils();
     var fwPolicyFormatter = new FwPolicyFormatter();
@@ -294,7 +297,7 @@ define([
              )
          }
     });
-    function getNewFirewallPolicyViewConfig(model) {
+    function getNewFirewallPolicyViewConfig(model, viewConfig) {
         var gridPrefix = "add-firewall-policy",
             addNewFwPolicyViewConfig = {
             elementId:  cowu.formatElementId([prefixId, "add-new-firewall-policy1"]),
@@ -336,6 +339,24 @@ define([
                             $("#aps-main-back-button").show();
                             $('#applicationpolicyset_policy_wizard .actions').css("display", "none");
                             params.model.onNext(false);
+                            if(newApplicationSet.mode === 'add'){
+                                fwzUtils.createApplicationPolicySet();
+                                var policy = newApplicationSet.existingRows;
+                                fwApplicationPolicyEditView.model = new FwPolicyWizardModel(newApplicationSet);
+                                fwApplicationPolicyEditView.renderApplicationPolicy({
+                                                          'viewConfig': $.extend({mode:'add'}, viewConfig),
+                                                          'policy': policy
+                                });
+                            }else if(newApplicationSet.mode === 'edit'){
+                                var policy = newApplicationSet.existingRows;
+                                var apsName = newApplicationSet.name;
+                                fwApplicationPolicyEditView.model = new FwPolicyWizardModel(newApplicationSet);
+                                fwApplicationPolicyEditView.renderApplicationPolicy({
+                                                          'viewConfig': $.extend({mode:'edit'}, viewConfig),
+                                                          'policy': policy,
+                                                          'apsName':apsName
+                                });
+                            }
                             return true;
                         }
                     }
@@ -438,7 +459,7 @@ define([
             }
         };
     steps = steps.concat(createStepViewConfig);
-    addnewFwPolicyStepViewConfig = $.extend(true, {}, getNewFirewallPolicyViewConfig(model).viewConfig).steps;
+    addnewFwPolicyStepViewConfig = $.extend(true, {}, getNewFirewallPolicyViewConfig(model, viewConfig).viewConfig).steps;
     addRulesStepViewConfig = $.extend(true, {}, getAddRulesViewConfig(viewConfig, allData, options).viewConfig).steps;
     steps = steps.concat(addnewFwPolicyStepViewConfig);
     steps = steps.concat(addRulesStepViewConfig);

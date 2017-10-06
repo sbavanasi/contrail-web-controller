@@ -11,7 +11,7 @@ define([
     'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizardEditView',
     'config/firewall/fwpolicywizard/common/ui/js/views/inventoryPolicyView'
 ], function(_, ContrailView, Knockback, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView, InventoryPolicyView) {
-    var self, gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID, updatedGridList = [];
+    var self, gridElId = '#' + ctwc.FW_WZ_POLICY_GRID_ID;
       fwPolicyFormatter = new FWPolicyFormatter(),
       fwPolicyEditView =  new FWPolicyEditView(),
       inventoryPolicyView = new InventoryPolicyView();
@@ -19,6 +19,7 @@ define([
         el: $(contentContainer),
         render: function () {
             self = this;
+            updatedGridList = [];
             var viewConfig = self.attributes.viewConfig,
                 pagerOptions = viewConfig['pagerOptions'];
             self.renderView4Config(self.$el, self.model,
@@ -64,9 +65,11 @@ define([
                     var items = dataView.getItems();
                     var nextIndex = rowIndex - 1;
                     var currentData = items[rowIndex];
-                    currentData.cgrid = 'id_' + nextIndex;
+                    var currentId = Number(currentData.cgrid.split('_')[1]) - 1;
+                    currentData.cgrid = 'id_' + currentId;
                     var nextData = items[nextIndex];
-                    nextData.cgrid = 'id_' + rowIndex;
+                    var nextId = Number(nextData.cgrid.split('_')[1]) + 1;
+                    nextData.cgrid = 'id_' + nextId;
                     items[rowIndex] = nextData;
                     items[rowIndex - 1] = currentData;
                     updatedGridList = [];
@@ -86,9 +89,11 @@ define([
                     var items = dataView.getItems();
                     var nextIndex = rowIndex + 1;
                     var currentData = items[rowIndex];
-                    currentData.cgrid = 'id_' + nextIndex;
+                    var currentId = Number(currentData.cgrid.split('_')[1]) + 1;
+                    currentData.cgrid = 'id_' + currentId;
                     var nextData = items[nextIndex];
-                    nextData.cgrid = 'id_' + rowIndex;
+                    var nextId = Number(nextData.cgrid.split('_')[1]) - 1;
+                    nextData.cgrid = 'id_' + nextId;
                     items[rowIndex] = nextData;
                     items[rowIndex + 1] = currentData;
                     updatedGridList = [];
@@ -181,23 +186,30 @@ define([
             {
                 "title": "Create new firewall policy",
                 "onClick": function () {
-                    $('#aps-main-back-button').hide();
-                    $("#overlay-background-id").removeClass("overlay-background");
-                    newApplicationSet = {
-                            name:  ko.contextFor($('#name').get(0)).$data.name(),
-                            Application: ko.contextFor($('#Application').get(0)).$data.Application(),
-                            description : ko.contextFor($('#description').get(0)).$data.description()
-                        };
-                    if(ko.contextFor($('#name').get(0)).$data.uuid !== undefined){
-                        newApplicationSet.uuid = ko.contextFor($('#name').get(0)).$data.uuid();
-                        newApplicationSet.id_perms = ko.contextFor($('#name').get(0)).$data.id_perms();
+                    if(ko.contextFor($('#name').get(0)).$data.name() !== ''){
+                        $('#aps-main-back-button').hide();
+                        $("#overlay-background-id").removeClass("overlay-background");
+                        newApplicationSet = {
+                                name:  ko.contextFor($('#name').get(0)).$data.name(),
+                                Application: ko.contextFor($('#Application').get(0)).$data.Application(),
+                                description : ko.contextFor($('#description').get(0)).$data.description()
+                            };
+                        if(ko.contextFor($('#name').get(0)).$data.uuid !== undefined){
+                            newApplicationSet.uuid = ko.contextFor($('#name').get(0)).$data.uuid();
+                            newApplicationSet.id_perms = ko.contextFor($('#name').get(0)).$data.id_perms();
+                        }
+                        var existingRows = $(gridElId).data("contrailGrid")._dataView.getItems();
+                        newApplicationSet.existingRows = existingRows;
+                        newApplicationSet.mode = viewConfig.viewConfig.mode;
+                        $('#aps-overlay-container').hide();
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
+                        $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
+                        $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
+                    }else{
+                        $("#grid-details-error-container").text('');
+                        $("#grid-details-error-container").text('Please enter the name.');
+                        $(".aps-details-error-container").show();
                     }
-                    var existingRows = $(gridElId).data("contrailGrid")._dataView.getItems();
-                    newApplicationSet.existingRows = existingRows;
-                    $('#aps-overlay-container').hide();
-                    Knockback.ko.cleanNode($("#aps-gird-container")[0]);
-                    $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
-                    $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
                 }
             },
             {
