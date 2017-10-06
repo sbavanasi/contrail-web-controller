@@ -140,6 +140,7 @@ define([
             appPolicySetName = getValueByJsonPath(dc, 'name', '', false),
             rowActionConfig = [
             ctwgc.getEditConfig('Edit', function(rowIndex) {
+                $("#overlay-background-id").addClass("overlay-background");
                 var dataItem = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).
                         data('contrailGrid')._dataView.getItem(rowIndex);
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel(dataItem);
