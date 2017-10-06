@@ -232,6 +232,7 @@ define([
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
                     if(viewConfig.isWizard){
+                        $("#overlay-background-id").addClass("overlay-background");
                         overlayTagEditView.model = new TagModel();
                         overlayTagEditView.renderTag({
                                 'mode': 'add',

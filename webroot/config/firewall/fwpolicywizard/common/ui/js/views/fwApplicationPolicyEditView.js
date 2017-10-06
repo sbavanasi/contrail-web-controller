@@ -88,8 +88,10 @@ define([
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
                             var modalId = 'configure-' + ctwc.APPLICATION_POLICY_SET_PREFIX_ID;
-                            $("#" + modalId).modal('hide');
+                            $("#overlay-background-id").removeClass("overlay-background");
+                            $('#aps-overlay-container').hide();
                             $('#firewall-application-policy-grid').data("contrailGrid")._dataView.refreshData();
+                            $('#new-application-policy-set-grid').data("contrailGrid")._dataView.refreshData();
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');

@@ -60,6 +60,7 @@ define([
                     });
                     $("#create-firewall-policy").on('click',function(e){
                         e.preventDefault();
+                        Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                         fwzUtils.viewApplicationPolicySet();
                         self.renderObject(options, 'addIcon', self);
                     });

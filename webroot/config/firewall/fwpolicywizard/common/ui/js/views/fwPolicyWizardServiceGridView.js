@@ -207,6 +207,7 @@ define([
                 "iconClass": "fa fa-plus",
                 "onClick": function () {
                     if(viewConfig.isWizard){
+                        $("#overlay-background-id").addClass("overlay-background");
                         overlayServiceGroupEditView.model = new ServiceGroupModel();
                         overlayServiceGroupEditView.renderServiceGroup({
                                                 'mode': 'add',
