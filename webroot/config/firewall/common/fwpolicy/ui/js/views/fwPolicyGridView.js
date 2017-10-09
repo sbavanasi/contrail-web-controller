@@ -207,6 +207,7 @@ define([
                     "title" : ctwl.TITLE_CREATE_FW_POLICY,
                     "iconClass" : "fa fa-plus",
                     "onClick" : function() {
+                        newApplicationSet = {};
                         $("#aps-overlay-container").hide();
                         $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
                         $('#aps-main-back-button').hide();
