@@ -50,50 +50,67 @@ define([
         }
     };
 
-    function getRowActionConfig() {
+    function getRowActionConfig(viewconfig) {
         var rowActionConfig = [];
-        rowActionConfig.push(ctwgc.getEditConfig("Edit", function (rowIndex) {
-            var dataItem = $(gridElId).data("contrailGrid").
-                _dataView.getItem(rowIndex),
+        var viewConfig = viewconfig;
+        if(viewConfig.isWizard == true){
+            return false;
+        }
+        else{
+            rowActionConfig.push(ctwgc.getEditConfig("Edit", function (rowIndex) {
+                var dataItem = $(gridElId).data("contrailGrid").
+                    _dataView.getItem(rowIndex),
                 fwPolicyModel = new FWPolicyModel(dataItem);
-            fwPolicyEditView.model = fwPolicyModel;
-            fwPolicyEditView.renderEditFirewallPolicyDescription(
-                {"title": ctwl.EDIT,
-                    mode: ctwl.EDIT_ACTION,
-                    callback: function () {
-                        var dataView =
-                            $(gridElId).data("contrailGrid")._dataView;
-                        dataView.refreshData();
-                    }
-                }
-            );
-        }));
-        rowActionConfig.push(ctwgc.getDeleteAction(function (rowIndex) {
-              var dataItem = $(gridElId).data("contrailGrid").
-                  _dataView.getItem(rowIndex),
-                  fwPolicyModel = new FWPolicyModel(dataItem),
-                  checkedRow = [dataItem];
-
-              fwPolicyEditView.model = fwPolicyModel;
-              fwPolicyEditView.renderDeleteFWPolicies(
-                  {"title": ctwl.TITLE_FW_POLICY_DELETE,
-                      checkedRows: checkedRow,
-                      callback: function () {
-                          var dataView =
-                              $(gridElId).data("contrailGrid")._dataView;
-                          dataView.refreshData();
+                    fwPolicyEditView.model = fwPolicyModel;
+                    fwPolicyEditView.renderEditFirewallPolicyDescription(
+                        {"title": ctwl.EDIT,
+                            mode: ctwl.EDIT_ACTION,
+                            callback: function () {
+                                var dataView =
+                                    $(gridElId).data("contrailGrid")._dataView;
+                                dataView.refreshData();
+                            }
+                        }
+                    );
+            }));
+        }
+        if(viewConfig.isWizard == true){
+            return rowActionConfig;
+        }
+        else{
+            rowActionConfig.push(ctwgc.getDeleteAction(function (rowIndex) {
+                  var dataItem = $(gridElId).data("contrailGrid").
+                      _dataView.getItem(rowIndex),
+                      fwPolicyModel = new FWPolicyModel(dataItem),
+                      checkedRow = [dataItem];
+                  fwPolicyEditView.model = fwPolicyModel;
+                  fwPolicyEditView.renderDeleteFWPolicies(
+                      {"title": ctwl.TITLE_FW_POLICY_DELETE,
+                          checkedRows: checkedRow,
+                          callback: function () {
+                              var dataView =
+                                  $(gridElId).data("contrailGrid")._dataView;
+                              dataView.refreshData();
+                          }
                       }
-                  }
-              );
-        }));
+                  );
+            }));
+        }
         return rowActionConfig;
     };
 
     function getConfiguration (viewConfig) {
+        var title;
+        if(viewConfig.isWizard == true){
+            title = '';
+        }
+        else{
+            title = ctwl.TITLE_FW_POLICY;
+        }
         var gridElementConfig = {
             header: {
                 title: {
-                    text: ctwl.TITLE_FW_POLICY
+                    text: title
                 },
                advanceControls: getHeaderActionConfig(viewConfig)
             },
@@ -183,8 +200,25 @@ define([
                     }
                 }
             ];
-
-        return headerActionConfig;
+        if(viewConfig.isWizard == true){
+            var headerActionConfig = [
+                {
+                    "type" : "link",
+                    "title" : ctwl.TITLE_CREATE_FW_POLICY,
+                    "iconClass" : "fa fa-plus",
+                    "onClick" : function() {
+                        $("#aps-overlay-container").hide();
+                        $('#applicationpolicyset_policy_wizard .actions').css("display", "block");
+                        $('#aps-main-back-button').hide();
+                        $('#applicationpolicyset_policy_wizard a.btn-primary').trigger("click");
+                    }
+                }
+            ];
+            return headerActionConfig;
+        }
+        else{
+            return headerActionConfig;
+        }
     };
 
     function onPolicyClick (e, dc) {

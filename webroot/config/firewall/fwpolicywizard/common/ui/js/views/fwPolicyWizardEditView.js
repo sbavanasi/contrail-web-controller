@@ -32,7 +32,6 @@ define([
                                    getApplicationPolicyViewConfig(options), "",
                                    null, null, function() {
                     $("#" + modalId).find('.modal-footer').hide();
-
                     function getAdressGroupClick(e){
                         fwzUtils.viewAdressGroup();
                         e.preventDefault();
@@ -143,15 +142,35 @@ define([
          },
          fetchAllData : function(self, options, callback) {
              var getAjaxs = [];
+             var data;
              var selectedDomain = contrail.getCookie(cowc.COOKIE_DOMAIN_DISPLAY_NAME);
              var selectedProject = contrail.getCookie(cowc.COOKIE_PROJECT_DISPLAY_NAME);
              var serviceGrp = {data: [{type: 'service-groups'}]};
+             if(options.viewConfig.isGlobal == true){
+                 data = JSON.stringify({data: [{type: "firewall-policys",
+                     fields: ['application_policy_set_back_refs'],
+                     parent_fq_name_str: "default-policy-management",
+                     parent_type: "policy-management"}]})
+             }
+             else{
+                 data = JSON.stringify(
+                         {data: [{type: 'firewall-policys',
+                             fields: ['application_policy_set_back_refs'],
+                             parent_id: options.viewConfig["projectSelectedValueData"].value}]})
+             }
              getAjaxs[0] = $.ajax({
+                 url:"/api/tenants/config/get-config-details",
+                 type:"POST",
+                 dataType: "json",
+                 contentType: "application/json; charset=utf-8",
+                 data:data,
+             });
+             getAjaxs[1] = $.ajax({
                  url:"/api/tenants/config/virtual-networks",
                  type:"GET"
              });
              //get tags
-             getAjaxs[1] = $.ajax({
+             getAjaxs[2] = $.ajax({
                  url:"/api/tenants/config/get-config-details",
                  type:"POST",
                  dataType: "json",
@@ -161,7 +180,7 @@ define([
              });
 
              //get address groups
-             getAjaxs[2] = $.ajax({
+             getAjaxs[3] = $.ajax({
                  url:"/api/tenants/config/get-config-details",
                  type:"POST",
                  dataType: "json",
@@ -170,7 +189,7 @@ define([
                          {data: [{type: 'address-groups'}]})
              });
            //get service groups
-             getAjaxs[3] = $.ajax({
+             getAjaxs[4] = $.ajax({
                  url:"/api/tenants/config/get-config-details",
                  type:"POST",
                  dataType: "json",
@@ -180,9 +199,24 @@ define([
              $.when.apply($, getAjaxs).then(
                  function () {
                      //all success
-                     var returnArr = []
+                     var returnArr = [];
+                     var count = 0;
+                     var countNobackRefsArray = [];
                      var results = arguments;
-                     var vns = results[0][0]["virtual-networks"];
+                     var fwPolicies = results[0][0][0]["firewall-policys"];
+                     returnArr['fwPolicies-len'] = fwPolicies.length;
+                     if(results[0][0][0]["firewall-policys"]){
+                         firewallPolicyrefs = results[0][0][0]["firewall-policys"];
+                         _.each(firewallPolicyrefs, function(val){
+                                 var appPolicyBackRefsArray = getValueByJsonPath(val, "firewall-policy;application_policy_set_back_refs", []);
+                                 if(appPolicyBackRefsArray.length === 0){
+                                     countNobackRefsArray.push(count++);
+                                 }
+                         });
+                     }
+                     returnArr['standAlonePolicies-len'] = countNobackRefsArray.length;
+                     //getValueByJsonPath(response, "0;firewall-policys", [])
+                     var vns = results[1][0]["virtual-networks"];
                      returnArr["virtual-networks"] = [];
                      var allVns = [{text:'Enter or Select a Network',
                                     value:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "virtual_network",
@@ -227,7 +261,7 @@ define([
                          }
                      }
                      //tags
-                     var tags = fwPolicyFormatter.filterTagsByProjects(getValueByJsonPath(results, '1;0;0;tags', [], false), options.viewConfig.isGlobal);
+                     var tags = fwPolicyFormatter.filterTagsByProjects(getValueByJsonPath(results, '2;0;0;tags', [], false), options.viewConfig.isGlobal);
                      var addrFields = [];
                      //application
                      var tagGroupData = fwPolicyFormatter.parseTags(tags);
@@ -258,7 +292,7 @@ define([
                          value:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
                          id:"dummy" + cowc.DROPDOWN_VALUE_SEPARATOR + "address_group",
                          disabled : true }];
-                     var addressGroups = fwPolicyFormatter.filterAddressGroupByProjects(getValueByJsonPath(results, '2;0;0;address-groups', [], false), options.viewConfig.isGlobal);
+                     var addressGroups = fwPolicyFormatter.filterAddressGroupByProjects(getValueByJsonPath(results, '3;0;0;address-groups', [], false), options.viewConfig.isGlobal);
                      if(addressGroups.length > 0){
                          for(var k = 0; k < addressGroups.length; k++){
                              var address = addressGroups[k]['address-group'];
@@ -284,7 +318,7 @@ define([
                          parent : "any_workload" });
                      addrFields.push({text : 'Any Workload', value : 'any_workload', children : anyList});
                      returnArr["addrFields"] = addrFields;
-                     var secGrpList = getValueByJsonPath(results, "3;0;0;service-groups", []);
+                     var secGrpList = getValueByJsonPath(results, "4;0;0;service-groups", []);
                      var serviceGrpList = [];
                      $.each(secGrpList, function (i, obj) {
                          var obj = obj['service-group'];
@@ -429,6 +463,22 @@ define([
             view: "SectionView",
             viewConfig: {
                 rows: [
+                    {
+                        columns: [
+                            {
+                                elementId: 'top_bar_id',
+                                view: 'fwWizardTxtValContainerView',
+                                app: cowc.APP_CONTRAIL_CONTROLLER,
+                                viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
+                                viewConfig: {
+                                    firewallPolicyLen : allData['fwPolicies-len'],
+                                    standAlonePolicyLen : allData['standAlonePolicies-len'],
+                                    isGlobal:viewConfig.isGlobal,
+                                    projectSelectedValueData:viewConfig.projectSelectedValueData
+                                }
+                            }
+                        ]
+                    },
                     {
                         columns: [
                             {

@@ -28,7 +28,13 @@ define([
                 if(options.policy !== undefined){
                   slecectedPolicyList  = options.policy;
                 }
-            }else{
+            } else if(mode === 'grid_stand_alone'){
+                headerText = 'Stand Alone Firewall policies';
+            }
+            else if(mode === 'grid_firewall_policies'){
+                headerText = 'All Firewall policies';
+            }
+            else{
                 headerText = 'Delete Application Policy Sets';
             }
             viewConfig.mode = mode;
@@ -93,8 +99,12 @@ define([
                             var modalId = 'configure-' + ctwc.APPLICATION_POLICY_SET_PREFIX_ID;
                             $("#overlay-background-id").removeClass("overlay-background");
                             $('#aps-overlay-container').hide();
+                            if($('#firewall-application-policy-grid').data("contrailGrid") !== undefined){
                             $('#firewall-application-policy-grid').data("contrailGrid")._dataView.refreshData();
-                            $('#new-application-policy-set-grid').data("contrailGrid")._dataView.refreshData();
+                            }
+                            if($('#new-application-policy-set-grid').data("contrailGrid") !== undefined){
+                                $('#new-application-policy-set-grid').data("contrailGrid")._dataView.refreshData();
+                            }
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -103,16 +113,44 @@ define([
                         }
                     }, options, true, undefined);
                 });
-                self.renderView4Config($('#gird-details-container'),
-                        this.model,
-                        getApplicationPolicyViewConfig(disable, viewConfig, seletedRows, slecectedPolicyList, apsName),
-                        "applicationPolicyValidation",
-                        null, null, function() {
-                    //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
-                    Knockback.applyBindings(self.model,
-                            document.getElementById('aps-gird-container'));
-                    kbValidation.bind(self);
-                },null,false);
+                if(mode === 'grid_firewall_policies' || mode === 'grid_stand_alone'){
+                    if(viewConfig.isGlobal === true){
+                    self.renderView4Config($('#gird-details-container'),
+                            this.model,
+                            getAllfwPoliciesStandAlonePoliciesViewConfig(viewConfig,mode),
+                            "applicationPolicyValidation",
+                            null, null, function() {
+                        //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
+                        Knockback.applyBindings(self.model,
+                                document.getElementById('aps-gird-container'));
+                        kbValidation.bind(self);
+                    },null,false);
+                 }
+                 if(viewConfig.isGlobal === false){
+                     self.renderView4Config($('#gird-details-container'),
+                             this.model,
+                             getAllfwPoliciesStandAloneProjectPoliciesViewConfig(viewConfig,mode),
+                             "applicationPolicyValidation",
+                             null, null, function() {
+                         //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
+                         Knockback.applyBindings(self.model,
+                                 document.getElementById('aps-gird-container'));
+                         kbValidation.bind(self);
+                     },null,false);
+                 }
+                }
+                else{
+                    self.renderView4Config($('#gird-details-container'),
+                            this.model,
+                            getApplicationPolicyViewConfig(disable, viewConfig, seletedRows, slecectedPolicyList, apsName),
+                            "applicationPolicyValidation",
+                            null, null, function() {
+                        //self.model.showErrorAttr(prefixId + cowc.FORM_SUFFIX_ID, false);
+                        Knockback.applyBindings(self.model,
+                                document.getElementById('aps-gird-container'));
+                        kbValidation.bind(self);
+                    },null,false);
+                }
             }
         },
         setErrorContainer : function(headerText){
@@ -133,6 +171,55 @@ define([
         });
         return uuidList;
     };
+    var getAllfwPoliciesStandAlonePoliciesViewConfig = function (viewConfig,mode) {
+        var policyParam = {data: [{type: 'firewall-policys'}]};
+        return {
+            elementId: "create_application_policy_prefixid",
+            view: 'SectionView',
+            title: "Application Policy",
+           // active:false,
+            viewConfig: {
+                rows: [
+                       {
+                           columns: [
+                               {
+                                   elementId: 'fw_policy_wizard_global_list_view',
+                                   view: "fwPolicyWizardGlobalListView",
+                                   viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
+                                   viewConfig: $.extend(true, {}, viewConfig,{
+                                       mode: mode
+                                   })
+                               }
+                           ]
+                       }
+                ]
+            }
+        }
+    }
+    var getAllfwPoliciesStandAloneProjectPoliciesViewConfig = function (viewConfig,mode) {
+        var policyParam = {data: [{type: 'firewall-policys'}]};
+        return {
+            elementId: "fw-policies-wizard-project-section",
+            view: 'SectionView',
+            title: "Firewall Policies",
+            viewConfig: {
+                rows: [
+                       {
+                           columns: [
+                               {
+                                   elementId: 'fw_policy_wizard_project_list_view',
+                                   view: "fwPolicyWizardProjectListView",
+                                   viewPathPrefix: "config/firewall/fwpolicywizard/common/ui/js/views/",
+                                   viewConfig: $.extend(true, {}, viewConfig,{
+                                       mode: mode
+                                   })
+                               }
+                           ]
+                       }
+                ]
+            }
+        }
+    }
     var getApplicationPolicyViewConfig = function (isDisable, viewConfig, seletedRows, slecectedPolicyList, apsName) {
         var policyParam = {data: [{type: 'firewall-policys'}]};
         var tagsFiiteredArray = [];

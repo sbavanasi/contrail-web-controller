@@ -717,7 +717,7 @@ form h5.margin-0-0-10~.section-content {
     font-size: 12px;
     color:#3182BD !important;
  }
-#aps-overlay-container .ellipsis > li > a:hover, #aps-overlay-container .ellipsis > li > a:visited{
+#aps-overlay-container .ellipsis > li > a:hover{
     color:#fff !important;
 }
 #aps-overlay-container .ellipsis{
@@ -851,5 +851,13 @@ div#aps-landing-container[style='display: block;'] #security-policy-tag, #fw-pol
 }
 div#aps-landing-container[style='display: block;'], div#aps-landing-container[style='display: block;'] #aps-main-container{
     background:#ffffff;
-
+}
+#aps-main-container .wizard > .steps ul li.completed .number:before{
+    content:none !important;
+}
+.addNewFirewall_policy_count{
+    margin:-35px 18px 2px 0;
+    position:fixed;
+    right:10px;
+    top:120px;
 }
