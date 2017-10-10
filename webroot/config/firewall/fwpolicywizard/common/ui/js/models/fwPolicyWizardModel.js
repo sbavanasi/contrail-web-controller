@@ -466,6 +466,33 @@ define([
                 }
             })
         },
+        deleteApplicationPolicy: function (checkedRows, callbackObj) {
+            var ajaxConfig = {};
+            var uuidList = [];
+
+            $.each(checkedRows, function (checkedRowsKey, checkedRowsValue) {
+                uuidList.push(checkedRowsValue.uuid);
+            });
+
+            ajaxConfig.type = "POST";
+            ajaxConfig.data = JSON.stringify([{'type': 'application-policy-set',
+                                              'deleteIDs': uuidList}]);
+
+            ajaxConfig.url = '/api/tenants/config/delete';
+            contrail.ajaxHandler(ajaxConfig, function () {
+                if (contrail.checkIfFunction(callbackObj.init)) {
+                    callbackObj.init();
+                }
+            }, function (response) {
+                if (contrail.checkIfFunction(callbackObj.success)) {
+                    callbackObj.success();
+                }
+            }, function (error) {
+                if (contrail.checkIfFunction(callbackObj.error)) {
+                    callbackObj.error(error);
+                }
+            });
+        },
         addApplicationPolicySet : function(policyList, callbackObj, options){
             var updatedModel = {}, ajaxConfig = {};
             var model = newApplicationSet;

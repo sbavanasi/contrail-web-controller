@@ -433,6 +433,45 @@ define([
             $("#aps-gird-container").empty();
             $('#aps-landing-container').hide();
         }
+        self.appendDeleteContainer = function(postionDiv, appendDiv, overlay){
+            var scrollTop = $('.wizard > .content').scrollTop(), fixedPosition;
+            if(overlay){
+                fixedPosition = 90;
+            }else{
+                fixedPosition =  162;
+            }
+            var top = ($(postionDiv).offset().top -(fixedPosition - scrollTop)) +'px';
+            var deleteContainer = $('<div class="confirmation-popover"></div>');
+            var msg = $('<span class="confirm-message">Are you sure you want to Delete?</span>');
+            deleteContainer.append(msg);
+            var confirmDiv = $('<div class="confirm-actions"></div>');
+            var cancel = $('<a class="margin-right-10 cancelWizardDeletePopup"></a>');
+            var cancelI = $('<i class="fa fa-close"></i>');
+            cancel.append(cancelI);
+            confirmDiv.append(cancel);
+            var save = $('<a class="margin-right-10 saveWizardRecords"></a>');
+            var saveI = $('<i class="fa fa-check"></i>');
+            save.append(saveI);
+            confirmDiv.append(save);
+            deleteContainer.append(confirmDiv);
+            $('#'+ appendDiv).append(deleteContainer);
+            $('.confirmation-popover').css({'top':top});
+            if(overlay){
+                var deleteOverlay = $('<div id="delete-popup-background" class="overlay-background"></div>');
+                if($('#delete-popup-background').length == 0){
+                    $('#aps-overlay-container').append(deleteOverlay);
+                }else{
+                    $('#delete-popup-background').addClass('overlay-background');
+                }
+            }else{
+                var deleteOverlay = $('<div id="overlay-background-id" class="overlay-background"></div>');
+                if($('#overlay-background-id').length == 0){
+                    $('#applicationpolicyset_policy_wizard').append(deleteOverlay);
+                }else{
+                    $('#overlay-background-id').addClass('overlay-background');
+                }
+            }
+        }
     };
     this.serviceGroupDataFormatter = function(response){
         var serviceGrpList = [];

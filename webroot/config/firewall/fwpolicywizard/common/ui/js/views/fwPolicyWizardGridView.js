@@ -157,20 +157,34 @@ define([
         if(appPolicySetName !== ctwc.GLOBAL_APPLICATION_POLICY_SET) {
             var deleteActionConfig = ctwgc.getDeleteConfig('Delete',
                 function(rowIndex) {
-                    var dataItem =
-                        $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).
-                            data('contrailGrid')._dataView.getItem(rowIndex);
-                    fwApplicationPolicyEditView.model = new ApplicationPolicyModel(dataItem);
-                    fwApplicationPolicyEditView.renderDeleteApplicationPolicy ({
-                         "title": ctwl.TITLE_APP_POLICY_SET_DELETE,
-                         selectedGridData: [dataItem],
-                         callback: function () {
-                             var dataView =
-                                 $('#' + ctwc.FIREWALL_APPLICATION_POLICY_GRID_ID).
-                                       data("contrailGrid")._dataView;
-                             dataView.refreshData();
-                 }});
+                fwzUtils.appendDeleteContainer($(arguments[1].context).parent()[0], 'new-application-policy-set');
+                $(".cancelWizardDeletePopup").off('click').on('click', function(){
+                    if($('.confirmation-popover').length != 0){
+                        $('.confirmation-popover').remove(); 
+                        $('#overlay-background-id').removeClass('overlay-background');
+                    }
+                });
+                $(".saveWizardRecords").off('click').on('click', function(){
+                    var dataItem = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).data('contrailGrid')._dataView.getItem(rowIndex);
+                    var model = new FwPolicyWizardModel();
+                    model.deleteApplicationPolicy([dataItem], {
+                        success: function () {
+                            $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).
+                            data('contrailGrid')._dataView.refreshData();
+                            if($('.confirmation-popover').length != 0){
+                                $('.confirmation-popover').remove(); 
+                                $('#overlay-background-id').removeClass('overlay-background');
+                            }
+                        },
+                        error: function (error) {
+                            /*$("#grid-details-error-container").text('');
+                            $("#grid-details-error-container").text(error.responseText);
+                            $(".aps-details-error-container").show();*/
+                        }
+                    });
+                });
              })
+             rowActionConfig.push(deleteActionConfig);
         }
         if(appPolicySetName === ctwc.STANDALONE_FIREWALL_POLICIES ||
                 appPolicySetName === ctwc.ALL_FIREWALL_POLICIES){
@@ -182,6 +196,43 @@ define([
     }
     function getHeaderActionConfig(viewConfig) {
         var headerActionConfig = [
+            {
+                "type" : "link",
+                "title" : 'Application Policy Set Multi Delete',
+                "iconClass": 'fa fa-trash',
+                "linkElementId": 'btnDeleteAppPolicy',
+                "onClick" : function() {
+                    fwzUtils.appendDeleteContainer($('#btnDeleteAppPolicy')[0], 'new-application-policy-set');
+                    $(".cancelWizardDeletePopup").off('click').on('click', function(){
+                        if($('.confirmation-popover').length != 0){
+                            $('.confirmation-popover').remove(); 
+                            $('#overlay-background-id').removeClass('overlay-background');
+                        }
+                    });
+                    $(".saveWizardRecords").off('click').on('click', function(){
+                        var checkedRows = $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).data('contrailGrid').getCheckedRows();
+                        if(checkedRows && checkedRows.length > 0) {
+                            var model = new FwPolicyWizardModel();
+                            model.deleteApplicationPolicy(checkedRows, {
+                                success: function () {
+                                    $('#' + ctwc.NEW_APPLICATION_POLICY_SET_GRID_ID).
+                                    data('contrailGrid')._dataView.refreshData();
+                                    if($('.confirmation-popover').length != 0){
+                                        $('.confirmation-popover').remove(); 
+                                        $('#overlay-background-id').removeClass('overlay-background');
+                                    }
+                                },
+                                error: function (error) {
+                                    /*$("#grid-details-error-container").text('');
+                                    $("#grid-details-error-container").text(error.responseText);
+                                    $(".aps-details-error-container").show();*/
+                                }
+                            });  
+                        }
+                    });
+                }
+
+            },
             {
                 "type" : "custom-link",
                 "title" : "Create stand alone firewall policy",

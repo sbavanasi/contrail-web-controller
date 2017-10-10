@@ -7,11 +7,13 @@ define([
     'contrail-view',
     'config/firewall/common/fwpolicy/ui/js/fwPolicyFormatter',
     'config/firewall/common/fwpolicy/ui/js/models/fwPolicyModel',
-    'config/firewall/common/fwpolicy/ui/js/views/fwPolicyEditView'
-], function(_, ContrailView, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView) {
+    'config/firewall/common/fwpolicy/ui/js/views/fwPolicyEditView',
+    'config/firewall/fwpolicywizard/common/ui/js/views/fwPolicyWizard.utils'
+], function(_, ContrailView, FWPolicyFormatter, FWPolicyModel, FWPolicyEditView, FWZUtils) {
     var self, gridElId = '#' + ctwc.FW_POLICY_GRID_ID, gridObj,
       fwPolicyFormatter = new FWPolicyFormatter(),
-      fwPolicyEditView =  new FWPolicyEditView();
+      fwPolicyEditView =  new FWPolicyEditView(),
+      fwzUtils = new FWZUtils();
     var fwPolicyGridView = ContrailView.extend({
         el: $(contentContainer),
 
@@ -50,14 +52,9 @@ define([
         }
     };
 
-    function getRowActionConfig(viewconfig) {
+    function getRowActionConfig(viewConfig) {
         var rowActionConfig = [];
-        var viewConfig = viewconfig;
-        if(viewConfig.isWizard == true){
-            return false;
-        }
-        else{
-            rowActionConfig.push(ctwgc.getEditConfig("Edit", function (rowIndex) {
+        rowActionConfig.push(ctwgc.getEditConfig("Edit", function (rowIndex) {
                 var dataItem = $(gridElId).data("contrailGrid").
                     _dataView.getItem(rowIndex),
                 fwPolicyModel = new FWPolicyModel(dataItem);
@@ -73,30 +70,63 @@ define([
                         }
                     );
             }));
-        }
-        if(viewConfig.isWizard == true){
-            return rowActionConfig;
-        }
-        else{
-            rowActionConfig.push(ctwgc.getDeleteAction(function (rowIndex) {
-                  var dataItem = $(gridElId).data("contrailGrid").
-                      _dataView.getItem(rowIndex),
-                      fwPolicyModel = new FWPolicyModel(dataItem),
-                      checkedRow = [dataItem];
-                  fwPolicyEditView.model = fwPolicyModel;
-                  fwPolicyEditView.renderDeleteFWPolicies(
-                      {"title": ctwl.TITLE_FW_POLICY_DELETE,
-                          checkedRows: checkedRow,
-                          callback: function () {
-                              var dataView =
-                                  $(gridElId).data("contrailGrid")._dataView;
-                              dataView.refreshData();
-                          }
-                      }
-                  );
+        rowActionConfig.push(ctwgc.getDeleteAction(function (rowIndex) {
+                 if(viewConfig.isWizard){
+                     fwzUtils.appendDeleteContainer($(arguments[1].context).parent()[0], 'fw-policy-wizard-global-grid-id', true);
+                     $(".cancelWizardDeletePopup").off('click').on('click', function(){
+                         if($('.confirmation-popover').length != 0){
+                             $('.confirmation-popover').remove(); 
+                             $('#delete-popup-background').removeClass('overlay-background');
+                         }
+                     });
+                     $(".saveWizardRecords").off('click').on('click', function(){
+                         var dataItem = $('#' + ctwc.FW_POLICY_GRID_ID).data('contrailGrid')._dataView.getItem(rowIndex);
+                         var model = new FWPolicyModel();
+                         model.deleteFWPolicies([dataItem], {
+                             success: function () {
+                                 $('#' + ctwc.FW_POLICY_GRID_ID).
+                                 data('contrailGrid')._dataView.refreshData();
+                                 if($('.confirmation-popover').length != 0){
+                                     $('.confirmation-popover').remove(); 
+                                     $('#delete-popup-background').removeClass('overlay-background');
+                                 }
+                             },
+                             error: function (error) {
+                                 $("#grid-details-error-container").text('');
+                                 $("#grid-details-error-container").text(error.responseText);
+                                 $(".aps-details-error-container").show();
+                                 if($('.confirmation-popover').length != 0){
+                                     $('.confirmation-popover').remove(); 
+                                     $('#delete-popup-background').removeClass('overlay-background');
+                                 }
+                             }
+                         });
+                     });
+                 }else{
+                     var dataItem = $(gridElId).data("contrailGrid").
+                     _dataView.getItem(rowIndex),
+                     fwPolicyModel = new FWPolicyModel(dataItem),
+                     checkedRow = [dataItem];
+                 fwPolicyEditView.model = fwPolicyModel;
+                 fwPolicyEditView.renderDeleteFWPolicies(
+                     {"title": ctwl.TITLE_FW_POLICY_DELETE,
+                         checkedRows: checkedRow,
+                         callback: function () {
+                             var dataView =
+                                 $(gridElId).data("contrailGrid")._dataView;
+                             dataView.refreshData();
+                         }
+                     }
+                 );
+               }
             }));
+        if(viewConfig.isWizard){
+           var options = [];
+           options.push(rowActionConfig[1]);
+           return options;
+        }else{
+            return rowActionConfig; 
         }
-        return rowActionConfig;
     };
 
     function getConfiguration (viewConfig) {
@@ -150,7 +180,7 @@ define([
     };
 
     function getHeaderActionConfig(viewConfig) {
-        var headerActionConfig;
+            var headerActionConfig;
             var headerActionConfig = [
                 {
                     "type" : "link",
@@ -202,6 +232,46 @@ define([
             ];
         if(viewConfig.isWizard == true){
             var headerActionConfig = [
+                {
+                    "type" : "link",
+                    "title" : ctwl.TITLE_FW_POLICY_MULTI_DELETE,
+                    "iconClass": 'fa fa-trash',
+                    "linkElementId": 'btnDeleteFWPolicy',
+                    "onClick" : function() {
+                        fwzUtils.appendDeleteContainer($('#btnDeleteFWPolicy')[0], 'fw-policy-wizard-global-grid-id', true);
+                        $(".cancelWizardDeletePopup").off('click').on('click', function(){
+                            if($('.confirmation-popover').length != 0){
+                                $('.confirmation-popover').remove(); 
+                                $('#delete-popup-background').removeClass('overlay-background');
+                            }
+                        });
+                        $(".saveWizardRecords").off('click').on('click', function(){
+                            var checkedRows = $('#' + ctwc.FW_POLICY_GRID_ID).data('contrailGrid').getCheckedRows();
+                            if(checkedRows && checkedRows.length > 0) {
+                                var model = new FWPolicyModel();
+                                model.deleteFWPolicies(checkedRows, {
+                                    success: function () {
+                                        $('#' + ctwc.FW_POLICY_GRID_ID).
+                                        data('contrailGrid')._dataView.refreshData();
+                                        if($('.confirmation-popover').length != 0){
+                                            $('.confirmation-popover').remove();
+                                            $('#delete-popup-background').removeClass('overlay-background');
+                                        }
+                                    },
+                                    error: function (error) {
+                                        $("#grid-details-error-container").text('');
+                                        $("#grid-details-error-container").text(error.responseText);
+                                        $(".aps-details-error-container").show();
+                                        if($('.confirmation-popover').length != 0){
+                                            $('.confirmation-popover').remove();
+                                            $('#delete-popup-background').removeClass('overlay-background');
+                                        }
+                                    }
+                               }); 
+                            }
+                        });
+                    }
+                },
                 {
                     "type" : "link",
                     "title" : ctwl.TITLE_CREATE_FW_POLICY,

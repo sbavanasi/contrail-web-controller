@@ -879,4 +879,33 @@ div#aps-landing-container[style='display: block;'], div#aps-landing-container[st
 #security-policy-tag-grid .slick-viewport, #fw_security_policy_as_grid_view .slick-viewport,
 #fw_security_policy_service_gp_grid_view .slick-viewport{
     overflow-x: hidden !important;
+    margin:-35px 18px 2px 0;
+    position:fixed;
+    right:10px;
+    top:120px;
+}
+.confirmation-popover {
+    position: absolute;
+    z-index: 13;
+    right: 15px;
+    background: white;
+    padding: 5px;
+    border: #D8E2E5 solid 2px;
+}
+.confirm-message{
+    font-size: 13px;
+ font-weight: 600;
+    color: #3794c7;
+    padding: 5px;
+    margin-right: 10px;
+}
+.confirm-actions{
+    float:right;
+}
+.confirm-actions a {
+    padding: 4px;
+    margin: 0px !important;
+}
+.confirm-actions a.cancelWizardDeletePopup{
+    color:#CECECE
 }
