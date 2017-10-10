@@ -440,6 +440,8 @@ define([
                                     }
                                     isBinding = true;
                                     self.renderObject(options, 'addIcon', self);
+                                    $('.modal-header-title').text('');
+                                    $('.modal-header-title').text(ctwc.APS_MODAL_HEADER);
                                 },
                                 error: function (error) {
                                     $('#applicationpolicyset_policy_wizard .alert-error span').text(error.responseText);
