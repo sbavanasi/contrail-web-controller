@@ -257,7 +257,7 @@ define([
             id: 'name',
             field: 'name',
             name: 'Name',
-            cssClass :'cell-hyperlink-blue',
+            cssClass: viewConfig.isWizard ? '' : 'cell-hyperlink-blue',
             events : {
                 onClick : onPolicyClick.bind({viewConfig:viewConfig})
             }
@@ -277,7 +277,7 @@ define([
              id: 'firewall_rule_refs',
              field: 'firewall_rule_refs',
              name: 'Rules',
-             cssClass :'cell-hyperlink-blue',
+             cssClass: viewConfig.isWizard ? '' : 'cell-hyperlink-blue',
              events : {
                  onClick : onPolicyClick.bind({viewConfig:viewConfig})
              },

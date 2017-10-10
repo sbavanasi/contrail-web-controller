@@ -163,6 +163,14 @@ define([
                         }
                 ]
             },
+            footer: {
+                pager: {
+                    options: {
+                        pageSize: 10,
+                        pageSizeSelect: [10, 50, 100]
+                    }
+                }
+            }
         };
         return gridElementConfig;
     };

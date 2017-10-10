@@ -866,8 +866,17 @@ div#aps-landing-container[style='display: block;'], div#aps-landing-container[st
     content:none !important;
 }
 .addNewFirewall_policy_count{
-    margin:-35px 18px 2px 0;
-    position:fixed;
-    right:10px;
-    top:120px;
+    float:right;
+    margin-right:10px;
+}
+#fw_security_policy_as_grid_view, #security-policy-tag{
+    max-height: 430px;
+    overflow-y: auto;
+}
+#configure-applicationpolicyset{
+    overflow-y: hidden !important;
+}
+#security-policy-tag-grid .slick-viewport, #fw_security_policy_as_grid_view .slick-viewport,
+#fw_security_policy_service_gp_grid_view .slick-viewport{
+    overflow-x: hidden !important;
 }

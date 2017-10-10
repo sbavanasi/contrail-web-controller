@@ -128,7 +128,7 @@ define([
                 $('#aps-overlay-container').hide();
                 isBinding = false;
                 self.fetchAllData(self, options, function(allData){
-                    self.renderView4Config($('#aps-sub-container'), self.model, getAddPolicyViewConfig(self.model, viewConfig, allData, options),'policyValidation', null, null,function(){
+                    self.renderView4Config($('#aps-sub-container'), self.model, getAddPolicyViewConfig(self, viewConfig, allData, options),'policyValidation', null, null,function(){
                         if (isBinding) {
                             Knockback.applyBindings(self.model, document.getElementById('applicationpolicyset_add-new-firewall-policy'));
                         }
@@ -409,7 +409,7 @@ define([
         };
         return addNewFwPolicyViewConfig;
     }
-    function getAddRulesViewConfig(viewConfig, allData, options) {
+    function getAddRulesViewConfig(viewConfig, allData, options, self) {
         var gridPrefix = "add-rules",
         addRulesViewConfig = {
             elementId:  cowu.formatElementId([prefixId, ctwl.TITLE_CREATE_FW_RULES]),
@@ -432,17 +432,14 @@ define([
                         onNext: function(params) {
                             return params.model.addEditApplicationSet({
                                 success: function () {
-                                    if($("#" + modalId).find(".contrailWizard").data("contrailWizard")){
-                                        $("#" + modalId).find(".contrailWizard").data("contrailWizard").destroy();
-                                    }
-                                    $("#" + modalId).modal("hide");
                                     if($('#fw-policy-grid').data("contrailGrid") !== undefined){
                                         $('#fw-policy-grid').data("contrailGrid")._dataView.refreshData();
                                     }
                                     if($('#firewall-application-policy-grid').data("contrailGrid") !== undefined){
                                         $('#firewall-application-policy-grid').data("contrailGrid")._dataView.refreshData();
                                     }
-                                    isBinding = false;
+                                    isBinding = true;
+                                    self.renderObject(options, 'addIcon', self);
                                 },
                                 error: function (error) {
                                     $('#applicationpolicyset_policy_wizard .alert-error span').text(error.responseText);
@@ -467,14 +464,14 @@ define([
         };
         return addRulesViewConfig;
     }
-    function getAddPolicyViewConfig(model, viewConfig, allData, options) {
+    function getAddPolicyViewConfig(self, viewConfig, allData, options) {
         var addPolicyViewConfig = {
             elementId: cowu.formatElementId([prefixId, 'policy_wizard']),
             view: "WizardView",
             viewConfig: {
                 steps: []
             }
-        }
+        }, model = self.model;
     steps = [];
     createStepViewConfig = null;
     addnewFwPolicyStepViewConfig = null;
@@ -531,7 +528,7 @@ define([
         };
     steps = steps.concat(createStepViewConfig);
     addnewFwPolicyStepViewConfig = $.extend(true, {}, getNewFirewallPolicyViewConfig(model, viewConfig).viewConfig).steps;
-    addRulesStepViewConfig = $.extend(true, {}, getAddRulesViewConfig(viewConfig, allData, options).viewConfig).steps;
+    addRulesStepViewConfig = $.extend(true, {}, getAddRulesViewConfig(viewConfig, allData, options, self).viewConfig).steps;
     steps = steps.concat(addnewFwPolicyStepViewConfig);
     steps = steps.concat(addRulesStepViewConfig);
     addPolicyViewConfig.viewConfig.steps = steps;
