@@ -318,12 +318,11 @@ define([
                          parent : "any_workload" });
                      addrFields.push({text : 'Any Workload', value : 'any_workload', children : anyList});
                      returnArr["addrFields"] = addrFields;
-                     var secGrpList = getValueByJsonPath(results, "4;0;0;service-groups", []);
+                     var secGrpList = fwPolicyFormatter.filterServiceGroupByProjects(getValueByJsonPath(results, '4;0;0;service-groups', [], false), options.viewConfig.isGlobal);
                      var serviceGrpList = [];
                      $.each(secGrpList, function (i, obj) {
                          var obj = obj['service-group'];
-                         //serviceGrpList.push({value: obj.uuid, text: obj.name});
-                         serviceGrpList.push({fq_name : obj.fq_name, text: obj.name});
+                         serviceGrpList.push({value: obj.uuid, fq_name : obj.fq_name, text: obj.name});
                       });
                      returnArr["serviceGrpList"] = serviceGrpList;
                      callback(returnArr);

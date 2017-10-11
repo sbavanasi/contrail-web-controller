@@ -163,18 +163,15 @@ define([
                                             width: 210,
                                             path: 'user_created_service',
                                             dataBindValue: 'user_created_service()',
-                                            elementConfig: {
-                                                dataTextField: "text",
-                                                dataValueField: "value",
+                                            elementConfig:{
+                                                dataTextField: 'text',
+                                                dataValueField: 'value',
                                                 placeholder: "Select or Enter Protocol:Port",
                                                 dataSource: {
-                                                    type: "remote",
-                                                    requestType: "POST",
-                                                    url: "/api/tenants/config/get-config-details",
-                                                    postData: JSON.stringify(serviceGrp),
-                                                    parse : serviceGroupDataFormatter
-                                                }
-                                            }
+                                                    type: 'local',
+                                                    data: allData.serviceGrpList
+                                                   }
+                                               }
                                         }
                                     },
                                     {
@@ -473,17 +470,7 @@ define([
             }
         }
     };
-    this.serviceGroupDataFormatter = function(response){
-        var serviceGrpList = [];
-        //self.serviceGroupList =[];
-        var secGrpList = getValueByJsonPath(response, "0;service-groups", []);
-        $.each(secGrpList, function (i, obj) {
-            var obj = obj['service-group'];
-            serviceGrpList.push({value: obj.uuid, text: obj.name});
-            //serviceGroupList.push({fq_name : obj.fq_name, text: obj.name});
-         });
-        return serviceGrpList;
-    };
+
     this.shareViewConfig = function() {
         return  [{
             elementId: 'share_list',
