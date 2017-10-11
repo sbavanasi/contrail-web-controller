@@ -340,7 +340,7 @@ define([
           }, {
               id: 'application_policy_set_back_refs',
               field: 'application_policy_set_back_refs',
-              name: 'Member of',
+              name: 'Member of Application Policy Sets',
               minWidth : 150,
               formatter: fwPolicyFormatter.policySetFormatter
            }, {

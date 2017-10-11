@@ -264,7 +264,6 @@ define([
                                                         formatter: 'addressGroupFormatter'
                                                     }
                                                 }
-                                                
                                             ].concat(ctwu.getTagsExpandDetails())
                                         }
                                     ]

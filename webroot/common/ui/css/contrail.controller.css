@@ -880,6 +880,11 @@ div#aps-landing-container[style='display: block;'], div#aps-landing-container[st
 #fw_security_policy_service_gp_grid_view .slick-viewport{
     overflow-x: hidden !important;
 }
+#applicationpolicyset_policy_wizard.wizard > .steps ul {
+    width: 32%;
+    margin-left: -10px;
+    padding: 10px;
+}
 .confirmation-popover {
     position: absolute;
     z-index: 13;

@@ -177,7 +177,15 @@ define([
                     }
                 }
             },
-            columnHeader: { columns: getfwPolicyColumns(viewConfig)}
+            columnHeader: { columns: getfwPolicyColumns(viewConfig)},
+            footer: {
+                pager: {
+                    options: {
+                        pageSize: 10,
+                        pageSizeSelect: [10, 50, 100]
+                    }
+                }
+            }
         };
         if(viewConfig.viewConfig.isInventory){
             gridElementConfig.body.options.actionCell = [];
@@ -315,13 +323,13 @@ define([
              id: 'id_perms.description',
              field: 'id_perms.description',
              name: 'Description',
-             minWidth : 150,
+             minWidth : 120,
              formatter: fwPolicyFormatter.policyDescriptionFormatter
           }, {
               id: 'application_policy_set_back_refs',
               field: 'application_policy_set_back_refs',
-              name: 'Member of',
-              minWidth : 150,
+              name: 'Member of Application Policy Sets',
+              minWidth : 190,
               formatter: fwPolicyFormatter.policySetFormatter
            }, {
              id: 'firewall_rule_refs',

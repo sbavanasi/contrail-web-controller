@@ -82,8 +82,12 @@ define([
                                          $('#aps-overlay-container').hide();
                                          Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                          $("#aps-gird-container").empty();
-                                         //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
-                                         $('#fw_security_policy_service_gp_grid_view').data("contrailGrid")._dataView.refreshData();
+                                         if($('#fw_security_policy_service_gp_grid_view').data("contrailGrid") !== undefined){
+                                             $('#fw_security_policy_service_gp_grid_view').data("contrailGrid")._dataView.refreshData();
+                                         }
+                                         if($('#security-policy-service-grp-grid').data("contrailGrid") !== undefined){
+                                             $('#security-policy-service-grp-grid').data("contrailGrid")._dataView.refreshData();
+                                         }
                                          $("#overlay-background-id").removeClass("overlay-background");
                                      },
                                      error: function (error) {

@@ -18,6 +18,7 @@ define(['underscore',
             self.renderTemplate($(self.$el), viewConfig, null,percentileTextViewTemplate);
             $("#firewall_policies_all").on('click', function(e) {
                 e.preventDefault();
+                $("#overlay-background-id").addClass("overlay-background");
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
                 fwApplicationPolicyEditView.renderApplicationPolicy({
                     'viewConfig': $.extend({mode:'grid_firewall_policies',isGlobal:viewConfig.isGlobal}, viewConfig)
@@ -25,6 +26,7 @@ define(['underscore',
             });
             $("#stand_alone_policies").on('click', function(e) {
                 e.preventDefault();
+                $("#overlay-background-id").addClass("overlay-background");
                 fwApplicationPolicyEditView.model = new FwPolicyWizardModel();
                 fwApplicationPolicyEditView.renderApplicationPolicy({
                                           'viewConfig': $.extend({mode:'grid_stand_alone',isGlobal:viewConfig.isGlobal}, viewConfig)

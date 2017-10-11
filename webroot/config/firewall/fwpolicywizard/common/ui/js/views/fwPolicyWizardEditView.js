@@ -83,6 +83,7 @@ define([
                         fwzUtils.backButtonClick();
                     });
                     $("#aps-main-back-button").on('click', function(){
+                        $('.modal-header-title').text("Firewall Policy Wizard");
                         fwzUtils.backButtonClick();
                     });
                     $("#aps-create-fwpolicy-remove-icon").on('click', function(){
@@ -108,20 +109,29 @@ define([
                 $('#aps-create-fwpolicy-remove-icon').show();
                 $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
+                $('.modal-header-title').text("Review Address Groups");
                 this.renderView4Config($('#aps-sub-container'), null, getAddressGroup(viewConfig));
             }else if(objName === 'service_groups'){
                 $('#aps-main-container').show();
                 $('#aps-create-fwpolicy-remove-icon').show();
                 $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
+                $('.modal-header-title').text("Review Service Groups");
                 this.renderView4Config($('#aps-sub-container'), null, getServiceGroup(viewConfig));
             }else if(objName === 'tag'){
                 $('#aps-main-container').show();
                 $('#aps-create-fwpolicy-remove-icon').show();
                 $('#aps-remove-icon').hide();
                 $('#aps-overlay-container').hide();
+                if(options.viewConfig.isGlobal === false){
+                    $('.modal-header-title').text("Review Visible Tags For Project");
+                }
+                else{
+                    $('.modal-header-title').text("Review visible Tags");
+                }
                 this.renderView4Config($('#aps-sub-container'), null, getTag(viewConfig));
             }else if(objName === 'addIcon'){
+                $('.modal-header-title').text("Firewall Policy Wizard");
                 $('#aps-main-container').show();
                 $('#aps-create-fwpolicy-remove-icon').show();
                 $('#aps-remove-icon').hide();
@@ -516,6 +526,9 @@ define([
             title: "Select set",
             stepType: "step",
             onNext: function (options) {
+                options.model.policy_name('');
+                options.model.policy_description('');
+                $('#applicationpolicyset_policy_wizard .alert-error').hide();
                 return true;
             },
             buttons: {
