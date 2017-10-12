@@ -26,8 +26,8 @@ define([
             self.setErrorContainer(headerText);
             if(mode === 'delete'){
                 $('#aps-save-button').text('Confirm');
-                var deleteContainer = $('<div style="padding-top:30px;"></div>');
-                var deletText = $('<span style="padding-left:300px;">Are you sure you want to delete ?</span>');
+                var deleteContainer = $('<div></div>');
+                var deletText = $('<span style="padding-left:10px;">Are you sure you want to delete ?</span>');
                 deleteContainer.append(deletText);
                 $('#gird-details-container').append(deleteContainer);
                 //back method
@@ -37,7 +37,6 @@ define([
                     $("#overlay-background-id").removeClass("overlay-background");
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
-                    self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
                     $('#aps-save-button').text('Save');
                 });
                 
@@ -52,7 +51,6 @@ define([
                             $('#fw_security_policy_service_gp_grid_view').data("contrailGrid")._dataView.refreshData();
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
-                           // self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -73,7 +71,6 @@ define([
                                  $("#overlay-background-id").removeClass("overlay-background");
                                  Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                  $("#aps-gird-container").empty();
-                                 //self.renderView4Config($("#aps-gird-container"), null, getServiceGroup(viewConfig));
                              });
                              $("#aps-save-button").off('click').on('click', function(){
                                  self.model.addEditServiceGroup({

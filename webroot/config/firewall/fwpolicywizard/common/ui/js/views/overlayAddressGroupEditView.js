@@ -37,7 +37,6 @@ define([
                     $("#overlay-background-id").removeClass("overlay-background");
                     Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                     $("#aps-gird-container").empty();
-                    self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                     $('#aps-save-button').text('Save');
                 });
 	            
@@ -52,7 +51,6 @@ define([
                             $('#fw_security_policy_as_grid_view').data("contrailGrid")._dataView.refreshData();
                             Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                             $("#aps-gird-container").empty();
-                            //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                         },
                         error: function (error) {
                             $("#grid-details-error-container").text('');
@@ -73,7 +71,6 @@ define([
                                  $("#overlay-background-id").removeClass("overlay-background");
                                  Knockback.ko.cleanNode($("#aps-gird-container")[0]);
                                  $("#aps-gird-container").empty();
-                                 //self.renderView4Config($("#aps-gird-container"), null, getAddressGroup(viewConfig));
                              });
                              $("#aps-save-button").off('click').on('click', function(){
                                  self.model.addEditAddressGroup({

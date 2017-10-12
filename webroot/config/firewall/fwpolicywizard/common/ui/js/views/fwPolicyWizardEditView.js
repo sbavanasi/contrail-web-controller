@@ -387,6 +387,7 @@ define([
                             }
                         },
                         onPrevious: function(params) {
+                            $('#applicationpolicyset_policy_wizard .alert-error').hide();
                             $("#aps-main-back-button").show();
                             $('#applicationpolicyset_policy_wizard .actions').css("display", "none");
                             params.model.onNext(false);
@@ -451,6 +452,7 @@ define([
                                     self.renderObject(options, 'addIcon', self);
                                     $('.modal-header-title').text('');
                                     $('.modal-header-title').text(ctwc.APS_MODAL_HEADER);
+                                    $('#applicationpolicyset_policy_wizard .alert-error').hide();
                                 },
                                 error: function (error) {
                                     $('#applicationpolicyset_policy_wizard .alert-error span').text(error.responseText);
@@ -460,6 +462,7 @@ define([
                         },
                         onPrevious: function(params) {
                             var modalHeader;
+                            $('#applicationpolicyset_policy_wizard .alert-error').hide();
                             if(Object.keys(newApplicationSet).length > 0){
                               modalHeader = ctwc.APS_MODAL_HEADER + ' > '+ newApplicationSet.name;
                             }else{
@@ -526,9 +529,13 @@ define([
             title: "Select set",
             stepType: "step",
             onNext: function (options) {
-                options.model.policy_name('');
-                options.model.policy_description('');
                 $('#applicationpolicyset_policy_wizard .alert-error').hide();
+                if(options.model.policy_name != ''){
+                    options.model.policy_name('');
+                }
+                if(options.model.policy_description != ''){
+                    options.model.policy_description('');
+                }
                 return true;
             },
             buttons: {
