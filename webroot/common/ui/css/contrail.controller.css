@@ -690,8 +690,7 @@ form h5.margin-0-0-10~.section-content {
     background: linear-gradient(#f7fdff, white); /* Standard syntax (must be last) */
 }
 #aps-main-back-button{
-    margin-right:15px;
-    margin-top:15px;
+    margin: 15px 15px 0 15px;
 }
 #aps-landing-container{
     background:linear-gradient(#f7fdff,#fff);
@@ -885,17 +884,26 @@ div#aps-landing-container[style='display: block;'], div#aps-landing-container[st
     margin-left: -10px;
     padding: 10px;
 }
+#new-application-policy-set-grid .slick-viewport{
+    overflow-x : hidden !important;
+}
+.alert.alert-info.grid-info.grid-check-all-info {
+    display: none;
+}
 .confirmation-popover {
     position: absolute;
     z-index: 13;
-    right: 15px;
+    right: 30px;
     background: white;
     padding: 5px;
     border: #D8E2E5 solid 2px;
 }
+.confirmation-popover a{
+    color: #3794c7;
+}
 .confirm-message{
     font-size: 13px;
- font-weight: 600;
+    font-weight: 600;
     color: #3794c7;
     padding: 5px;
     margin-right: 10px;
@@ -909,4 +917,7 @@ div#aps-landing-container[style='display: block;'], div#aps-landing-container[st
 }
 .confirm-actions a.cancelWizardDeletePopup{
     color:#CECECE
+}
+.grid-header .confirmation-popover {
+    right: 135px;
 }

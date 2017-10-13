@@ -431,13 +431,6 @@ define([
             $('#aps-landing-container').hide();
         }
         self.appendDeleteContainer = function(postionDiv, appendDiv, overlay){
-            var scrollTop = $('.wizard > .content').scrollTop(), fixedPosition;
-            if(overlay){
-                fixedPosition = 90;
-            }else{
-                fixedPosition =  162;
-            }
-            var top = ($(postionDiv).offset().top -(fixedPosition - scrollTop)) +'px';
             var deleteContainer = $('<div class="confirmation-popover"></div>');
             var msg = $('<span class="confirm-message">Are you sure you want to Delete?</span>');
             deleteContainer.append(msg);
@@ -451,8 +444,12 @@ define([
             save.append(saveI);
             confirmDiv.append(save);
             deleteContainer.append(confirmDiv);
-            $('#'+ appendDiv).append(deleteContainer);
-            $('.confirmation-popover').css({'top':top});
+            if($(postionDiv).parents().eq(2).hasClass("grid-header")){
+                $(postionDiv).parent().parent().append(deleteContainer);
+            }
+            else{
+                 $(postionDiv).parent().append(deleteContainer);
+            }
             if(overlay){
                 var deleteOverlay = $('<div id="delete-popup-background" class="overlay-background"></div>');
                 if($('#delete-popup-background').length == 0){
