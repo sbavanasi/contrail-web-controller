@@ -454,63 +454,62 @@ define([
                         },
                         onNext: function(params) {
                             isBinding = true;
-                            if(params.model.onNext()){
-                               if(params.model.policy_name() !== ''){
-                                   var modalHeader;
-                                   if(Object.keys(newApplicationSet).length > 0){
-                                     modalHeader = ctwc.APS_MODAL_HEADER + ' > '+ newApplicationSet.name + ' > ' + params.model.policy_name();
+                                if((params.model.onNext() === true) && (params.checkFlow === false)){
+                                   if(params.model.policy_name() !== ''){
+                                       var modalHeader;
+                                       if(Object.keys(newApplicationSet).length > 0){
+                                         modalHeader = ctwc.APS_MODAL_HEADER + ' > '+ newApplicationSet.name + ' > ' + params.model.policy_name();
+                                       }else{
+                                         modalHeader = ctwc.APS_MODAL_HEADER + ' > '+ params.model.policy_name();
+                                       }
+                                       $('.modal-header-title').text('');
+                                       $('.modal-header-title').text(modalHeader);
+                                       $('#applicationpolicyset_policy_wizard .alert-error span').text('');
+                                       $('#applicationpolicyset_policy_wizard .alert-error').hide();
+                                       return true;
                                    }else{
-                                     modalHeader = ctwc.APS_MODAL_HEADER + ' > '+ params.model.policy_name();
+                                       $('#applicationpolicyset_policy_wizard .alert-error span').text('Please enter the Policy Name.');
+                                       $('#applicationpolicyset_policy_wizard .alert-error').show();
                                    }
-                                   $('.modal-header-title').text('');
-                                   $('.modal-header-title').text(modalHeader);
-                                   $('#applicationpolicyset_policy_wizard .alert-error span').text('');
-                                   $('#applicationpolicyset_policy_wizard .alert-error').hide();
-                                   return true;
-                               }else{
-                                   $('#applicationpolicyset_policy_wizard .alert-error span').text('Please enter the Policy Name.');
-                                   $('#applicationpolicyset_policy_wizard .alert-error').show();
-                               }
-                            }else{
-                                if(Object.keys(policyEditSet).length > 0){
-                                    if(policyEditSet.mode === 'edit'){
-                                        params.model.policy_name(policyEditSet.model.name);
-                                        if(policyEditSet.model.id_perms.description != null){
-                                            params.model.policy_description(policyEditSet.model.id_perms.description); 
-                                        }
-                                        if(policyEditSet.model.firewall_rule_refs != undefined && policyEditSet.model.firewall_rule_refs.length > 0){
-                                            getPolicyRelatedRules(policyEditSet.model, function(policyRule){
-                                                var ruleCollection = [];
-                                                for(var i = 0; i < policyRule.length; i++){
-                                                    var ruleModel = new RuleModel(policyRule[i])
-                                                    ruleCollection.push(ruleModel);
-                                                }
-                                                var coll = new Backbone.Collection(ruleCollection);
-                                                
-                                                params.model.firewall_rules = Knockback.collectionObservable(coll);
-                                               
-                                                params.model.model().attributes.firewall_rules = coll;
-                                                if(Knockback.ko.dataFor(document.getElementById('applicationpolicyset_rules'))) {
-                                                    var newModel = new FwPolicyWizardModel();
-                                                    newModel.policy_name(policyEditSet.model.name);
-                                                    newModel.firewall_rules = Knockback.collectionObservable(coll);
-                                                    newModel.model().attributes.firewall_rules = coll;
-                                                    ko.cleanNode($("#applicationpolicyset_rules")[0]);
-                                                    params.model = newModel;
-                                                    Knockback.applyBindings(params, document.getElementById('applicationpolicyset_rules'));
-                                                    //params.model = newModel;
-                                                }
-                                           });  
-                                        }else{
-                                            params.model.firewall_rules = Knockback.collectionObservable([]);
-                                        }
-                                        if($("#policy_name input").length == 1){
-                                           $("#policy_name input").attr('disabled','disabled'); 
+                                }else if((params.model.onNext() === false)){
+                                    if(Object.keys(policyEditSet).length > 0){
+                                        if(policyEditSet.mode === 'edit'){
+                                            params.model.policy_name(policyEditSet.model.name);
+                                            if(policyEditSet.model.id_perms.description != null){
+                                                params.model.policy_description(policyEditSet.model.id_perms.description);
+                                            }
+                                            if(policyEditSet.model.firewall_rule_refs != undefined && policyEditSet.model.firewall_rule_refs.length > 0){
+                                                getPolicyRelatedRules(policyEditSet.model, function(policyRule){
+                                                    var ruleCollection = [];
+                                                    for(var i = 0; i < policyRule.length; i++){
+                                                        var ruleModel = new RuleModel(policyRule[i])
+                                                        ruleCollection.push(ruleModel);
+                                                    }
+                                                    var coll = new Backbone.Collection(ruleCollection);
+                                                    params.model.firewall_rules = Knockback.collectionObservable(coll);
+                                                    params.model.model().attributes.firewall_rules = coll;
+                                                    if(Knockback.ko.dataFor(document.getElementById('applicationpolicyset_rules'))) {
+                                                        var newModel = new FwPolicyWizardModel();
+                                                        newModel.policy_name(policyEditSet.model.name);
+                                                        newModel.firewall_rules = Knockback.collectionObservable(coll);
+                                                        newModel.model().attributes.firewall_rules = coll;
+                                                        ko.cleanNode($("#applicationpolicyset_rules")[0]);
+                                                        params.model = newModel;
+                                                        Knockback.applyBindings(params, document.getElementById('applicationpolicyset_rules'));
+                                                        //params.model = newModel;
+                                                    }
+                                               });
+                                            }else{
+                                                params.model.firewall_rules = Knockback.collectionObservable([]);
+                                            }
+                                            if($("#policy_name input").length == 1){
+                                               $("#policy_name input").attr('disabled','disabled');
+                                            }
                                         }
                                     }
                                 }
                                 params.model.onNext(true);
-                            }
+                                params.checkFlow = false;
                         },
                         onPrevious: function(params) {
                             $('#applicationpolicyset_policy_wizard .alert-error').hide();
@@ -624,6 +623,17 @@ define([
                                     $('.modal-header-title').text(ctwc.APS_MODAL_HEADER);
                                     $('#applicationpolicyset_policy_wizard .alert-error').hide();
                                     $("#aps-main-back-button").show();
+                                    if(params.model.policy_name() != ''){
+                                        params.model.policy_name('');
+                                    }
+                                    if(params.model.policy_description() != ''){
+                                        params.model.policy_description('');
+                                    }
+                                    $('#applicationpolicyset_policy_wizard .alert-error').show();
+                                    self.renderObject(options, 'addIcon', self);
+                                    $('.modal-header-title').text('');
+                                    $('.modal-header-title').text(ctwc.APS_MODAL_HEADER);
+                                    $('#applicationpolicyset_policy_wizard .alert-error').hide();
                                 },
                                 error: function (error) {
                                     $('#applicationpolicyset_policy_wizard .alert-error span').text(error.responseText);
@@ -700,13 +710,8 @@ define([
             title: "Select set",
             stepType: "step",
             onNext: function (options) {
+                options.checkFlow = true;
                 $('#applicationpolicyset_policy_wizard .alert-error').hide();
-                if(options.model.policy_name != ''){
-                    options.model.policy_name('');
-                }
-                if(options.model.policy_description != ''){
-                    options.model.policy_description('');
-                }
                 return true;
             },
             buttons: {
