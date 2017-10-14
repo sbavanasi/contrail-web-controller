@@ -44,7 +44,7 @@ define([
                 }
             },
             {
-                elementId: "security_permissions",
+                elementId: "fw_security_permissions",
                 view: 'SectionView',
                 title:"Permissions",
                 viewConfig: {
@@ -52,7 +52,7 @@ define([
                         {
                             columns: [
                                 {
-                                    elementId: 'owner_access_security',
+                                    elementId: 'fw_owner_access_security',
                                     view: 'FormMultiselectView',
                                     viewConfig: {
                                         label: "Owner Permissions",
@@ -73,7 +73,7 @@ define([
                         {
                             columns: [
                                 {
-                                    elementId: 'global_access_secuirty',
+                                    elementId: 'fw_global_access_secuirty',
                                     view: 'FormMultiselectView',
                                     viewConfig: {
                                         label: "Global Share Permissions",
@@ -93,7 +93,7 @@ define([
                         },
                         {
                             columns:[{
-                                elementId: "security_share_accordion_create",
+                                elementId: "fw_security_share_accordion_create",
                                 view: "AccordianView",
                                 viewConfig:[{
                                    elementId: "security_share_accordion_create",
