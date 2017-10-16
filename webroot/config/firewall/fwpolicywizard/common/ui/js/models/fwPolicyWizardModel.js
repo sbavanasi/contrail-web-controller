@@ -72,14 +72,14 @@ define([
         },
         addRule: function() {
             var rulesList = this.model().attributes['firewall_rules'],
-                newRuleModel = new RuleModel();
+                newRuleModel = new RuleModel({disabled: false});
             this.showHideServiceInstance(newRuleModel);
             rulesList.add([newRuleModel]);
         },
         addRuleByIndex: function(data,rules) {
             var selectedRuleIndex = data.model().collection.indexOf(rules.model());
             var rulesList = this.model().attributes['firewall_rules'],
-                newRuleModel = new RuleModel();
+                newRuleModel = new RuleModel({disabled: false});
             this.showHideServiceInstance(newRuleModel);
 
             rulesList.add([newRuleModel],{at: selectedRuleIndex+1});

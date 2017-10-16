@@ -147,7 +147,7 @@ define([
                                      viewConfig: {
                                          templateId: cowc.TMPL_EDITABLE_GRID_DROPDOWN_VIEW,
                                          path: "simple_action",
-                                         //disabled: "showService()",
+                                         disabled: "disabled()",
                                          dataBindValue: "simple_action()",
                                          elementConfig:{
                                              data:['pass','deny']
@@ -162,6 +162,7 @@ define([
                                             templateId: cowc.TMPL_EDITABLE_GRID_COMBOBOX_VIEW,
                                             width: 210,
                                             path: 'user_created_service',
+                                            disabled: "disabled()",
                                             dataBindValue: 'user_created_service()',
                                             elementConfig:{
                                                 dataTextField: 'text',
@@ -186,6 +187,7 @@ define([
                                             width: 220,
                                             path: 'endpoint_1',
                                             dataBindValue: 'endpoint_1()',
+                                            disabled: "disabled()",
                                             elementConfig: {
                                                 placeholder: 'Select Endpoint',
                                                 minimumResultsForSearch : 1,
@@ -254,7 +256,7 @@ define([
                                          templateId: cowc.TMPL_EDITABLE_GRID_DROPDOWN_VIEW,
                                          path: "direction",
                                          dataBindValue: "direction()",
-                                         //disabled: "showService()",
+                                         disabled: "disabled()",
                                          elementConfig:{
                                              data:['<>', '>', '<']
                                          }}
@@ -271,6 +273,7 @@ define([
                                             width: 220,
                                             path: 'endpoint_2',
                                             dataBindValue: 'endpoint_2()',
+                                            disabled: "disabled()",
                                             elementConfig: {
                                                 placeholder: 'Select Endpoint',
                                                 minimumResultsForSearch : 1,
@@ -337,6 +340,7 @@ define([
                                            class: "",
                                            width: 170,
                                            path: "match_tags",
+                                           disabled: "disabled()",
                                            templateId:
                                                cowc.TMPL_EDITABLE_GRID_MULTISELECT_VIEW,
                                            dataBindValue:
